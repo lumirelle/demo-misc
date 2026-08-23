@@ -1,0 +1,410 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>日用字体 · Daily Type Specimen</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Archivo:wght@400;500;700&family=Caveat:wght@400;700&family=DM+Mono:wght@400;500&family=Doto:wght@100;400;700&family=Encode+Sans:wght@400;500;600;700&family=Gelasio:ital,wght@0,400;0,500;0,700;1,400;1,500&family=JetBrains+Mono:wght@400;500;700&family=Jersey+10&family=Lato:wght@400;700&family=Merriweather:ital,wght@0,400;0,700;1,400&family=Playfair+Display:ital,wght@0,400;0,700;0,900;1,400&family=Plus+Jakarta+Sans:wght@400;500;600;700;800&family=Press+Start+2P&family=Sacramento&family=Space+Grotesk:wght@400;500;700&family=Space+Mono:ital,wght@0,400;0,700;1,400&family=Work+Sans:wght@400;500;600;700&display=swap" rel="stylesheet">
+<link href="https://api.fontshare.com/v2/css?f[]=neue-protest@400,700&f[]=satoshi@400;500;700&display=swap" rel="stylesheet">
+<style>
+:root{--font-serif:Georgia,'Times New Roman',serif;--font-sans:'Space Grotesk',system-ui,sans-serif;--font-mono:'Space Mono',ui-monospace,monospace;--font-hand:'Caveat',cursive;--bg:#f6f3ee;--fg:#1a1815;--muted:#7a766e;--accent:#b8472d;--border:#ddd6cc;--card-bg:#fffefb;--code-bg:#1c1b19;--radius:10px}
+*{margin:0;padding:0;box-sizing:border-box}
+html{scroll-behavior:smooth}
+body{background:var(--bg);color:var(--fg);font-family:var(--font-sans);line-height:1.6;-webkit-font-smoothing:antialiased;padding-bottom:88px}
+
+.site-header{position:sticky;top:0;z-index:100;background:rgba(246,243,238,.92);backdrop-filter:blur(14px);-webkit-backdrop-filter:blur(14px);border-bottom:1px solid var(--border);padding:1rem 2rem}
+.header-inner{max-width:820px;margin:0 auto;display:flex;align-items:center;justify-content:space-between;gap:1rem;flex-wrap:wrap}
+.site-identity{min-width:0}
+.site-name a{font-family:var(--font-serif);font-size:1.45rem;font-weight:700;color:var(--fg);text-decoration:none;letter-spacing:-.015em;transition:color .2s}
+.site-name a:hover{color:var(--accent)}
+.site-source{font-family:var(--font-mono);font-size:.72rem;color:var(--muted);margin-top:.15rem}
+.font-tags{display:flex;gap:.4rem;flex-wrap:wrap}
+.font-tag{font-family:var(--font-mono);font-size:.68rem;padding:.25rem .6rem;border-radius:20px;border:1px solid var(--border);background:var(--card-bg);white-space:nowrap}
+.font-tag .label{color:var(--muted);margin-right:.35rem}
+.font-tag .value{color:var(--fg);font-weight:700}
+
+main{max-width:820px;margin:0 auto;padding:2rem}
+.intro{margin-bottom:3rem;padding-bottom:2rem;border-bottom:1px solid var(--border)}
+.intro-text{font-family:var(--font-sans);font-size:.95rem;color:var(--muted);line-height:1.65}
+.intro-text strong{color:var(--fg);font-weight:600}
+.usecase{margin-bottom:4rem}
+.usecase-label{font-family:var(--font-mono);font-size:.68rem;text-transform:uppercase;letter-spacing:.16em;color:var(--accent);margin-bottom:.4rem}
+.usecase-title{font-family:var(--font-sans);font-size:.85rem;color:var(--muted);margin-bottom:1.5rem;font-weight:500}
+
+.article-meta{font-family:var(--font-mono);font-size:.72rem;color:var(--muted);text-transform:uppercase;letter-spacing:.1em;margin-bottom:.75rem}
+.article-title{font-family:var(--font-serif);font-size:2.4rem;line-height:1.12;font-weight:700;margin-bottom:1.5rem;letter-spacing:-.02em}
+.article-body p{font-family:var(--font-serif);font-size:1.1rem;line-height:1.75;margin-bottom:1.2rem;color:#2a2724}
+.article-body .lead{font-size:1.2rem;color:var(--fg)}
+.article-body .lead::first-letter{font-family:var(--font-serif);font-size:3.6rem;font-weight:700;float:left;line-height:.82;margin:.15rem .55rem 0 0;color:var(--accent)}
+
+.code-block{background:var(--code-bg);color:#d4d4d4;border-radius:var(--radius);padding:1.5rem;overflow-x:auto;font-family:var(--font-mono);font-size:.86rem;line-height:1.75;margin-bottom:1rem;white-space:pre}
+.code-block .comment{color:#6a9955}
+.code-block .keyword{color:#569cd6}
+.code-block .string{color:#ce9178}
+.code-block .func{color:#dcdcaa}
+.code-block .prop{color:#9cdcfe}
+.code-note{font-family:var(--font-sans);font-size:.88rem;color:var(--muted);line-height:1.55}
+
+.card-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(220px,1fr));gap:1rem}
+.card{background:var(--card-bg);border:1px solid var(--border);border-radius:var(--radius);padding:1.25rem;transition:transform .2s,box-shadow .2s}
+.card:hover{transform:translateY(-2px);box-shadow:0 8px 24px rgba(0,0,0,.06)}
+.card-tag{font-family:var(--font-mono);font-size:.62rem;text-transform:uppercase;letter-spacing:.1em;color:var(--accent);margin-bottom:.5rem}
+.card-title{font-family:var(--font-sans);font-size:1.05rem;font-weight:700;margin-bottom:.4rem}
+.card-desc{font-family:var(--font-sans);font-size:.85rem;color:var(--muted);line-height:1.5}
+
+.pull-quote{border-left:3px solid var(--accent);padding:.25rem 0 .5rem 2rem}
+.quote-mark{font-family:var(--font-serif);font-size:4rem;line-height:.4;color:var(--accent);opacity:.25;margin-bottom:.5rem}
+.quote-text{font-family:var(--font-serif);font-style:italic;font-size:1.5rem;line-height:1.4;margin:.5rem 0 1rem;color:var(--fg)}
+.quote-author{font-family:var(--font-hand);font-size:1.15rem;color:var(--muted)}
+
+.data-table{width:100%;border-collapse:collapse;font-size:.9rem}
+.data-table th{font-family:var(--font-sans);font-weight:700;text-align:left;padding:.75rem 1rem;border-bottom:2px solid var(--fg);font-size:.78rem;text-transform:uppercase;letter-spacing:.05em}
+.data-table td{padding:.75rem 1rem;border-bottom:1px solid var(--border)}
+.data-table td.mono{font-family:var(--font-mono);font-size:.82rem}
+.data-table td.serif{font-family:var(--font-serif)}
+.data-table td.hand{font-family:var(--font-hand);font-size:1.05rem}
+
+.note-card{background:#fff8d6;background-image:linear-gradient(180deg,#fff8d6,#fef3b8);border:1px solid #e8d878;border-radius:var(--radius);padding:1.5rem 1.75rem;box-shadow:0 6px 18px rgba(0,0,0,.06);transform:rotate(-.6deg);position:relative}
+.note-card::before{content:'';position:absolute;top:-.7rem;left:1.5rem;width:2.6rem;height:1.1rem;background:rgba(184,71,45,.4);border-radius:2px;transform:rotate(-3deg);box-shadow:0 1px 3px rgba(0,0,0,.15)}
+.note-text{font-family:var(--font-hand);font-size:1.6rem;line-height:1.45;color:#3a2f15}
+.note-text p{margin-bottom:.5rem}
+.note-sign{font-family:var(--font-hand);font-size:1.3rem;color:var(--accent);margin-top:.75rem;text-align:right}
+
+.tab-bar{position:fixed;bottom:0;left:0;right:0;background:rgba(255,254,251,.95);backdrop-filter:blur(14px);-webkit-backdrop-filter:blur(14px);border-top:1px solid var(--border);display:flex;overflow-x:auto;z-index:100;-webkit-overflow-scrolling:touch;scrollbar-width:none}
+.tab-bar::-webkit-scrollbar{display:none}
+.tab{flex:1;min-width:110px;padding:.8rem .5rem;border:none;background:none;cursor:pointer;font-family:var(--font-mono);color:var(--muted);white-space:nowrap;transition:all .2s;border-bottom:3px solid transparent;display:flex;flex-direction:column;align-items:center;gap:.2rem}
+.tab .tab-num{font-size:.58rem;opacity:.5}
+.tab .tab-name{font-weight:700;font-size:.7rem;max-width:100%;overflow:hidden;text-overflow:ellipsis}
+.tab:hover{color:var(--fg)}
+.tab.active{color:var(--accent);border-bottom-color:var(--accent)}
+
+body,.site-name a,.article-title,.article-body p,.code-block,.card-title,.card-desc,.card-tag,.quote-text,.quote-author,.data-table th,.data-table td,.font-tag,.article-meta,.usecase-label,.usecase-title,.tab,.code-note,.site-source,.intro-text,.quote-mark,.note-text,.note-sign{transition:font-family .3s ease}
+
+@media(max-width:640px){
+  .header-inner{flex-direction:column;align-items:flex-start}
+  .article-title{font-size:1.75rem}
+  .quote-text{font-size:1.2rem}
+  main{padding:1.5rem 1rem}
+  .site-header{padding:.75rem 1rem}
+  .tab{min-width:90px;padding:.6rem .3rem}
+  .tab .tab-name{font-size:.62rem}
+  .article-body .lead::first-letter{font-size:2.8rem}
+}
+</style>
+</head>
+<body>
+
+<header class="site-header">
+  <div class="header-inner">
+    <div class="site-identity">
+      <div class="site-name"><a id="siteName" href="#" target="_blank" rel="noopener">—</a></div>
+      <div class="site-source" id="siteSource">—</div>
+    </div>
+    <div class="font-tags" id="fontTags"></div>
+  </div>
+</header>
+
+<main>
+
+  <section class="intro">
+    <p class="intro-text">底部切换来源网站,观察 <strong>serif / sans-serif / mono</strong> 三种字体在日常文字场景中的表现。每个组合来自一个 Awwwards 获奖网站,头部网站名可点击跳转原站。</p>
+  </section>
+
+  <!-- ===== Use case 1: Article ===== -->
+  <section class="usecase">
+    <div class="usecase-label">用例 01 / Article</div>
+    <div class="usecase-title">长文阅读 — 衬线正文 + 等宽元信息</div>
+    <article>
+      <div class="article-meta">Essay · 8 min read · March 2025</div>
+      <h1 class="article-title">The Quiet Power of Restraint</h1>
+      <div class="article-body">
+        <p class="lead">Good typography doesn't announce itself. It sits quietly beneath the words, carrying meaning without demanding attention — and that invisibility is exactly what makes it powerful.</p>
+        <p>When we choose a typeface for daily reading, we are not choosing a decoration. We are choosing a voice. A serif body text speaks with the cadence of a book; a sans-serif with the clarity of a sign. The best daily typefaces do both: they disappear when you're reading, and reveal their character only when you stop to look.</p>
+        <p>The three families on this page — serif, sans-serif, and monospace — each have a job. The serif carries long-form prose. The sans-serif handles interface and navigation. The monospace marks data, code, and the small structural details that hold a page together. Switch tabs at the bottom to see how different combinations change the feel entirely.</p>
+      </div>
+    </article>
+  </section>
+
+  <!-- ===== Use case 2: Code ===== -->
+  <section class="usecase">
+    <div class="usecase-label">用例 02 / Code</div>
+    <div class="usecase-title">代码片段 — 等宽字体 + 无衬线注释</div>
+    <div class="code-block"><span class="comment">// Type scale utility — switch families at runtime</span>
+<span class="keyword">const</span> setType = (serif, sans, mono) =&gt; {
+  <span class="keyword">const</span> root = document.documentElement;
+  root.<span class="func">style</span>.<span class="func">setProperty</span>(<span class="string">'--font-serif'</span>, serif);
+  root.<span class="func">style</span>.<span class="func">setProperty</span>(<span class="string">'--font-sans'</span>, sans);
+  root.<span class="func">style</span>.<span class="func">setProperty</span>(<span class="string">'--font-mono'</span>, mono);
+};
+
+<span class="func">setType</span>(
+  <span class="string">'Georgia, serif'</span>,
+  <span class="string">"'Space Grotesk', sans-serif"</span>,
+  <span class="string">"'Space Mono', monospace"</span>
+);</div>
+    <p class="code-note">等宽字体让代码对齐自然,注释和说明用无衬线保持清晰。好的 mono 字体在 14–16px 时仍然锐利,字符宽度一致让缩进层级一目了然。</p>
+  </section>
+
+  <!-- ===== Use case 3: Cards ===== -->
+  <section class="usecase">
+    <div class="usecase-label">用例 03 / Cards</div>
+    <div class="usecase-title">卡片网格 — 无衬线 UI + 等宽标签</div>
+    <div class="card-grid">
+      <div class="card">
+        <div class="card-tag">Typography</div>
+        <div class="card-title">Scale &amp; Rhythm</div>
+        <div class="card-desc">A modular scale keeps headings and body in proportion. Start with a base size and multiply by a consistent ratio.</div>
+      </div>
+      <div class="card">
+        <div class="card-tag">Spacing</div>
+        <div class="card-title">Vertical Baseline</div>
+        <div class="card-desc">Line-height should follow the body text, not the headings. A 1.5–1.75 range works for most serif body text.</div>
+      </div>
+      <div class="card">
+        <div class="card-tag">Color</div>
+        <div class="card-title">Contrast First</div>
+        <div class="card-desc">Body text needs at least 4.5:1 contrast. Muted grays are fine for metadata, but never for content readers scan.</div>
+      </div>
+      <div class="card">
+        <div class="card-tag">Weight</div>
+        <div class="card-title">Two Is Enough</div>
+        <div class="card-desc">Regular and bold cover 90% of needs. Adding a medium or semibold gives nuance without the weight-juggling.</div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ===== Use case 4: Quote ===== -->
+  <section class="usecase">
+    <div class="usecase-label">用例 04 / Quote</div>
+    <div class="usecase-title">引用语 — 衬线大字 + 手写署名</div>
+    <div class="pull-quote">
+      <div class="quote-mark">&ldquo;</div>
+      <p class="quote-text">Typography is the craft of endowing human language with a durable visual form, and thus with an independent existence.</p>
+      <div class="quote-author">— Robert Bringhurst, The Elements of Typographic Style</div>
+    </div>
+  </section>
+
+  <!-- ===== Use case 5: Table ===== -->
+  <section class="usecase">
+    <div class="usecase-label">用例 05 / Table</div>
+    <div class="usecase-title">数据表格 — 三种字体各司其职</div>
+    <table class="data-table">
+      <thead>
+        <tr><th>Font Family</th><th>Category</th><th>Best For</th><th>Weights</th></tr>
+      </thead>
+      <tbody id="tableBody"></tbody>
+    </table>
+  </section>
+
+  <!-- ===== Use case 6: Note ===== -->
+  <section class="usecase">
+    <div class="usecase-label">用例 06 / Note</div>
+    <div class="usecase-title">手写便签 — 手写体作装饰性文字</div>
+    <div class="note-card">
+      <div class="note-text">
+        <p>Don't forget — the best typeface is the one readers don't notice.</p>
+        <p>Pick three: a serif for reading, a sans for structure, a mono for data. Add a hand for soul.</p>
+      </div>
+      <div class="note-sign">— me, on a sticky note</div>
+    </div>
+  </section>
+
+</main>
+
+<nav class="tab-bar" id="tabBar"></nav>
+
+<script>
+const sites = [
+  {
+    name: "Where the Shadow Fell",
+    url: "https://eclipses.bogachev.fr",
+    source: "eclipses.bogachev.fr",
+    fonts: {
+      serif: "Georgia, 'Times New Roman', serif",
+      sans: "'Space Grotesk', system-ui, sans-serif",
+      mono: "'Space Mono', ui-monospace, monospace",
+      hand: "'Caveat', cursive"
+    },
+    labels: { serif: "Georgia", sans: "Space Grotesk", mono: "Space Mono", hand: "Caveat" },
+    rows: [
+      { name: "Georgia", cat: "Serif", best: "Long-form reading", weights: "400 / 700", cls: "serif" },
+      { name: "Space Grotesk", cat: "Sans-serif", best: "UI &amp; navigation", weights: "400 / 500 / 700" },
+      { name: "Space Mono", cat: "Mono", best: "Code &amp; data", weights: "400 / 700", cls: "mono" },
+      { name: "Caveat", cat: "Hand", best: "Notes &amp; accents", weights: "400 / 700", cls: "hand" }
+    ]
+  },
+  {
+    name: "The A Team Project",
+    url: "https://www.theateamproject.ai/",
+    source: "theateamproject.ai",
+    fonts: {
+      serif: "Gelasio, Georgia, serif",
+      sans: "'Work Sans', system-ui, sans-serif",
+      mono: "'JetBrains Mono', ui-monospace, monospace",
+      hand: "'Caveat', cursive"
+    },
+    labels: { serif: "Gelasio", sans: "Work Sans", mono: "JetBrains Mono", hand: "Caveat" },
+    rows: [
+      { name: "Gelasio", cat: "Serif", best: "Long-form reading", weights: "400 / 500 / 700", cls: "serif" },
+      { name: "Work Sans", cat: "Sans-serif", best: "UI &amp; navigation", weights: "400 / 500 / 600 / 700" },
+      { name: "JetBrains Mono", cat: "Mono", best: "Code &amp; data", weights: "400 / 500 / 700", cls: "mono" },
+      { name: "Caveat", cat: "Hand", best: "Notes &amp; accents", weights: "400 / 700", cls: "hand" }
+    ]
+  },
+  {
+    name: "Tillberg Design",
+    url: "https://www.tillbergdesign.com/",
+    source: "tillbergdesign.com",
+    fonts: {
+      serif: "'Playfair Display', Georgia, serif",
+      sans: "'Encode Sans', system-ui, sans-serif",
+      mono: "'DM Mono', ui-monospace, monospace",
+      hand: "'Caveat', cursive"
+    },
+    labels: { serif: "Playfair Display", sans: "Encode Sans", mono: "DM Mono", hand: "Caveat" },
+    rows: [
+      { name: "Playfair Display", cat: "Serif", best: "Display headings", weights: "400 / 700 / 900", cls: "serif" },
+      { name: "Encode Sans", cat: "Sans-serif", best: "UI &amp; navigation", weights: "400 / 500 / 600 / 700" },
+      { name: "DM Mono", cat: "Mono", best: "Code &amp; data", weights: "400 / 500", cls: "mono" },
+      { name: "Caveat", cat: "Hand", best: "Notes &amp; accents", weights: "400 / 700", cls: "hand" }
+    ]
+  },
+  {
+    name: "Yash Ahire",
+    url: "https://yashahire.info",
+    source: "yashahire.info",
+    fonts: {
+      serif: "Georgia, 'Times New Roman', serif",
+      sans: "'Plus Jakarta Sans', system-ui, sans-serif",
+      mono: "'Press Start 2P', ui-monospace, monospace",
+      hand: "'Sacramento', cursive"
+    },
+    labels: { serif: "Georgia", sans: "Plus Jakarta Sans", mono: "Press Start 2P", hand: "Sacramento" },
+    rows: [
+      { name: "Georgia", cat: "Serif", best: "Long-form reading", weights: "400 / 700", cls: "serif" },
+      { name: "Plus Jakarta Sans", cat: "Sans-serif", best: "UI &amp; navigation", weights: "400 / 500 / 600 / 700 / 800" },
+      { name: "Press Start 2P", cat: "Mono", best: "Pixel accents", weights: "400", cls: "mono" },
+      { name: "Sacramento", cat: "Hand", best: "Signatures", weights: "400", cls: "hand" }
+    ]
+  },
+  {
+    name: "Everest · The Ascent",
+    url: "https://everest.suraj.work",
+    source: "everest.suraj.work",
+    fonts: {
+      serif: "'Neue Protest', 'Playfair Display', serif",
+      sans: "Archivo, system-ui, sans-serif",
+      mono: "'JetBrains Mono', ui-monospace, monospace",
+      hand: "'Caveat', cursive"
+    },
+    labels: { serif: "Neue Protest", sans: "Archivo", mono: "JetBrains Mono", hand: "Caveat" },
+    rows: [
+      { name: "Neue Protest", cat: "Serif", best: "Display headings", weights: "400 / 700", cls: "serif" },
+      { name: "Archivo", cat: "Sans-serif", best: "UI &amp; navigation", weights: "400 / 500 / 700" },
+      { name: "JetBrains Mono", cat: "Mono", best: "Code &amp; data", weights: "400 / 500 / 700", cls: "mono" },
+      { name: "Caveat", cat: "Hand", best: "Notes &amp; accents", weights: "400 / 700", cls: "hand" }
+    ]
+  },
+  {
+    name: "Tribe of Giants",
+    url: "https://tribeofgiants.com",
+    source: "tribeofgiants.com",
+    fonts: {
+      serif: "Merriweather, Georgia, serif",
+      sans: "Lato, system-ui, sans-serif",
+      mono: "ui-monospace, 'SFMono-Regular', monospace",
+      hand: "'Caveat', cursive"
+    },
+    labels: { serif: "Merriweather", sans: "Lato", mono: "System Mono", hand: "Caveat" },
+    rows: [
+      { name: "Merriweather", cat: "Serif", best: "Long-form reading", weights: "400 / 700", cls: "serif" },
+      { name: "Lato", cat: "Sans-serif", best: "UI &amp; navigation", weights: "400 / 700" },
+      { name: "System Mono", cat: "Mono", best: "Code &amp; data", weights: "400", cls: "mono" },
+      { name: "Caveat", cat: "Hand", best: "Notes &amp; accents", weights: "400 / 700", cls: "hand" }
+    ]
+  },
+  {
+    name: "The Launch Company",
+    url: "https://www.thelaunchcompany.cc/",
+    source: "thelaunchcompany.cc",
+    fonts: {
+      serif: "Georgia, 'Times New Roman', serif",
+      sans: "Inter, system-ui, sans-serif",
+      mono: "Doto, ui-monospace, monospace",
+      hand: "'Caveat', cursive"
+    },
+    labels: { serif: "Georgia", sans: "Inter", mono: "Doto", hand: "Caveat" },
+    rows: [
+      { name: "Georgia", cat: "Serif", best: "Long-form reading", weights: "400 / 700", cls: "serif" },
+      { name: "Inter", cat: "Sans-serif", best: "UI &amp; navigation", weights: "400 / 500 / 700" },
+      { name: "Doto", cat: "Mono", best: "Pixel data", weights: "100 / 400 / 700", cls: "mono" },
+      { name: "Caveat", cat: "Hand", best: "Notes &amp; accents", weights: "400 / 700", cls: "hand" }
+    ]
+  },
+  {
+    name: "Hack the North",
+    url: "https://hackthenorth.com",
+    source: "hackthenorth.com",
+    fonts: {
+      serif: "Georgia, 'Times New Roman', serif",
+      sans: "Satoshi, system-ui, sans-serif",
+      mono: "ui-monospace, 'SFMono-Regular', monospace",
+      hand: "'Jersey 10', cursive"
+    },
+    labels: { serif: "Georgia", sans: "Satoshi", mono: "System Mono", hand: "Jersey 10" },
+    rows: [
+      { name: "Georgia", cat: "Serif", best: "Long-form reading", weights: "400 / 700", cls: "serif" },
+      { name: "Satoshi", cat: "Sans-serif", best: "UI &amp; navigation", weights: "400 / 500 / 700" },
+      { name: "System Mono", cat: "Mono", best: "Code &amp; data", weights: "400", cls: "mono" },
+      { name: "Jersey 10", cat: "Hand", best: "Display accents", weights: "400", cls: "hand" }
+    ]
+  }
+];
+
+const tabBar = document.getElementById('tabBar');
+const siteName = document.getElementById('siteName');
+const siteSource = document.getElementById('siteSource');
+const fontTags = document.getElementById('fontTags');
+
+sites.forEach((site, i) => {
+  const tab = document.createElement('button');
+  tab.className = 'tab';
+  tab.innerHTML = '<span class="tab-num">' + (i<9?'0':'') + (i+1) + '</span><span class="tab-name">' + site.name + '</span>';
+  tab.addEventListener('click', () => selectSite(i));
+  tabBar.appendChild(tab);
+});
+
+function selectSite(i) {
+  const site = sites[i];
+  const root = document.documentElement;
+  root.style.setProperty('--font-serif', site.fonts.serif);
+  root.style.setProperty('--font-sans', site.fonts.sans);
+  root.style.setProperty('--font-mono', site.fonts.mono);
+  root.style.setProperty('--font-hand', site.fonts.hand);
+
+  siteName.textContent = site.name;
+  siteName.href = site.url;
+  siteSource.textContent = site.source;
+
+  fontTags.innerHTML =
+    '<span class="font-tag"><span class="label">serif</span><span class="value">' + site.labels.serif + '</span></span>' +
+    '<span class="font-tag"><span class="label">sans</span><span class="value">' + site.labels.sans + '</span></span>' +
+    '<span class="font-tag"><span class="label">mono</span><span class="value">' + site.labels.mono + '</span></span>' +
+    '<span class="font-tag"><span class="label">hand</span><span class="value">' + site.labels.hand + '</span></span>';
+
+  document.getElementById('tableBody').innerHTML = site.rows.map(function(r) {
+    return '<tr><td' + (r.cls ? ' class="' + r.cls + '"' : '') + '>' + r.name +
+      '</td><td>' + r.cat + '</td><td>' + r.best + '</td><td class="mono">' + r.weights + '</td></tr>';
+  }).join('');
+
+  document.querySelectorAll('.tab').forEach((t, j) => {
+    t.classList.toggle('active', i === j);
+  });
+}
+
+selectSite(0);
+</script>
+</body>
+</html>

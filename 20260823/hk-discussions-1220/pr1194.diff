@@ -1,0 +1,1738 @@
+diff --git a/hk.pkl b/hk.pkl
+index 4623b8efc..523592ecc 100644
+--- a/hk.pkl
++++ b/hk.pkl
+@@ -26,7 +26,7 @@ local linters = new Mapping<String, Step | Group> {
+   }
+   ["eslint"] = (Builtins.eslint) {
+     dir = "docs"
+-    prefix = "aube run"
++    prefix = List("aube", "run")
+   }
+   ["newlines"] = Builtins.newlines
+   ["trailing-whitespace"] = Builtins.trailing_whitespace
+diff --git a/pkl/builtins/alejandra.pkl b/pkl/builtins/alejandra.pkl
+index edb5b43c8..26518d069 100644
+--- a/pkl/builtins/alejandra.pkl
++++ b/pkl/builtins/alejandra.pkl
+@@ -8,11 +8,11 @@ import "../Config.pkl"
+ alejandra = new Config.Step {
+   glob = "**/*.nix"
+   check = new Config.CommandSpec {
+-    command = "alejandra --check {{ files }}"
++    command = new Config.Command { argv = List("alejandra", "--check", "{{files}}") }
+     effect = "read"
+   }
+   fix = new Config.CommandSpec {
+-    command = "alejandra {{ files }}"
++    command = new Config.Command { argv = List("alejandra", "{{files}}") }
+     effect = "write"
+   }
+ }
+diff --git a/pkl/builtins/asciidoctor.pkl b/pkl/builtins/asciidoctor.pkl
+index a6d8b40b0..9eb82164c 100644
+--- a/pkl/builtins/asciidoctor.pkl
++++ b/pkl/builtins/asciidoctor.pkl
+@@ -11,7 +11,9 @@ const asciidoctor = new Config.Step {
+   // The `failure-level` option ensures non-zero exit code when warnings occur
+   // The `out-file=/dev/null` option prevents HTML file generation
+   check = new Config.CommandSpec {
+-    command = "asciidoctor --failure-level=WARNING --out-file=/dev/null {{ files }}"
++    command = new Config.Command {
++      argv = List("asciidoctor", "--failure-level=WARNING", "--out-file=/dev/null", "{{files}}")
++    }
+     effect = "read"
+   }
+   tests {
+diff --git a/pkl/builtins/astro.pkl b/pkl/builtins/astro.pkl
+index dc9d65d6e..aa82bbe1a 100644
+--- a/pkl/builtins/astro.pkl
++++ b/pkl/builtins/astro.pkl
+@@ -8,7 +8,7 @@ import "../Config.pkl"
+ astro = new Config.Step {
+   glob = "**/*.astro"
+   check = new Config.CommandSpec {
+-    command = "astro check {{ files }}"
++    command = new Config.Command { argv = List("astro", "check", "{{files}}") }
+     effect = "write"
+   }
+ }
+diff --git a/pkl/builtins/betterleaks.pkl b/pkl/builtins/betterleaks.pkl
+index 543da5641..1bc16b475 100644
+--- a/pkl/builtins/betterleaks.pkl
++++ b/pkl/builtins/betterleaks.pkl
+@@ -14,7 +14,9 @@ betterleaks = new Config.Step {
+   types = List("text")
+   // Reference: https://github.com/betterleaks/betterleaks/blob/v1.5.0/.pre-commit-hooks.yaml#L4
+   check = new Config.CommandSpec {
+-    command = "betterleaks dir --redact --verbose --no-banner {{ files }}"
++    command = new Config.Command {
++      argv = List("betterleaks", "dir", "--redact", "--verbose", "--no-banner", "{{files}}")
++    }
+     effect = "read"
+   }
+   tests {
+diff --git a/pkl/builtins/black.pkl b/pkl/builtins/black.pkl
+index 3b9b9431c..2d2319189 100644
+--- a/pkl/builtins/black.pkl
++++ b/pkl/builtins/black.pkl
+@@ -12,11 +12,11 @@ import "./test/helpers.pkl"
+ black = new Config.Step {
+   glob = List("**/*.py")
+   check_diff = new Config.CommandSpec {
+-    command = "black --check --diff {{ files }}"
++    command = new Config.Command { argv = List("black", "--check", "--diff", "{{files}}") }
+     effect = "read"
+   }
+   fix = new Config.CommandSpec {
+-    command = "black {{ files }}"
++    command = new Config.Command { argv = List("black", "{{files}}") }
+     effect = "write"
+   }
+   tests {
+diff --git a/pkl/builtins/brakeman.pkl b/pkl/builtins/brakeman.pkl
+index 4fbc36b35..a9a99bfa6 100644
+--- a/pkl/builtins/brakeman.pkl
++++ b/pkl/builtins/brakeman.pkl
+@@ -8,7 +8,7 @@ import "../Config.pkl"
+ brakeman = new Config.Step {
+   types = List("ruby")
+   check = new Config.CommandSpec {
+-    command = "brakeman -q -w2 {{ files }}"
++    command = new Config.Command { argv = List("brakeman", "-q", "-w2", "{{files}}") }
+     effect = "read"
+   }
+ }
+diff --git a/pkl/builtins/buildifier_format.pkl b/pkl/builtins/buildifier_format.pkl
+index 9f4d2df2a..e662907c8 100644
+--- a/pkl/builtins/buildifier_format.pkl
++++ b/pkl/builtins/buildifier_format.pkl
+@@ -25,11 +25,11 @@ buildifier_format = new Config.Step {
+       "**/*.sky",
+     )
+   check = new Config.CommandSpec {
+-    command = "buildifier -mode=check {{ files }}"
++    command = new Config.Command { argv = List("buildifier", "-mode=check", "{{files}}") }
+     effect = "read"
+   }
+   fix = new Config.CommandSpec {
+-    command = "buildifier {{ files }}"
++    command = new Config.Command { argv = List("buildifier", "{{files}}") }
+     effect = "write"
+   }
+   tests {
+diff --git a/pkl/builtins/buildifier_lint.pkl b/pkl/builtins/buildifier_lint.pkl
+index 243818d52..1e267c930 100644
+--- a/pkl/builtins/buildifier_lint.pkl
++++ b/pkl/builtins/buildifier_lint.pkl
+@@ -25,11 +25,13 @@ buildifier_lint = new Config.Step {
+       "**/*.sky",
+     )
+   check = new Config.CommandSpec {
+-    command = "buildifier -mode=check -lint=warn {{ files }}"
++    command = new Config.Command {
++      argv = List("buildifier", "-mode=check", "-lint=warn", "{{files}}")
++    }
+     effect = "read"
+   }
+   fix = new Config.CommandSpec {
+-    command = "buildifier -lint=fix {{ files }}"
++    command = new Config.Command { argv = List("buildifier", "-lint=fix", "{{files}}") }
+     effect = "write"
+   }
+   tests {
+diff --git a/pkl/builtins/bundle_audit.pkl b/pkl/builtins/bundle_audit.pkl
+index 98efd2244..2c89e2b0e 100644
+--- a/pkl/builtins/bundle_audit.pkl
++++ b/pkl/builtins/bundle_audit.pkl
+@@ -8,11 +8,11 @@ import "../Config.pkl"
+ bundle_audit = new Config.Step {
+   glob = "**/Gemfile.lock"
+   check = new Config.CommandSpec {
+-    command = "bundle-audit check {{ files }}"
++    command = new Config.Command { argv = List("bundle-audit", "check", "{{files}}") }
+     effect = "write"
+   }
+   fix = new Config.CommandSpec {
+-    command = "bundle-audit update"
++    command = new Config.Command { argv = List("bundle-audit", "update") }
+     effect = "write"
+   }
+ }
+diff --git a/pkl/builtins/byte_order_marker.pkl b/pkl/builtins/byte_order_marker.pkl
+index 77b22f1bd..d746a0573 100644
+--- a/pkl/builtins/byte_order_marker.pkl
++++ b/pkl/builtins/byte_order_marker.pkl
+@@ -9,11 +9,13 @@ import "./test/helpers.pkl"
+ byte_order_marker = new Config.Step {
+   types = List("text")
+   check_diff = new Config.CommandSpec {
+-    command = "hk util check-byte-order-marker --diff {{files}}"
++    command = new Config.Command {
++      argv = List("hk", "util", "check-byte-order-marker", "--diff", "{{files}}")
++    }
+     effect = "read"
+   }
+   fix = new Config.CommandSpec {
+-    command = "hk util fix-byte-order-marker {{files}}"
++    command = new Config.Command { argv = List("hk", "util", "fix-byte-order-marker", "{{files}}") }
+     effect = "write"
+   }
+   tests {
+diff --git a/pkl/builtins/check_added_large_files.pkl b/pkl/builtins/check_added_large_files.pkl
+index 9e5db97da..803160b2b 100644
+--- a/pkl/builtins/check_added_large_files.pkl
++++ b/pkl/builtins/check_added_large_files.pkl
+@@ -8,7 +8,9 @@ import "../Config.pkl"
+ check_added_large_files = new Config.Step {
+   glob = "**/*"
+   check = new Config.CommandSpec {
+-    command = "hk util check-added-large-files {{files}}"
++    command = new Config.Command {
++      argv = List("hk", "util", "check-added-large-files", "{{files}}")
++    }
+     effect = "read"
+   }
+   tests {
+diff --git a/pkl/builtins/check_case_conflict.pkl b/pkl/builtins/check_case_conflict.pkl
+index 86759cda1..f9ad6cfc3 100644
+--- a/pkl/builtins/check_case_conflict.pkl
++++ b/pkl/builtins/check_case_conflict.pkl
+@@ -8,7 +8,7 @@ import "../Config.pkl"
+ check_case_conflict = new Config.Step {
+   glob = "**/*"
+   check = new Config.CommandSpec {
+-    command = "hk util check-case-conflict {{files}}"
++    command = new Config.Command { argv = List("hk", "util", "check-case-conflict", "{{files}}") }
+     effect = "read"
+   }
+   tests {
+diff --git a/pkl/builtins/check_executables_have_shebangs.pkl b/pkl/builtins/check_executables_have_shebangs.pkl
+index c642e7f20..8da0d61bb 100644
+--- a/pkl/builtins/check_executables_have_shebangs.pkl
++++ b/pkl/builtins/check_executables_have_shebangs.pkl
+@@ -8,7 +8,9 @@ import "../Config.pkl"
+ check_executables_have_shebangs = new Config.Step {
+   types = List("text")
+   check = new Config.CommandSpec {
+-    command = "hk util check-executables-have-shebangs {{files}}"
++    command = new Config.Command {
++      argv = List("hk", "util", "check-executables-have-shebangs", "{{files}}")
++    }
+     effect = "read"
+   }
+   tests {
+diff --git a/pkl/builtins/check_merge_conflict.pkl b/pkl/builtins/check_merge_conflict.pkl
+index 94f7f0f93..6f7ec5ae8 100644
+--- a/pkl/builtins/check_merge_conflict.pkl
++++ b/pkl/builtins/check_merge_conflict.pkl
+@@ -9,7 +9,9 @@ import "./test/helpers.pkl"
+ check_merge_conflict = new Config.Step {
+   types = List("text")
+   check = new Config.CommandSpec {
+-    command = "hk util check-merge-conflict --assume-in-merge {{files}}"
++    command = new Config.Command {
++      argv = List("hk", "util", "check-merge-conflict", "--assume-in-merge", "{{files}}")
++    }
+     effect = "read"
+   }
+   tests {
+diff --git a/pkl/builtins/check_symlinks.pkl b/pkl/builtins/check_symlinks.pkl
+index 90c593285..a6fc22105 100644
+--- a/pkl/builtins/check_symlinks.pkl
++++ b/pkl/builtins/check_symlinks.pkl
+@@ -9,7 +9,7 @@ check_symlinks = new Config.Step {
+   glob = "**/*"
+   allow_symlinks = true
+   check = new Config.CommandSpec {
+-    command = "hk util check-symlinks {{files}}"
++    command = new Config.Command { argv = List("hk", "util", "check-symlinks", "{{files}}") }
+     effect = "read"
+   }
+   tests {
+diff --git a/pkl/builtins/clang_format.pkl b/pkl/builtins/clang_format.pkl
+index 3916487da..9b6e802ee 100644
+--- a/pkl/builtins/clang_format.pkl
++++ b/pkl/builtins/clang_format.pkl
+@@ -9,11 +9,13 @@ clang_format = new Config.Step {
+   glob =
+     List("**/*.c", "**/*.h", "**/*.cpp", "**/*.hpp", "**/*.cc", "**/*.hh", "**/*.cxx", "**/*.hxx")
+   check = new Config.CommandSpec {
+-    command = "clang-format --dry-run -Werror {{ files }}"
++    command = new Config.Command {
++      argv = List("clang-format", "--dry-run", "-Werror", "{{files}}")
++    }
+     effect = "read"
+   }
+   fix = new Config.CommandSpec {
+-    command = "clang-format -i {{ files }}"
++    command = new Config.Command { argv = List("clang-format", "-i", "{{files}}") }
+     effect = "write"
+   }
+ }
+diff --git a/pkl/builtins/cmake_format.pkl b/pkl/builtins/cmake_format.pkl
+index ebedfbbd5..bfd44db9a 100644
+--- a/pkl/builtins/cmake_format.pkl
++++ b/pkl/builtins/cmake_format.pkl
+@@ -8,11 +8,11 @@ import "../Config.pkl"
+ cmake_format = new Config.Step {
+   glob = List("**/CMakeLists.txt", "**/*.cmake")
+   check = new Config.CommandSpec {
+-    command = "cmake-format --check {{ files }}"
++    command = new Config.Command { argv = List("cmake-format", "--check", "{{files}}") }
+     effect = "read"
+   }
+   fix = new Config.CommandSpec {
+-    command = "cmake-format --in-place {{ files }}"
++    command = new Config.Command { argv = List("cmake-format", "--in-place", "{{files}}") }
+     effect = "write"
+   }
+ }
+diff --git a/pkl/builtins/contextlint.pkl b/pkl/builtins/contextlint.pkl
+index 158ebd0cc..011118699 100644
+--- a/pkl/builtins/contextlint.pkl
++++ b/pkl/builtins/contextlint.pkl
+@@ -13,7 +13,7 @@ contextlint = new Config.Step {
+   workspace_indicator = "contextlint.config.json"
+   types = List("markdown")
+   check = new Config.CommandSpec {
+-    command = "contextlint {{ files }}"
++    command = new Config.Command { argv = List("contextlint", "{{files}}") }
+     effect = "read"
+   }
+   tests {
+diff --git a/pkl/builtins/cpp_lint.pkl b/pkl/builtins/cpp_lint.pkl
+index 5de0ed11d..35ebf7019 100644
+--- a/pkl/builtins/cpp_lint.pkl
++++ b/pkl/builtins/cpp_lint.pkl
+@@ -9,7 +9,7 @@ cpp_lint = new Config.Step {
+   glob =
+     List("**/*.c", "**/*.h", "**/*.cpp", "**/*.hpp", "**/*.cc", "**/*.hh", "**/*.cxx", "**/*.hxx")
+   check = new Config.CommandSpec {
+-    command = "cpplint {{ files }}"
++    command = new Config.Command { argv = List("cpplint", "{{files}}") }
+     effect = "read"
+   }
+ }
+diff --git a/pkl/builtins/dclint.pkl b/pkl/builtins/dclint.pkl
+index 44dcf4313..1d5e9a111 100644
+--- a/pkl/builtins/dclint.pkl
++++ b/pkl/builtins/dclint.pkl
+@@ -22,11 +22,11 @@ dclint = new Config.Step {
+     )
+   batch = true
+   check = new Config.CommandSpec {
+-    command = "dclint {{files}}"
++    command = new Config.Command { argv = List("dclint", "{{files}}") }
+     effect = "read"
+   }
+   fix = new Config.CommandSpec {
+-    command = "dclint --fix {{files}}"
++    command = new Config.Command { argv = List("dclint", "--fix", "{{files}}") }
+     effect = "write"
+   }
+   tests {
+diff --git a/pkl/builtins/deadnix.pkl b/pkl/builtins/deadnix.pkl
+index 4f6753cd7..88a14fbb7 100644
+--- a/pkl/builtins/deadnix.pkl
++++ b/pkl/builtins/deadnix.pkl
+@@ -8,11 +8,11 @@ import "../Config.pkl"
+ deadnix = new Config.Step {
+   glob = "**/*.nix"
+   check = new Config.CommandSpec {
+-    command = "deadnix --fail {{ files }}"
++    command = new Config.Command { argv = List("deadnix", "--fail", "{{files}}") }
+     effect = "read"
+   }
+   fix = new Config.CommandSpec {
+-    command = "deadnix --edit {{ files }}"
++    command = new Config.Command { argv = List("deadnix", "--edit", "{{files}}") }
+     effect = "write"
+   }
+ }
+diff --git a/pkl/builtins/deno.pkl b/pkl/builtins/deno.pkl
+index 4f7dfc15b..d33bc3c0f 100644
+--- a/pkl/builtins/deno.pkl
++++ b/pkl/builtins/deno.pkl
+@@ -8,11 +8,11 @@ import "../Config.pkl"
+ deno = new Config.Step {
+   glob = List("**/*.js", "**/*.jsx", "**/*.ts", "**/*.tsx")
+   check = new Config.CommandSpec {
+-    command = "deno fmt --check {{ files }}"
++    command = new Config.Command { argv = List("deno", "fmt", "--check", "{{files}}") }
+     effect = "read"
+   }
+   fix = new Config.CommandSpec {
+-    command = "deno fmt {{ files }}"
++    command = new Config.Command { argv = List("deno", "fmt", "{{files}}") }
+     effect = "write"
+   }
+ }
+diff --git a/pkl/builtins/deno_check.pkl b/pkl/builtins/deno_check.pkl
+index 912322597..eada96f78 100644
+--- a/pkl/builtins/deno_check.pkl
++++ b/pkl/builtins/deno_check.pkl
+@@ -8,7 +8,7 @@ import "../Config.pkl"
+ deno_check = new Config.Step {
+   glob = List("**/*.js", "**/*.jsx", "**/*.ts", "**/*.tsx")
+   check = new Config.CommandSpec {
+-    command = "deno check {{ files }}"
++    command = new Config.Command { argv = List("deno", "check", "{{files}}") }
+     effect = "write"
+   }
+ }
+diff --git a/pkl/builtins/detect_private_key.pkl b/pkl/builtins/detect_private_key.pkl
+index b89d53984..2af4f1e95 100644
+--- a/pkl/builtins/detect_private_key.pkl
++++ b/pkl/builtins/detect_private_key.pkl
+@@ -9,7 +9,7 @@ import "./test/helpers.pkl"
+ detect_private_key = new Config.Step {
+   types = List("text")
+   check = new Config.CommandSpec {
+-    command = "hk util detect-private-key {{files}}"
++    command = new Config.Command { argv = List("hk", "util", "detect-private-key", "{{files}}") }
+     effect = "read"
+   }
+   tests {
+diff --git a/pkl/builtins/dprint.pkl b/pkl/builtins/dprint.pkl
+index 9c60a3ebf..4adb2ce0b 100644
+--- a/pkl/builtins/dprint.pkl
++++ b/pkl/builtins/dprint.pkl
+@@ -8,15 +8,17 @@ import "../Config.pkl"
+ dprint = new Config.Step {
+   types = List("text")
+   check = new Config.CommandSpec {
+-    command = "dprint check --allow-no-files {{ files }}"
++    command = new Config.Command { argv = List("dprint", "check", "--allow-no-files", "{{files}}") }
+     effect = "read"
+   }
+   check_list_files = new Config.CommandSpec {
+-    command = "dprint check --allow-no-files --list-different {{ files }}"
++    command = new Config.Command {
++      argv = List("dprint", "check", "--allow-no-files", "--list-different", "{{files}}")
++    }
+     effect = "read"
+   }
+   fix = new Config.CommandSpec {
+-    command = "dprint fmt --allow-no-files {{ files }}"
++    command = new Config.Command { argv = List("dprint", "fmt", "--allow-no-files", "{{files}}") }
+     effect = "write"
+   }
+ }
+diff --git a/pkl/builtins/editorconfig-checker.pkl b/pkl/builtins/editorconfig-checker.pkl
+index 07ac0802b..198e0704b 100644
+--- a/pkl/builtins/editorconfig-checker.pkl
++++ b/pkl/builtins/editorconfig-checker.pkl
+@@ -9,7 +9,7 @@ import "./test/helpers.pkl"
+ editorconfig_checker = new Config.Step {
+   types = List("text")
+   check = new Config.CommandSpec {
+-    command = "ec {{ files }}"
++    command = new Config.Command { argv = List("ec", "{{files}}") }
+     effect = "read"
+   }
+   tests {
+diff --git a/pkl/builtins/eslint.pkl b/pkl/builtins/eslint.pkl
+index 88c7ca721..0208f7f4c 100644
+--- a/pkl/builtins/eslint.pkl
++++ b/pkl/builtins/eslint.pkl
+@@ -12,11 +12,11 @@ eslint = new Config.Step {
+   glob = List("**/*.js", "**/*.jsx", "**/*.ts", "**/*.tsx")
+   batch = true
+   check = new Config.CommandSpec {
+-    command = "eslint {{ files }}"
++    command = new Config.Command { argv = List("eslint", "{{files}}") }
+     effect = "read"
+   }
+   fix = new Config.CommandSpec {
+-    command = "eslint --fix {{ files }}"
++    command = new Config.Command { argv = List("eslint", "--fix", "{{files}}") }
+     effect = "write"
+   }
+ }
+diff --git a/pkl/builtins/fasterer.pkl b/pkl/builtins/fasterer.pkl
+index a2c2aab63..30354d889 100644
+--- a/pkl/builtins/fasterer.pkl
++++ b/pkl/builtins/fasterer.pkl
+@@ -8,7 +8,7 @@ import "../Config.pkl"
+ fasterer = new Config.Step {
+   types = List("ruby")
+   check = new Config.CommandSpec {
+-    command = "fasterer {{ files }}"
++    command = new Config.Command { argv = List("fasterer", "{{files}}") }
+     effect = "read"
+   }
+ }
+diff --git a/pkl/builtins/fix_smart_quotes.pkl b/pkl/builtins/fix_smart_quotes.pkl
+index 82e7b8779..a170361d0 100644
+--- a/pkl/builtins/fix_smart_quotes.pkl
++++ b/pkl/builtins/fix_smart_quotes.pkl
+@@ -9,11 +9,13 @@ import "./test/helpers.pkl"
+ fix_smart_quotes = new Config.Step {
+   types = List("text")
+   check_diff = new Config.CommandSpec {
+-    command = "hk util fix-smart-quotes --diff {{files}}"
++    command = new Config.Command {
++      argv = List("hk", "util", "fix-smart-quotes", "--diff", "{{files}}")
++    }
+     effect = "read"
+   }
+   fix = new Config.CommandSpec {
+-    command = "hk util fix-smart-quotes {{files}}"
++    command = new Config.Command { argv = List("hk", "util", "fix-smart-quotes", "{{files}}") }
+     effect = "write"
+   }
+   tests {
+diff --git a/pkl/builtins/flake8.pkl b/pkl/builtins/flake8.pkl
+index 137098634..10f7c71d1 100644
+--- a/pkl/builtins/flake8.pkl
++++ b/pkl/builtins/flake8.pkl
+@@ -8,7 +8,7 @@ import "../Config.pkl"
+ flake8 = new Config.Step {
+   glob = "**/*.py"
+   check = new Config.CommandSpec {
+-    command = "flake8 {{ files }}"
++    command = new Config.Command { argv = List("flake8", "{{files}}") }
+     effect = "read"
+   }
+ }
+diff --git a/pkl/builtins/ghalint_action.pkl b/pkl/builtins/ghalint_action.pkl
+index eef23c158..44ebfd2c5 100644
+--- a/pkl/builtins/ghalint_action.pkl
++++ b/pkl/builtins/ghalint_action.pkl
+@@ -10,7 +10,7 @@ const ghalint_action = new Config.Step {
+   glob = List("**/action.*")
+   types = List("yaml")
+   check = new Config.CommandSpec {
+-    command = "ghalint run-action {{ files }}"
++    command = new Config.Command { argv = List("ghalint", "run-action", "{{files}}") }
+     effect = "read"
+   }
+   tests {
+diff --git a/pkl/builtins/gitleaks.pkl b/pkl/builtins/gitleaks.pkl
+index 40426839f..79d1d5468 100644
+--- a/pkl/builtins/gitleaks.pkl
++++ b/pkl/builtins/gitleaks.pkl
+@@ -13,7 +13,9 @@ gitleaks = new Config.Step {
+   types = List("text")
+   // Reference: https://github.com/gitleaks/gitleaks/blob/v8.30.1/.pre-commit-hooks.yaml#L4
+   check = new Config.CommandSpec {
+-    command = "gitleaks dir --redact --verbose --no-banner {{ files }}"
++    command = new Config.Command {
++      argv = List("gitleaks", "dir", "--redact", "--verbose", "--no-banner", "{{files}}")
++    }
+     effect = "read"
+   }
+   tests {
+diff --git a/pkl/builtins/go_fumpt.pkl b/pkl/builtins/go_fumpt.pkl
+index 11151306b..346c8aff9 100644
+--- a/pkl/builtins/go_fumpt.pkl
++++ b/pkl/builtins/go_fumpt.pkl
+@@ -11,7 +11,7 @@ go_fumpt = new Config.Step {
+   // check_list_files = "gofumpt -l {{ files }}" // broken, gofumpt always exits with 0
+   // check_diff = "gofumpt -d {{ files }}" // won't work until #640 is merged
+   fix = new Config.CommandSpec {
+-    command = "gofumpt -w {{ files }}"
++    command = new Config.Command { argv = List("gofumpt", "-w", "{{files}}") }
+     effect = "write"
+   }
+ }
+diff --git a/pkl/builtins/go_imports.pkl b/pkl/builtins/go_imports.pkl
+index 0c217481c..778c45de6 100644
+--- a/pkl/builtins/go_imports.pkl
++++ b/pkl/builtins/go_imports.pkl
+@@ -8,11 +8,11 @@ import "../Config.pkl"
+ go_imports = new Config.Step {
+   glob = "**/*.go"
+   check = new Config.CommandSpec {
+-    command = "goimports -l {{ files }}"
++    command = new Config.Command { argv = List("goimports", "-l", "{{files}}") }
+     effect = "read"
+   }
+   fix = new Config.CommandSpec {
+-    command = "goimports -w {{ files }}"
++    command = new Config.Command { argv = List("goimports", "-w", "{{files}}") }
+     effect = "write"
+   }
+ }
+diff --git a/pkl/builtins/go_lines.pkl b/pkl/builtins/go_lines.pkl
+index 8fcb3ea8f..0f1a6b2a1 100644
+--- a/pkl/builtins/go_lines.pkl
++++ b/pkl/builtins/go_lines.pkl
+@@ -8,11 +8,11 @@ import "../Config.pkl"
+ go_lines = new Config.Step {
+   glob = "**/*.go"
+   check = new Config.CommandSpec {
+-    command = "golines --dry-run {{ files }}"
++    command = new Config.Command { argv = List("golines", "--dry-run", "{{files}}") }
+     effect = "read"
+   }
+   fix = new Config.CommandSpec {
+-    command = "golines -w {{ files }}"
++    command = new Config.Command { argv = List("golines", "-w", "{{files}}") }
+     effect = "write"
+   }
+ }
+diff --git a/pkl/builtins/google_java_format.pkl b/pkl/builtins/google_java_format.pkl
+index 66c8c7087..68e9b7b5a 100644
+--- a/pkl/builtins/google_java_format.pkl
++++ b/pkl/builtins/google_java_format.pkl
+@@ -12,15 +12,17 @@ import "./test/helpers.pkl"
+ google_java_format = new Config.Step {
+   glob = "**/*.java"
+   check = new Config.CommandSpec {
+-    command = "google-java-format --dry-run --set-exit-if-changed {{ files }}"
++    command = new Config.Command {
++      argv = List("google-java-format", "--dry-run", "--set-exit-if-changed", "{{files}}")
++    }
+     effect = "read"
+   }
+   check_list_files = new Config.CommandSpec {
+-    command = "google-java-format --dry-run {{ files }}"
++    command = new Config.Command { argv = List("google-java-format", "--dry-run", "{{files}}") }
+     effect = "read"
+   }
+   fix = new Config.CommandSpec {
+-    command = "google-java-format --replace {{ files }}"
++    command = new Config.Command { argv = List("google-java-format", "--replace", "{{files}}") }
+     effect = "write"
+   }
+   tests {
+diff --git a/pkl/builtins/hadolint.pkl b/pkl/builtins/hadolint.pkl
+index 176b0f534..504d82c09 100644
+--- a/pkl/builtins/hadolint.pkl
++++ b/pkl/builtins/hadolint.pkl
+@@ -12,7 +12,7 @@ import "./test/helpers.pkl"
+ hadolint = new Config.Step {
+   glob = "**/Dockerfile*"
+   check = new Config.CommandSpec {
+-    command = "hadolint {{ files }}"
++    command = new Config.Command { argv = List("hadolint", "{{files}}") }
+     effect = "read"
+   }
+   tests {
+diff --git a/pkl/builtins/harper.pkl b/pkl/builtins/harper.pkl
+index 90c263d1d..a9df38128 100644
+--- a/pkl/builtins/harper.pkl
++++ b/pkl/builtins/harper.pkl
+@@ -9,7 +9,7 @@ import "./test/helpers.pkl"
+ harper = new Config.Step {
+   types = List("text")
+   check = new Config.CommandSpec {
+-    command = "harper-cli lint {{ files }}"
++    command = new Config.Command { argv = List("harper-cli", "lint", "{{files}}") }
+     effect = "read"
+   }
+   tests {
+diff --git a/pkl/builtins/hclfmt.pkl b/pkl/builtins/hclfmt.pkl
+index 0ffeef6c9..8c2300743 100644
+--- a/pkl/builtins/hclfmt.pkl
++++ b/pkl/builtins/hclfmt.pkl
+@@ -8,7 +8,7 @@ import "../Config.pkl"
+ hclfmt = new Config.Step {
+   glob = "**/*.hcl"
+   fix = new Config.CommandSpec {
+-    command = "hclfmt -w {{ files }}"
++    command = new Config.Command { argv = List("hclfmt", "-w", "{{files}}") }
+     effect = "write"
+   }
+ }
+diff --git a/pkl/builtins/isort.pkl b/pkl/builtins/isort.pkl
+index 4d4274602..d9034a184 100644
+--- a/pkl/builtins/isort.pkl
++++ b/pkl/builtins/isort.pkl
+@@ -9,11 +9,11 @@ import "./test/helpers.pkl"
+ isort = new Config.Step {
+   glob = "**/*.py"
+   check = new Config.CommandSpec {
+-    command = "isort --check-only {{ files }}"
++    command = new Config.Command { argv = List("isort", "--check-only", "{{files}}") }
+     effect = "read"
+   }
+   fix = new Config.CommandSpec {
+-    command = "isort {{ files }}"
++    command = new Config.Command { argv = List("isort", "{{files}}") }
+     effect = "write"
+   }
+   tests {
+diff --git a/pkl/builtins/kingfisher.pkl b/pkl/builtins/kingfisher.pkl
+index d390c48a6..98971a721 100644
+--- a/pkl/builtins/kingfisher.pkl
++++ b/pkl/builtins/kingfisher.pkl
+@@ -13,7 +13,10 @@ kingfisher = new Config.Step {
+   types = List("text")
+   // Reference: https://github.com/mongodb/kingfisher/blob/v1.109.0/.pre-commit-hooks.yaml
+   check = new Config.CommandSpec {
+-    command = "kingfisher scan {{ files }} --no-update-check --no-validate --quiet"
++    command = new Config.Command {
++      argv =
++        List("kingfisher", "scan", "{{files}}", "--no-update-check", "--no-validate", "--quiet")
++    }
+     effect = "read"
+   }
+   tests {
+diff --git a/pkl/builtins/ktlint.pkl b/pkl/builtins/ktlint.pkl
+index 563dc2618..4e6f0f466 100644
+--- a/pkl/builtins/ktlint.pkl
++++ b/pkl/builtins/ktlint.pkl
+@@ -9,11 +9,11 @@ import "./test/helpers.pkl"
+ ktlint = new Config.Step {
+   glob = "**/*.kt"
+   check = new Config.CommandSpec {
+-    command = "ktlint {{ files }}"
++    command = new Config.Command { argv = List("ktlint", "{{files}}") }
+     effect = "read"
+   }
+   fix = new Config.CommandSpec {
+-    command = "ktlint -F {{ files }}"
++    command = new Config.Command { argv = List("ktlint", "-F", "{{files}}") }
+     effect = "write"
+   }
+   tests {
+diff --git a/pkl/builtins/luacheck.pkl b/pkl/builtins/luacheck.pkl
+index 76392f209..bd346238e 100644
+--- a/pkl/builtins/luacheck.pkl
++++ b/pkl/builtins/luacheck.pkl
+@@ -8,7 +8,7 @@ import "../Config.pkl"
+ luacheck = new Config.Step {
+   types = List("lua")
+   check = new Config.CommandSpec {
+-    command = "luacheck {{ files }}"
++    command = new Config.Command { argv = List("luacheck", "{{files}}") }
+     effect = "read"
+   }
+ }
+diff --git a/pkl/builtins/lychee.pkl b/pkl/builtins/lychee.pkl
+index 7f2138226..41d1308c0 100644
+--- a/pkl/builtins/lychee.pkl
++++ b/pkl/builtins/lychee.pkl
+@@ -9,7 +9,7 @@ lychee = new Config.Step {
+   // https://github.com/lycheeverse/lychee/blob/db0f8a842f594e0a879563caf7d183266c02ca95/.pre-commit-hooks.yaml#L7
+   types = List("text")
+   check = new Config.CommandSpec {
+-    command = "lychee --no-progress {{ files }}"
++    command = new Config.Command { argv = List("lychee", "--no-progress", "{{files}}") }
+     effect = "read"
+   }
+ }
+diff --git a/pkl/builtins/markdown_lint.pkl b/pkl/builtins/markdown_lint.pkl
+index 06cd2de41..f82898fda 100644
+--- a/pkl/builtins/markdown_lint.pkl
++++ b/pkl/builtins/markdown_lint.pkl
+@@ -9,11 +9,11 @@ import "./test/helpers.pkl"
+ markdown_lint = new Config.Step {
+   glob = List("**/*.md", "**/*.markdown")
+   check = new Config.CommandSpec {
+-    command = "markdownlint {{ files }}"
++    command = new Config.Command { argv = List("markdownlint", "{{files}}") }
+     effect = "read"
+   }
+   fix = new Config.CommandSpec {
+-    command = "markdownlint --fix {{ files }}"
++    command = new Config.Command { argv = List("markdownlint", "--fix", "{{files}}") }
+     effect = "write"
+   }
+   tests {
+diff --git a/pkl/builtins/mdschema.pkl b/pkl/builtins/mdschema.pkl
+index 617abe21b..142ad5835 100644
+--- a/pkl/builtins/mdschema.pkl
++++ b/pkl/builtins/mdschema.pkl
+@@ -13,7 +13,7 @@ mdschema = new Config.Step {
+   workspace_indicator = ".mdschema.yml"
+   types = List("markdown")
+   check = new Config.CommandSpec {
+-    command = "mdschema check {{ files }}"
++    command = new Config.Command { argv = List("mdschema", "check", "{{files}}") }
+     effect = "read"
+   }
+   tests {
+diff --git a/pkl/builtins/mix_compile.pkl b/pkl/builtins/mix_compile.pkl
+index 339ae527b..9bb5ad8ae 100644
+--- a/pkl/builtins/mix_compile.pkl
++++ b/pkl/builtins/mix_compile.pkl
+@@ -9,7 +9,9 @@ mix_compile = new Config.Step {
+   glob = "**/*.ex"
+   exclude = List("deps/**/*")
+   check = new Config.CommandSpec {
+-    command = "mix compile --warnings-as-errors --strict-errors {{files}}"
++    command = new Config.Command {
++      argv = List("mix", "compile", "--warnings-as-errors", "--strict-errors", "{{files}}")
++    }
+     effect = "write"
+   }
+ }
+diff --git a/pkl/builtins/mix_fmt.pkl b/pkl/builtins/mix_fmt.pkl
+index 362859c74..fea3a4df0 100644
+--- a/pkl/builtins/mix_fmt.pkl
++++ b/pkl/builtins/mix_fmt.pkl
+@@ -9,11 +9,11 @@ mix_fmt = new Config.Step {
+   glob = List("**/*.ex", "**/*.exs")
+   exclude = List("deps/**/*")
+   check = new Config.CommandSpec {
+-    command = "mix format --check-formatted {{files}}"
++    command = new Config.Command { argv = List("mix", "format", "--check-formatted", "{{files}}") }
+     effect = "read"
+   }
+   fix = new Config.CommandSpec {
+-    command = "mix format {{files}}"
++    command = new Config.Command { argv = List("mix", "format", "{{files}}") }
+     effect = "write"
+   }
+ }
+diff --git a/pkl/builtins/mix_test.pkl b/pkl/builtins/mix_test.pkl
+index 9b7679c70..0dc2e6128 100644
+--- a/pkl/builtins/mix_test.pkl
++++ b/pkl/builtins/mix_test.pkl
+@@ -9,7 +9,7 @@ mix_test = new Config.Step {
+   glob = List("**/*.ex", "**/*.exs")
+   exclude = List("deps/**/*")
+   check = new Config.CommandSpec {
+-    command = "mix test --warnings-as-errors {{files}}"
++    command = new Config.Command { argv = List("mix", "test", "--warnings-as-errors", "{{files}}") }
+     effect = "write"
+   }
+ }
+diff --git a/pkl/builtins/mixed_line_ending.pkl b/pkl/builtins/mixed_line_ending.pkl
+index 31a527e4d..5da11ca15 100644
+--- a/pkl/builtins/mixed_line_ending.pkl
++++ b/pkl/builtins/mixed_line_ending.pkl
+@@ -9,11 +9,15 @@ import "./test/helpers.pkl"
+ mixed_line_ending = new Config.Step {
+   types = List("text")
+   check_diff = new Config.CommandSpec {
+-    command = "hk util mixed-line-ending --diff {{files}}"
++    command = new Config.Command {
++      argv = List("hk", "util", "mixed-line-ending", "--diff", "{{files}}")
++    }
+     effect = "read"
+   }
+   fix = new Config.CommandSpec {
+-    command = "hk util mixed-line-ending --fix {{files}}"
++    command = new Config.Command {
++      argv = List("hk", "util", "mixed-line-ending", "--fix", "{{files}}")
++    }
+     effect = "write"
+   }
+   tests {
+diff --git a/pkl/builtins/mypy.pkl b/pkl/builtins/mypy.pkl
+index 91e56d164..084c23e6e 100644
+--- a/pkl/builtins/mypy.pkl
++++ b/pkl/builtins/mypy.pkl
+@@ -12,7 +12,7 @@ import "./test/helpers.pkl"
+ mypy = new Config.Step {
+   glob = List("**/*.py", "**/*.pyi")
+   check = new Config.CommandSpec {
+-    command = "mypy {{ files }}"
++    command = new Config.Command { argv = List("mypy", "{{files}}") }
+     effect = "write"
+   }
+   tests {
+diff --git a/pkl/builtins/newlines.pkl b/pkl/builtins/newlines.pkl
+index 307edb4fe..3b3dae255 100644
+--- a/pkl/builtins/newlines.pkl
++++ b/pkl/builtins/newlines.pkl
+@@ -9,11 +9,15 @@ import "./test/helpers.pkl"
+ newlines = new Config.Step {
+   types = List("text")
+   check_diff = new Config.CommandSpec {
+-    command = "hk util end-of-file-fixer --diff {{files}}"
++    command = new Config.Command {
++      argv = List("hk", "util", "end-of-file-fixer", "--diff", "{{files}}")
++    }
+     effect = "read"
+   }
+   fix = new Config.CommandSpec {
+-    command = "hk util end-of-file-fixer --fix {{files}}"
++    command = new Config.Command {
++      argv = List("hk", "util", "end-of-file-fixer", "--fix", "{{files}}")
++    }
+     effect = "write"
+   }
+   tests {
+diff --git a/pkl/builtins/nil.pkl b/pkl/builtins/nil.pkl
+index 3bb28587a..32f0ca42f 100644
+--- a/pkl/builtins/nil.pkl
++++ b/pkl/builtins/nil.pkl
+@@ -8,7 +8,9 @@ import "../Config.pkl"
+ nil = new Config.Step {
+   glob = "**/*.nix"
+   check = new Config.CommandSpec {
+-    command = "nil diagnostics --deny-warnings {{ files }}"
++    command = new Config.Command {
++      argv = List("nil", "diagnostics", "--deny-warnings", "{{files}}")
++    }
+     effect = "read"
+   }
+ }
+diff --git a/pkl/builtins/nixf_diagnose.pkl b/pkl/builtins/nixf_diagnose.pkl
+index 909346463..5cd3e4c41 100644
+--- a/pkl/builtins/nixf_diagnose.pkl
++++ b/pkl/builtins/nixf_diagnose.pkl
+@@ -8,7 +8,7 @@ import "../Config.pkl"
+ nixf_diagnose = new Config.Step {
+   glob = "**/*.nix"
+   check = new Config.CommandSpec {
+-    command = "nixf-diagnose {{ files }}"
++    command = new Config.Command { argv = List("nixf-diagnose", "{{files}}") }
+     effect = "read"
+   }
+ }
+diff --git a/pkl/builtins/nixpkgs_format.pkl b/pkl/builtins/nixpkgs_format.pkl
+index 132f497f4..a67fbc802 100644
+--- a/pkl/builtins/nixpkgs_format.pkl
++++ b/pkl/builtins/nixpkgs_format.pkl
+@@ -8,11 +8,11 @@ import "../Config.pkl"
+ nixpkgs_format = new Config.Step {
+   glob = "**/*.nix"
+   check = new Config.CommandSpec {
+-    command = "nixpkgs-fmt --check {{ files }}"
++    command = new Config.Command { argv = List("nixpkgs-fmt", "--check", "{{files}}") }
+     effect = "read"
+   }
+   fix = new Config.CommandSpec {
+-    command = "nixpkgs-fmt {{ files }}"
++    command = new Config.Command { argv = List("nixpkgs-fmt", "{{files}}") }
+     effect = "write"
+   }
+ }
+diff --git a/pkl/builtins/ox_lint.pkl b/pkl/builtins/ox_lint.pkl
+index 976f23d38..8faf99bfa 100644
+--- a/pkl/builtins/ox_lint.pkl
++++ b/pkl/builtins/ox_lint.pkl
+@@ -37,11 +37,11 @@ ox_lint = new Config.Step {
+   // Without `--deny-warnings`,
+   // the exit code will be 0 even if there is code that violates the rules.
+   check = new Config.CommandSpec {
+-    command = "oxlint --deny-warnings {{ files }}"
++    command = new Config.Command { argv = List("oxlint", "--deny-warnings", "{{files}}") }
+     effect = "read"
+   }
+   fix = new Config.CommandSpec {
+-    command = "oxlint --deny-warnings --fix {{ files }}"
++    command = new Config.Command { argv = List("oxlint", "--deny-warnings", "--fix", "{{files}}") }
+     effect = "write"
+   }
+   tests {
+diff --git a/pkl/builtins/oxfmt.pkl b/pkl/builtins/oxfmt.pkl
+index b3e9d098d..705f973b7 100644
+--- a/pkl/builtins/oxfmt.pkl
++++ b/pkl/builtins/oxfmt.pkl
+@@ -59,15 +59,21 @@ oxfmt = new Config.Step {
+       "**/*.hbs",
+     )
+   check = new Config.CommandSpec {
+-    command = "oxfmt --check --no-error-on-unmatched-pattern {{ files }}"
++    command = new Config.Command {
++      argv = List("oxfmt", "--check", "--no-error-on-unmatched-pattern", "{{files}}")
++    }
+     effect = "read"
+   }
+   check_list_files = new Config.CommandSpec {
+-    command = "oxfmt --list-different --no-error-on-unmatched-pattern {{ files }}"
++    command = new Config.Command {
++      argv = List("oxfmt", "--list-different", "--no-error-on-unmatched-pattern", "{{files}}")
++    }
+     effect = "read"
+   }
+   fix = new Config.CommandSpec {
+-    command = "oxfmt --write --no-error-on-unmatched-pattern {{ files }}"
++    command = new Config.Command {
++      argv = List("oxfmt", "--write", "--no-error-on-unmatched-pattern", "{{files}}")
++    }
+     effect = "write"
+   }
+   tests {
+diff --git a/pkl/builtins/php_cs.pkl b/pkl/builtins/php_cs.pkl
+index d7047f077..68d74d02b 100644
+--- a/pkl/builtins/php_cs.pkl
++++ b/pkl/builtins/php_cs.pkl
+@@ -8,11 +8,11 @@ import "../Config.pkl"
+ php_cs = new Config.Step {
+   glob = "**/*.php"
+   check = new Config.CommandSpec {
+-    command = "phpcs {{ files }}"
++    command = new Config.Command { argv = List("phpcs", "{{files}}") }
+     effect = "read"
+   }
+   fix = new Config.CommandSpec {
+-    command = "phpcbf {{ files }}"
++    command = new Config.Command { argv = List("phpcbf", "{{files}}") }
+     effect = "write"
+   }
+ }
+diff --git a/pkl/builtins/pinact.pkl b/pkl/builtins/pinact.pkl
+index d085807cf..cb64efc48 100644
+--- a/pkl/builtins/pinact.pkl
++++ b/pkl/builtins/pinact.pkl
+@@ -11,11 +11,13 @@ const pinact = new Config.Step {
+   types = List("yaml")
+   // `verify` flag to verify pairs of commit CHA and version are correct
+   check_diff = new Config.CommandSpec {
+-    command = "pinact run --verify --check {{ files }}"
++    command = new Config.Command {
++      argv = List("pinact", "run", "--verify", "--check", "{{files}}")
++    }
+     effect = "read"
+   }
+   fix = new Config.CommandSpec {
+-    command = "pinact run --verify {{ files }}"
++    command = new Config.Command { argv = List("pinact", "run", "--verify", "{{files}}") }
+     effect = "write"
+   }
+   tests {
+diff --git a/pkl/builtins/pinact_update.pkl b/pkl/builtins/pinact_update.pkl
+index a2db3ae89..fbf72e554 100644
+--- a/pkl/builtins/pinact_update.pkl
++++ b/pkl/builtins/pinact_update.pkl
+@@ -10,11 +10,15 @@ const pinact_update = new Config.Step {
+   types = List("yaml")
+   // `verify` flag to verify pairs of commit CHA and version are correct
+   check_diff = new Config.CommandSpec {
+-    command = "pinact run --update --verify --check {{ files }}"
++    command = new Config.Command {
++      argv = List("pinact", "run", "--update", "--verify", "--check", "{{files}}")
++    }
+     effect = "read"
+   }
+   fix = new Config.CommandSpec {
+-    command = "pinact run --update --verify {{ files }}"
++    command = new Config.Command {
++      argv = List("pinact", "run", "--update", "--verify", "{{files}}")
++    }
+     effect = "write"
+   }
+   // Tests removed: they check against live GitHub Action versions, making them flaky
+diff --git a/pkl/builtins/pylint.pkl b/pkl/builtins/pylint.pkl
+index 2d5fe367e..cec65e910 100644
+--- a/pkl/builtins/pylint.pkl
++++ b/pkl/builtins/pylint.pkl
+@@ -8,7 +8,7 @@ import "../Config.pkl"
+ pylint = new Config.Step {
+   glob = "**/*.py"
+   check = new Config.CommandSpec {
+-    command = "pylint {{ files }}"
++    command = new Config.Command { argv = List("pylint", "{{files}}") }
+     effect = "write"
+   }
+ }
+diff --git a/pkl/builtins/python_check_ast.pkl b/pkl/builtins/python_check_ast.pkl
+index 19ae62c33..62ed5209d 100644
+--- a/pkl/builtins/python_check_ast.pkl
++++ b/pkl/builtins/python_check_ast.pkl
+@@ -9,7 +9,7 @@ import "./test/helpers.pkl"
+ python_check_ast = new Config.Step {
+   glob = "**/*.py"
+   check = new Config.CommandSpec {
+-    command = "hk util python-check-ast {{files}}"
++    command = new Config.Command { argv = List("hk", "util", "python-check-ast", "{{files}}") }
+     effect = "read"
+   }
+   tests {
+diff --git a/pkl/builtins/python_debug_statements.pkl b/pkl/builtins/python_debug_statements.pkl
+index c0c003857..5e25311a4 100644
+--- a/pkl/builtins/python_debug_statements.pkl
++++ b/pkl/builtins/python_debug_statements.pkl
+@@ -9,7 +9,9 @@ import "./test/helpers.pkl"
+ python_debug_statements = new Config.Step {
+   glob = "**/*.py"
+   check = new Config.CommandSpec {
+-    command = "hk util python-debug-statements {{files}}"
++    command = new Config.Command {
++      argv = List("hk", "util", "python-debug-statements", "{{files}}")
++    }
+     effect = "read"
+   }
+   tests {
+diff --git a/pkl/builtins/reek.pkl b/pkl/builtins/reek.pkl
+index 8caa58414..56a540fee 100644
+--- a/pkl/builtins/reek.pkl
++++ b/pkl/builtins/reek.pkl
+@@ -8,7 +8,7 @@ import "../Config.pkl"
+ reek = new Config.Step {
+   types = List("ruby")
+   check = new Config.CommandSpec {
+-    command = "reek {{ files }}"
++    command = new Config.Command { argv = List("reek", "{{files}}") }
+     effect = "read"
+   }
+ }
+diff --git a/pkl/builtins/rubocop.pkl b/pkl/builtins/rubocop.pkl
+index eac67de08..523915bc4 100644
+--- a/pkl/builtins/rubocop.pkl
++++ b/pkl/builtins/rubocop.pkl
+@@ -72,15 +72,19 @@ rubocop = new Config.Step {
+     )
+   // `--force-exclusion`: Any files excluded by `Exclude` in RuboCop configuration files will be excluded, even if given explicitly as arguments.
+   check = new Config.CommandSpec {
+-    command = "rubocop --force-exclusion {{ files }}"
++    command = new Config.Command { argv = List("rubocop", "--force-exclusion", "{{files}}") }
+     effect = "write"
+   }
+   check_list_files = new Config.CommandSpec {
+-    command = "rubocop --force-exclusion --list-target-files {{ files }}"
++    command = new Config.Command {
++      argv = List("rubocop", "--force-exclusion", "--list-target-files", "{{files}}")
++    }
+     effect = "write"
+   }
+   fix = new Config.CommandSpec {
+-    command = "rubocop --force-exclusion --autocorrect {{ files }}"
++    command = new Config.Command {
++      argv = List("rubocop", "--force-exclusion", "--autocorrect", "{{files}}")
++    }
+     effect = "write"
+   }
+   tests {
+diff --git a/pkl/builtins/rubocop_server.pkl b/pkl/builtins/rubocop_server.pkl
+index 57154d05b..3dfca1cfb 100644
+--- a/pkl/builtins/rubocop_server.pkl
++++ b/pkl/builtins/rubocop_server.pkl
+@@ -12,15 +12,21 @@ import "./rubocop.pkl"
+ rubocop_server = (rubocop.rubocop) {
+   // `--server`: Use a long-lived RuboCop server process to speed up repeated invocations.
+   check = new Config.CommandSpec {
+-    command = "rubocop --server --force-exclusion {{ files }}"
++    command = new Config.Command {
++      argv = List("rubocop", "--server", "--force-exclusion", "{{files}}")
++    }
+     effect = "write"
+   }
+   check_list_files = new Config.CommandSpec {
+-    command = "rubocop --server --force-exclusion --list-target-files {{ files }}"
++    command = new Config.Command {
++      argv = List("rubocop", "--server", "--force-exclusion", "--list-target-files", "{{files}}")
++    }
+     effect = "write"
+   }
+   fix = new Config.CommandSpec {
+-    command = "rubocop --server --force-exclusion --autocorrect {{ files }}"
++    command = new Config.Command {
++      argv = List("rubocop", "--server", "--force-exclusion", "--autocorrect", "{{files}}")
++    }
+     effect = "write"
+   }
+ }
+diff --git a/pkl/builtins/ruff_format.pkl b/pkl/builtins/ruff_format.pkl
+index ef60fe5fa..17895e957 100644
+--- a/pkl/builtins/ruff_format.pkl
++++ b/pkl/builtins/ruff_format.pkl
+@@ -13,11 +13,15 @@ import "./test/helpers.pkl"
+ ruff_format = new Config.Step {
+   types = List("python")
+   check_diff = new Config.CommandSpec {
+-    command = "ruff format --quiet --force-exclude --diff {{ files }}"
++    command = new Config.Command {
++      argv = List("ruff", "format", "--quiet", "--force-exclude", "--diff", "{{files}}")
++    }
+     effect = "read"
+   }
+   fix = new Config.CommandSpec {
+-    command = "ruff format --quiet --force-exclude {{ files }}"
++    command = new Config.Command {
++      argv = List("ruff", "format", "--quiet", "--force-exclude", "{{files}}")
++    }
+     effect = "write"
+   }
+   tests {
+diff --git a/pkl/builtins/rumdl.pkl b/pkl/builtins/rumdl.pkl
+index 42be429b0..a9931dd65 100644
+--- a/pkl/builtins/rumdl.pkl
++++ b/pkl/builtins/rumdl.pkl
+@@ -9,11 +9,11 @@ import "./test/helpers.pkl"
+ rumdl = new Config.Step {
+   glob = List("**/*.md", "**/*.markdown")
+   check_diff = new Config.CommandSpec {
+-    command = "rumdl check --diff {{ files }}"
++    command = new Config.Command { argv = List("rumdl", "check", "--diff", "{{files}}") }
+     effect = "read"
+   }
+   fix = new Config.CommandSpec {
+-    command = "rumdl check --fix {{ files }}"
++    command = new Config.Command { argv = List("rumdl", "check", "--fix", "{{files}}") }
+     effect = "write"
+   }
+   tests {
+diff --git a/pkl/builtins/rumdl_format.pkl b/pkl/builtins/rumdl_format.pkl
+index 9faa6e3d2..b7c4e86a0 100644
+--- a/pkl/builtins/rumdl_format.pkl
++++ b/pkl/builtins/rumdl_format.pkl
+@@ -9,11 +9,11 @@ import "./test/helpers.pkl"
+ rumdl_format = new Config.Step {
+   glob = List("**/*.md", "**/*.markdown")
+   check_diff = new Config.CommandSpec {
+-    command = "rumdl fmt --check --diff {{ files }}"
++    command = new Config.Command { argv = List("rumdl", "fmt", "--check", "--diff", "{{files}}") }
+     effect = "read"
+   }
+   fix = new Config.CommandSpec {
+-    command = "rumdl fmt {{ files }}"
++    command = new Config.Command { argv = List("rumdl", "fmt", "{{files}}") }
+     effect = "write"
+   }
+   tests {
+diff --git a/pkl/builtins/ryl.pkl b/pkl/builtins/ryl.pkl
+index 2ddc3cb07..e5ba89e99 100644
+--- a/pkl/builtins/ryl.pkl
++++ b/pkl/builtins/ryl.pkl
+@@ -20,15 +20,15 @@ import "./test/helpers.pkl"
+ ryl = new Config.Step {
+   types = List("yaml")
+   check_diff = new Config.CommandSpec {
+-    command = "ryl --diff {{ files }}"
++    command = new Config.Command { argv = List("ryl", "--diff", "{{files}}") }
+     effect = "read"
+   }
+   check_list_files = new Config.CommandSpec {
+-    command = "ryl --list-files {{ files }}"
++    command = new Config.Command { argv = List("ryl", "--list-files", "{{files}}") }
+     effect = "read"
+   }
+   fix = new Config.CommandSpec {
+-    command = "ryl --fix {{ files }}"
++    command = new Config.Command { argv = List("ryl", "--fix", "{{files}}") }
+     effect = "write"
+   }
+   tests {
+diff --git a/pkl/builtins/ryl_markdown.pkl b/pkl/builtins/ryl_markdown.pkl
+index 8b5476313..7dcc32682 100644
+--- a/pkl/builtins/ryl_markdown.pkl
++++ b/pkl/builtins/ryl_markdown.pkl
+@@ -20,15 +20,15 @@ import "./test/helpers.pkl"
+ ryl_markdown = new Config.Step {
+   types = List("markdown")
+   check_diff = new Config.CommandSpec {
+-    command = "ryl --diff --markdown {{ files }}"
++    command = new Config.Command { argv = List("ryl", "--diff", "--markdown", "{{files}}") }
+     effect = "read"
+   }
+   check_list_files = new Config.CommandSpec {
+-    command = "ryl --list-files --markdown {{ files }}"
++    command = new Config.Command { argv = List("ryl", "--list-files", "--markdown", "{{files}}") }
+     effect = "read"
+   }
+   fix = new Config.CommandSpec {
+-    command = "ryl --fix --markdown {{ files }}"
++    command = new Config.Command { argv = List("ryl", "--fix", "--markdown", "{{files}}") }
+     effect = "write"
+   }
+   tests {
+diff --git a/pkl/builtins/selene.pkl b/pkl/builtins/selene.pkl
+index 46d793cc8..7c40aeb09 100644
+--- a/pkl/builtins/selene.pkl
++++ b/pkl/builtins/selene.pkl
+@@ -9,7 +9,7 @@ import "./test/helpers.pkl"
+ selene = new Config.Step {
+   types = List("lua")
+   check_diff = new Config.CommandSpec {
+-    command = "selene {{ files }}"
++    command = new Config.Command { argv = List("selene", "{{files}}") }
+     effect = "read"
+   }
+   tests {
+diff --git a/pkl/builtins/shellharden.pkl b/pkl/builtins/shellharden.pkl
+index 5cc60ba7d..8392b4869 100644
+--- a/pkl/builtins/shellharden.pkl
++++ b/pkl/builtins/shellharden.pkl
+@@ -16,11 +16,11 @@ shellharden = new Config.Step {
+   // `check_diff` cannot be added.
+   // `shellharden {{ files }}` shows a diff but exits with code 0 even when changes are suggested
+   check = new Config.CommandSpec {
+-    command = "shellharden --check {{ files }}"
++    command = new Config.Command { argv = List("shellharden", "--check", "{{files}}") }
+     effect = "read"
+   }
+   fix = new Config.CommandSpec {
+-    command = "shellharden --replace {{ files }}"
++    command = new Config.Command { argv = List("shellharden", "--replace", "{{files}}") }
+     effect = "write"
+   }
+   tests {
+diff --git a/pkl/builtins/sorbet.pkl b/pkl/builtins/sorbet.pkl
+index 943d046ee..c9dea8757 100644
+--- a/pkl/builtins/sorbet.pkl
++++ b/pkl/builtins/sorbet.pkl
+@@ -8,7 +8,7 @@ import "../Config.pkl"
+ sorbet = new Config.Step {
+   types = List("ruby")
+   check = new Config.CommandSpec {
+-    command = "srb tc {{ files }}"
++    command = new Config.Command { argv = List("srb", "tc", "{{files}}") }
+     effect = "write"
+   }
+ }
+diff --git a/pkl/builtins/sort_package_json.pkl b/pkl/builtins/sort_package_json.pkl
+index adfdccc8c..5802f1d61 100644
+--- a/pkl/builtins/sort_package_json.pkl
++++ b/pkl/builtins/sort_package_json.pkl
+@@ -8,11 +8,11 @@ import "../Config.pkl"
+ sort_package_json = new Config.Step {
+   glob = "**/package.json"
+   check = new Config.CommandSpec {
+-    command = "sort-package-json --check {{ files }}"
++    command = new Config.Command { argv = List("sort-package-json", "--check", "{{files}}") }
+     effect = "read"
+   }
+   fix = new Config.CommandSpec {
+-    command = "sort-package-json {{ files }}"
++    command = new Config.Command { argv = List("sort-package-json", "{{files}}") }
+     effect = "write"
+   }
+ }
+diff --git a/pkl/builtins/sql_fluff.pkl b/pkl/builtins/sql_fluff.pkl
+index 31406e731..10fd4fbf7 100644
+--- a/pkl/builtins/sql_fluff.pkl
++++ b/pkl/builtins/sql_fluff.pkl
+@@ -8,11 +8,11 @@ import "../Config.pkl"
+ sql_fluff = new Config.Step {
+   glob = "**/*.sql"
+   check = new Config.CommandSpec {
+-    command = "sqlfluff lint {{ files }}"
++    command = new Config.Command { argv = List("sqlfluff", "lint", "{{files}}") }
+     effect = "read"
+   }
+   fix = new Config.CommandSpec {
+-    command = "sqlfluff fix {{ files }}"
++    command = new Config.Command { argv = List("sqlfluff", "fix", "{{files}}") }
+     effect = "write"
+   }
+ }
+diff --git a/pkl/builtins/standard_js.pkl b/pkl/builtins/standard_js.pkl
+index ae8fa88f4..6a8457c51 100644
+--- a/pkl/builtins/standard_js.pkl
++++ b/pkl/builtins/standard_js.pkl
+@@ -8,11 +8,11 @@ import "../Config.pkl"
+ standard_js = new Config.Step {
+   glob = List("**/*.js", "**/*.jsx", "**/*.ts", "**/*.tsx")
+   check = new Config.CommandSpec {
+-    command = "standard {{ files }}"
++    command = new Config.Command { argv = List("standard", "{{files}}") }
+     effect = "read"
+   }
+   fix = new Config.CommandSpec {
+-    command = "standard --fix {{ files }}"
++    command = new Config.Command { argv = List("standard", "--fix", "{{files}}") }
+     effect = "write"
+   }
+ }
+diff --git a/pkl/builtins/standard_rb.pkl b/pkl/builtins/standard_rb.pkl
+index 2899f8901..bace28550 100644
+--- a/pkl/builtins/standard_rb.pkl
++++ b/pkl/builtins/standard_rb.pkl
+@@ -11,11 +11,11 @@ import "../Config.pkl"
+ standard_rb = new Config.Step {
+   types = List("ruby")
+   check = new Config.CommandSpec {
+-    command = "standardrb {{ files }}"
++    command = new Config.Command { argv = List("standardrb", "{{files}}") }
+     effect = "read"
+   }
+   fix = new Config.CommandSpec {
+-    command = "standardrb --fix {{ files }}"
++    command = new Config.Command { argv = List("standardrb", "--fix", "{{files}}") }
+     effect = "write"
+   }
+ }
+diff --git a/pkl/builtins/stylelint.pkl b/pkl/builtins/stylelint.pkl
+index f55985e34..0f8d3fedc 100644
+--- a/pkl/builtins/stylelint.pkl
++++ b/pkl/builtins/stylelint.pkl
+@@ -12,11 +12,11 @@ import "./test/helpers.pkl"
+ stylelint = new Config.Step {
+   glob = List("**/*.css", "**/*.scss", "**/*.sass", "**/*.less")
+   check = new Config.CommandSpec {
+-    command = "stylelint {{ files }}"
++    command = new Config.Command { argv = List("stylelint", "{{files}}") }
+     effect = "read"
+   }
+   fix = new Config.CommandSpec {
+-    command = "stylelint --fix {{ files }}"
++    command = new Config.Command { argv = List("stylelint", "--fix", "{{files}}") }
+     effect = "write"
+   }
+   tests {
+diff --git a/pkl/builtins/stylua.pkl b/pkl/builtins/stylua.pkl
+index 692698131..f3c3c07d4 100644
+--- a/pkl/builtins/stylua.pkl
++++ b/pkl/builtins/stylua.pkl
+@@ -9,11 +9,11 @@ import "./test/helpers.pkl"
+ stylua = new Config.Step {
+   types = List("lua")
+   check_diff = new Config.CommandSpec {
+-    command = "stylua --check {{ files }}"
++    command = new Config.Command { argv = List("stylua", "--check", "{{files}}") }
+     effect = "read"
+   }
+   fix = new Config.CommandSpec {
+-    command = "stylua {{ files }}"
++    command = new Config.Command { argv = List("stylua", "{{files}}") }
+     effect = "write"
+   }
+   tests {
+diff --git a/pkl/builtins/swiftlint.pkl b/pkl/builtins/swiftlint.pkl
+index d74c75eb7..ab168265c 100644
+--- a/pkl/builtins/swiftlint.pkl
++++ b/pkl/builtins/swiftlint.pkl
+@@ -8,11 +8,11 @@ import "../Config.pkl"
+ swiftlint = new Config.Step {
+   glob = "**/*.swift"
+   check = new Config.CommandSpec {
+-    command = "swiftlint lint {{ files }}"
++    command = new Config.Command { argv = List("swiftlint", "lint", "{{files}}") }
+     effect = "read"
+   }
+   fix = new Config.CommandSpec {
+-    command = "swiftlint --fix {{ files }}"
++    command = new Config.Command { argv = List("swiftlint", "--fix", "{{files}}") }
+     effect = "write"
+   }
+ }
+diff --git a/pkl/builtins/taplo.pkl b/pkl/builtins/taplo.pkl
+index cabd483da..b6d378884 100644
+--- a/pkl/builtins/taplo.pkl
++++ b/pkl/builtins/taplo.pkl
+@@ -13,7 +13,7 @@ taplo = new Config.Step {
+     ["RUST_LOG"] = "warn"
+   }
+   check = new Config.CommandSpec {
+-    command = "taplo lint {{ files }}"
++    command = new Config.Command { argv = List("taplo", "lint", "{{files}}") }
+     effect = "read"
+   }
+   tests {
+diff --git a/pkl/builtins/taplo_format.pkl b/pkl/builtins/taplo_format.pkl
+index b6454c700..0a7b3792f 100644
+--- a/pkl/builtins/taplo_format.pkl
++++ b/pkl/builtins/taplo_format.pkl
+@@ -13,11 +13,13 @@ taplo_format = new Config.Step {
+     ["RUST_LOG"] = "warn"
+   }
+   check_diff = new Config.CommandSpec {
+-    command = "taplo format --check --diff {{ files }}"
++    command = new Config.Command {
++      argv = List("taplo", "format", "--check", "--diff", "{{files}}")
++    }
+     effect = "read"
+   }
+   fix = new Config.CommandSpec {
+-    command = "taplo format {{ files }}"
++    command = new Config.Command { argv = List("taplo", "format", "{{files}}") }
+     effect = "write"
+   }
+   tests {
+diff --git a/pkl/builtins/terraform.pkl b/pkl/builtins/terraform.pkl
+index 9fdd859a9..acc00f628 100644
+--- a/pkl/builtins/terraform.pkl
++++ b/pkl/builtins/terraform.pkl
+@@ -8,11 +8,11 @@ import "../Config.pkl"
+ terraform = new Config.Step {
+   glob = List("**/*.tf", "**/*.tfvars", "**/*.tftest.hcl")
+   check_list_files = new Config.CommandSpec {
+-    command = "terraform fmt -check {{ files }}"
++    command = new Config.Command { argv = List("terraform", "fmt", "-check", "{{files}}") }
+     effect = "read"
+   }
+   fix = new Config.CommandSpec {
+-    command = "terraform fmt {{ files }}"
++    command = new Config.Command { argv = List("terraform", "fmt", "{{files}}") }
+     effect = "write"
+   }
+ }
+diff --git a/pkl/builtins/textlint.pkl b/pkl/builtins/textlint.pkl
+index b81d58c57..f86f93790 100644
+--- a/pkl/builtins/textlint.pkl
++++ b/pkl/builtins/textlint.pkl
+@@ -21,11 +21,11 @@ textlint = new Config.Step {
+   glob = List("**/*.md", "**/*.markdown", "**/*.txt")
+   batch = true
+   check = new Config.CommandSpec {
+-    command = "textlint {{ files }}"
++    command = new Config.Command { argv = List("textlint", "{{files}}") }
+     effect = "read"
+   }
+   fix = new Config.CommandSpec {
+-    command = "textlint --fix {{ files }}"
++    command = new Config.Command { argv = List("textlint", "--fix", "{{files}}") }
+     effect = "write"
+   }
+   tests {
+diff --git a/pkl/builtins/tofu.pkl b/pkl/builtins/tofu.pkl
+index 4638e9981..306a580c1 100644
+--- a/pkl/builtins/tofu.pkl
++++ b/pkl/builtins/tofu.pkl
+@@ -8,11 +8,11 @@ import "../Config.pkl"
+ tofu = new Config.Step {
+   glob = List("**/*.tf", "**/*.tfvars", "**/*.tftest.hcl")
+   check_list_files = new Config.CommandSpec {
+-    command = "tofu fmt -check {{ files }}"
++    command = new Config.Command { argv = List("tofu", "fmt", "-check", "{{files}}") }
+     effect = "read"
+   }
+   fix = new Config.CommandSpec {
+-    command = "tofu fmt {{ files }}"
++    command = new Config.Command { argv = List("tofu", "fmt", "{{files}}") }
+     effect = "write"
+   }
+ }
+diff --git a/pkl/builtins/tombi.pkl b/pkl/builtins/tombi.pkl
+index 14f0c3ce8..c3a11cb95 100644
+--- a/pkl/builtins/tombi.pkl
++++ b/pkl/builtins/tombi.pkl
+@@ -9,7 +9,7 @@ import "./test/helpers.pkl"
+ tombi = new Config.Step {
+   glob = "**/*.toml"
+   check = new Config.CommandSpec {
+-    command = "tombi lint --quiet {{ files }}"
++    command = new Config.Command { argv = List("tombi", "lint", "--quiet", "{{files}}") }
+     effect = "read"
+   }
+   tests {
+diff --git a/pkl/builtins/tombi_format.pkl b/pkl/builtins/tombi_format.pkl
+index b34c3fad3..3822f74e8 100644
+--- a/pkl/builtins/tombi_format.pkl
++++ b/pkl/builtins/tombi_format.pkl
+@@ -9,11 +9,13 @@ import "./test/helpers.pkl"
+ tombi_format = new Config.Step {
+   glob = "**/*.toml"
+   check_diff = new Config.CommandSpec {
+-    command = "tombi format --quiet --check --diff {{ files }}"
++    command = new Config.Command {
++      argv = List("tombi", "format", "--quiet", "--check", "--diff", "{{files}}")
++    }
+     effect = "read"
+   }
+   fix = new Config.CommandSpec {
+-    command = "tombi format --quiet {{ files }}"
++    command = new Config.Command { argv = List("tombi", "format", "--quiet", "{{files}}") }
+     effect = "write"
+   }
+   tests {
+diff --git a/pkl/builtins/trailing_whitespace.pkl b/pkl/builtins/trailing_whitespace.pkl
+index 8257c1293..9808ab4a0 100644
+--- a/pkl/builtins/trailing_whitespace.pkl
++++ b/pkl/builtins/trailing_whitespace.pkl
+@@ -9,11 +9,15 @@ import "./test/helpers.pkl"
+ trailing_whitespace = new Config.Step {
+   types = List("text")
+   check_diff = new Config.CommandSpec {
+-    command = "hk util trailing-whitespace --diff {{files}}"
++    command = new Config.Command {
++      argv = List("hk", "util", "trailing-whitespace", "--diff", "{{files}}")
++    }
+     effect = "read"
+   }
+   fix = new Config.CommandSpec {
+-    command = "hk util trailing-whitespace --fix {{files}}"
++    command = new Config.Command {
++      argv = List("hk", "util", "trailing-whitespace", "--fix", "{{files}}")
++    }
+     effect = "write"
+   }
+   tests {
+diff --git a/pkl/builtins/tsserver.pkl b/pkl/builtins/tsserver.pkl
+index 971861076..0fe663ad2 100644
+--- a/pkl/builtins/tsserver.pkl
++++ b/pkl/builtins/tsserver.pkl
+@@ -8,7 +8,7 @@ import "../Config.pkl"
+ tsserver = new Config.Step {
+   glob = List("**/*.ts", "**/*.tsx")
+   check = new Config.CommandSpec {
+-    command = "tsc-files --noEmit {{ files }}"
++    command = new Config.Command { argv = List("tsc-files", "--noEmit", "{{files}}") }
+     effect = "write"
+   }
+ }
+diff --git a/pkl/builtins/ty.pkl b/pkl/builtins/ty.pkl
+index 20721fd3e..211f952f4 100644
+--- a/pkl/builtins/ty.pkl
++++ b/pkl/builtins/ty.pkl
+@@ -9,7 +9,7 @@ import "./test/helpers.pkl"
+ ty = new Config.Step {
+   glob = List("**/*.py", "**/*.pyi")
+   check = new Config.CommandSpec {
+-    command = "ty check {{ files }}"
++    command = new Config.Command { argv = List("ty", "check", "{{files}}") }
+     effect = "write"
+   }
+   tests {
+diff --git a/pkl/builtins/vacuum.pkl b/pkl/builtins/vacuum.pkl
+index 96138844e..5284cf9df 100644
+--- a/pkl/builtins/vacuum.pkl
++++ b/pkl/builtins/vacuum.pkl
+@@ -16,11 +16,11 @@ vacuum = new Config.Step {
+       "**/*swagger*.json",
+     )
+   check = new Config.CommandSpec {
+-    command = "vacuum lint {{files}}"
++    command = new Config.Command { argv = List("vacuum", "lint", "{{files}}") }
+     effect = "read"
+   }
+   fix = new Config.CommandSpec {
+-    command = "vacuum lint --fix {{files}}"
++    command = new Config.Command { argv = List("vacuum", "lint", "--fix", "{{files}}") }
+     effect = "write"
+   }
+ }
+diff --git a/pkl/builtins/vp_check.pkl b/pkl/builtins/vp_check.pkl
+index 62b972db0..ea9a42b8c 100644
+--- a/pkl/builtins/vp_check.pkl
++++ b/pkl/builtins/vp_check.pkl
+@@ -59,11 +59,11 @@ vp_check = new Config.Step {
+       "**/*.toml",
+     )
+   check = new Config.CommandSpec {
+-    command = "vp check {{ files }}"
++    command = new Config.Command { argv = List("vp", "check", "{{files}}") }
+     effect = "read"
+   }
+   fix = new Config.CommandSpec {
+-    command = "vp check --fix {{ files }}"
++    command = new Config.Command { argv = List("vp", "check", "--fix", "{{files}}") }
+     effect = "write"
+   }
+   workspace_indicator = "package.json"
+diff --git a/pkl/builtins/vp_fmt.pkl b/pkl/builtins/vp_fmt.pkl
+index 9d3c03eca..cdd68b952 100644
+--- a/pkl/builtins/vp_fmt.pkl
++++ b/pkl/builtins/vp_fmt.pkl
+@@ -57,15 +57,15 @@ vp_fmt = new Config.Step {
+       "**/*.hbs",
+     )
+   check = new Config.CommandSpec {
+-    command = "vp fmt --check {{ files }}"
++    command = new Config.Command { argv = List("vp", "fmt", "--check", "{{files}}") }
+     effect = "read"
+   }
+   check_list_files = new Config.CommandSpec {
+-    command = "vp fmt --list-different {{ files }}"
++    command = new Config.Command { argv = List("vp", "fmt", "--list-different", "{{files}}") }
+     effect = "read"
+   }
+   fix = new Config.CommandSpec {
+-    command = "vp fmt {{ files }}"
++    command = new Config.Command { argv = List("vp", "fmt", "{{files}}") }
+     effect = "write"
+   }
+   workspace_indicator = "package.json"
+diff --git a/pkl/builtins/vp_lint.pkl b/pkl/builtins/vp_lint.pkl
+index acd0cbfea..2c500aa6c 100644
+--- a/pkl/builtins/vp_lint.pkl
++++ b/pkl/builtins/vp_lint.pkl
+@@ -36,11 +36,13 @@ vp_lint = new Config.Step {
+   // Without `--deny-warnings`,
+   // the exit code will be 0 even if there is code that violates the rules.
+   check = new Config.CommandSpec {
+-    command = "vp lint --deny-warnings {{ files }}"
++    command = new Config.Command { argv = List("vp", "lint", "--deny-warnings", "{{files}}") }
+     effect = "read"
+   }
+   fix = new Config.CommandSpec {
+-    command = "vp lint --deny-warnings --fix {{ files }}"
++    command = new Config.Command {
++      argv = List("vp", "lint", "--deny-warnings", "--fix", "{{files}}")
++    }
+     effect = "write"
+   }
+   workspace_indicator = "package.json"
+diff --git a/pkl/builtins/xmllint.pkl b/pkl/builtins/xmllint.pkl
+index 2aa7cded6..77fae97a2 100644
+--- a/pkl/builtins/xmllint.pkl
++++ b/pkl/builtins/xmllint.pkl
+@@ -8,7 +8,7 @@ import "../Config.pkl"
+ xmllint = new Config.Step {
+   glob = "**/*.xml"
+   check = new Config.CommandSpec {
+-    command = "xmllint --noout {{ files }}"
++    command = new Config.Command { argv = List("xmllint", "--noout", "{{files}}") }
+     effect = "read"
+   }
+ }
+diff --git a/pkl/builtins/xo.pkl b/pkl/builtins/xo.pkl
+index b63ba67c6..99f55b0c0 100644
+--- a/pkl/builtins/xo.pkl
++++ b/pkl/builtins/xo.pkl
+@@ -8,11 +8,11 @@ import "../Config.pkl"
+ xo = new Config.Step {
+   glob = List("**/*.js", "**/*.jsx", "**/*.ts", "**/*.tsx")
+   check = new Config.CommandSpec {
+-    command = "xo {{ files }}"
++    command = new Config.Command { argv = List("xo", "{{files}}") }
+     effect = "read"
+   }
+   fix = new Config.CommandSpec {
+-    command = "xo --fix {{ files }}"
++    command = new Config.Command { argv = List("xo", "--fix", "{{files}}") }
+     effect = "write"
+   }
+ }
+diff --git a/pkl/builtins/yamlfmt.pkl b/pkl/builtins/yamlfmt.pkl
+index 222557f73..8a76b49f3 100644
+--- a/pkl/builtins/yamlfmt.pkl
++++ b/pkl/builtins/yamlfmt.pkl
+@@ -9,11 +9,11 @@ import "./test/helpers.pkl"
+ yamlfmt = new Config.Step {
+   glob = List("**/*.yml", "**/*.yaml")
+   check_diff = new Config.CommandSpec {
+-    command = "yamlfmt -lint {{ files }}"
++    command = new Config.Command { argv = List("yamlfmt", "-lint", "{{files}}") }
+     effect = "read"
+   }
+   fix = new Config.CommandSpec {
+-    command = "yamlfmt {{ files }}"
++    command = new Config.Command { argv = List("yamlfmt", "{{files}}") }
+     effect = "write"
+   }
+   tests {
+diff --git a/pkl/builtins/yamllint.pkl b/pkl/builtins/yamllint.pkl
+index 2cbf83be6..3fa0b3d19 100644
+--- a/pkl/builtins/yamllint.pkl
++++ b/pkl/builtins/yamllint.pkl
+@@ -9,7 +9,7 @@ import "./test/helpers.pkl"
+ yamllint = new Config.Step {
+   glob = List("**/*.yml", "**/*.yaml")
+   check = new Config.CommandSpec {
+-    command = "yamllint --strict {{ files }}"
++    command = new Config.Command { argv = List("yamllint", "--strict", "{{files}}") }
+     effect = "read"
+   }
+   tests {
+diff --git a/pkl/builtins/zizmor.pkl b/pkl/builtins/zizmor.pkl
+index 502a9a9c3..bccc4a2d9 100644
+--- a/pkl/builtins/zizmor.pkl
++++ b/pkl/builtins/zizmor.pkl
+@@ -19,11 +19,11 @@ zizmor = new Config.Step {
+       "**/action.yaml",
+     )
+   check_diff = new Config.CommandSpec {
+-    command = "zizmor --no-progress {{ files }}"
++    command = new Config.Command { argv = List("zizmor", "--no-progress", "{{files}}") }
+     effect = "read"
+   }
+   fix = new Config.CommandSpec {
+-    command = "zizmor --no-progress --fix {{ files }}"
++    command = new Config.Command { argv = List("zizmor", "--no-progress", "--fix", "{{files}}") }
+     effect = "write"
+   }
+   tests {
+diff --git a/test/structured_argv.bats b/test/structured_argv.bats
+index e3dbab7a6..03ed6d1d7 100644
+--- a/test/structured_argv.bats
++++ b/test/structured_argv.bats
+@@ -83,7 +83,7 @@ EOF
+     assert_equal "${#lines[@]}" 4
+ }
+ 
+-@test "structured argv prefix composes with a builtin" {
++@test "structured argv prefix composes with builtins" {
+     cat <<EOF > hk.pkl
+ amends "$PKL_PATH/Config.pkl"
+ import "$PKL_PATH/Builtins.pkl"
+@@ -93,6 +93,9 @@ hooks {
+             ["ruff"] = (Builtins.ruff) {
+                 prefix = List("mise", "x", "--")
+             }
++            ["ruff_format"] = (Builtins.ruff_format) {
++                prefix = List("mise", "x", "--")
++            }
+         }
+     }
+ }

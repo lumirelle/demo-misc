@@ -1,0 +1,736 @@
+//! Single step job execution.
+//!
+//! This module contains the `run` method that executes a single job.
+//! It handles:
+//!
+//! - Condition evaluation
+//! - Profile checking
+//! - Template rendering
+//! - Command building and execution
+//! - Output capture
+//! - Error handling and progress updates
+
+use crate::hook::SkipReason;
+use crate::step_context::StepContext;
+use crate::step_job::{StepJob, StepJobStatus};
+use crate::timings::StepTimingGuard;
+use crate::{Result, env, tera};
+use clx::progress::ProgressStatus;
+use ensembler::CmdLineRunner;
+use eyre::WrapErr;
+use itertools::Itertools;
+use std::path::{Path, PathBuf};
+use std::process::Stdio;
+
+use super::expr_env::eval_condition;
+use super::shell::ShellType;
+use super::types::{
+    CheckFirstCmd, Command, CommandPrefix, Pattern, RenderedCommand, RunType, Step,
+};
+use crate::error::Error;
+
+/// Cap on the per-job progress message in printable characters. The
+/// rendered run command can be a multi-line shell script or contain
+/// inline-generated args; text mode prints every prop update verbatim,
+/// so an unbounded message floods CI logs. 2048 is generous for any
+/// realistic diagnostic and bounds the pathological case.
+const MAX_PROGRESS_MESSAGE_CHARS: usize = 2048;
+
+/// Truncate a progress message to `max_chars` printable characters with
+/// a trailing `…`. ANSI-aware via `console::truncate_str` so escape
+/// sequences don't get split mid-cluster or counted toward the budget.
+/// Returns the input unchanged if it fits.
+fn truncate_progress_message(s: &str, max_chars: usize) -> String {
+    if console::measure_text_width(s) <= max_chars {
+        return s.to_string();
+    }
+    console::truncate_str(s, max_chars, "…").into_owned()
+}
+
+impl Step {
+    pub fn commands_for_jobs<'a>(
+        &'a self,
+        run_type: RunType,
+        jobs: &[StepJob],
+    ) -> Vec<(&'static str, &'a Command)> {
+        let mut commands = Vec::new();
+        for job in jobs.iter().filter(|job| job.skip_reason.is_none()) {
+            let first = if job.check_first {
+                self.check_first_cmd().map(|command| command.command())
+            } else {
+                self.run_cmd(run_type)
+            };
+
+            // A failed check-first command falls through to the command for the
+            // requested run type. Include both possible commands in plans and
+            // safe-mode preflight even though a successful check-first command
+            // can make the fallback unnecessary at runtime.
+            let fallback = job.check_first.then(|| self.run_cmd(run_type)).flatten();
+            for command in [first, fallback]
+                .into_iter()
+                .flatten()
+                .filter(|command| !command.is_empty())
+            {
+                let field = self.command_field(command);
+                if !commands.iter().any(|(existing, _)| *existing == field) {
+                    commands.push((field, command));
+                }
+            }
+        }
+        commands
+    }
+
+    fn command_field(&self, command: &Command) -> &'static str {
+        if self
+            .check
+            .as_ref()
+            .is_some_and(|candidate| std::ptr::eq(candidate, command))
+        {
+            "check"
+        } else if self
+            .check_diff
+            .as_ref()
+            .is_some_and(|candidate| std::ptr::eq(candidate, command))
+        {
+            "check_diff"
+        } else if self
+            .check_list_files
+            .as_ref()
+            .is_some_and(|candidate| std::ptr::eq(candidate, command))
+        {
+            "check_list_files"
+        } else {
+            "fix"
+        }
+    }
+
+    /// Execute a single job.
+    ///
+    /// This is the core execution function that runs a command for a step.
+    /// It handles the full lifecycle from condition checking through command
+    /// execution and result handling.
+    ///
+    /// # Execution Flow
+    ///
+    /// 1. Check if hook has already failed (abort early)
+    /// 2. Evaluate condition expression (if configured)
+    /// 3. Check profile requirements
+    /// 4. Filter out deleted files
+    /// 5. Acquire semaphore and start job
+    /// 6. Render command template
+    /// 7. Execute command
+    /// 8. Handle success/failure
+    /// 9. Update progress
+    ///
+    /// # Arguments
+    ///
+    /// * `ctx` - The step execution context
+    /// * `job` - The job to execute (modified in place)
+    ///
+    /// # Returns
+    ///
+    /// `Ok(())` on success, `Err` if the command fails
+    pub(crate) async fn run(&self, ctx: &StepContext, job: &mut StepJob) -> Result<()> {
+        if ctx.hook_ctx.failed.is_cancelled() {
+            trace!("{self}: skipping step due to previous failure");
+            // Hide the job progress if it was created
+            if let Some(progress) = &job.progress {
+                progress.set_status(ProgressStatus::Hide);
+            }
+            return Ok(());
+        }
+        if let Some(job_condition) = &self.job_condition {
+            let val = eval_condition(job_condition, &ctx.hook_ctx.expr_ctx())?;
+            debug!("{self}: condition: {job_condition} = {val}");
+            if val == expr::Value::Bool(false) {
+                self.mark_skipped(ctx, &SkipReason::ConditionFalse)?;
+                return Ok(());
+            }
+        }
+        // After evaluating the condition, check profiles so condition-false wins over profiles
+        if let Some(reason) = self.profile_skip_reason() {
+            self.mark_skipped(ctx, &reason)?;
+            return Ok(());
+        }
+        job.progress = Some(job.build_progress(ctx));
+        job.status = StepJobStatus::Pending;
+        let semaphore = if let Some(semaphore) = job.semaphore.take() {
+            semaphore
+        } else {
+            ctx.hook_ctx.semaphore().await
+        };
+        job.status_start(ctx, semaphore).await?;
+        // Filter out files that no longer exist (e.g., deleted by parallel tasks)
+        // Use symlink_metadata to check if the path exists as a file/symlink (even if broken)
+        job.files.retain(|f| f.symlink_metadata().is_ok());
+        // Skip this job if all files were deleted
+        if job.files.is_empty() && self.has_filters() {
+            debug!("{self}: all files deleted before execution");
+            self.mark_skipped(ctx, &SkipReason::NoFilesToProcess)?;
+            return Ok(());
+        }
+        let mut tctx = job.tctx(&ctx.hook_ctx.tctx);
+        // `{{globs}}` contains every positive glob/regex pattern. Type-only
+        // selectors are represented by the already-filtered `{{files}}` list.
+        let patterns = if let Some(selectors) = &self.match_any {
+            selectors
+                .iter()
+                .filter_map(|selector| selector.glob.as_ref())
+                .collect::<Vec<_>>()
+        } else {
+            self.glob.iter().collect()
+        };
+        let globs = patterns
+            .into_iter()
+            .flat_map(|pattern| match pattern {
+                Pattern::Globs(globs) => globs.clone(),
+                Pattern::Regex { pattern, .. } => vec![pattern.clone()],
+            })
+            .collect::<Vec<_>>();
+        tctx.with_globs(&globs);
+        let file_msg = |files: &[PathBuf]| {
+            format!(
+                "{} file{}",
+                files.len(),
+                if files.len() == 1 { "" } else { "s" }
+            )
+        };
+        let check_first_cmd = if job.check_first {
+            self.check_first_cmd()
+        } else {
+            None
+        };
+        let run_cmd = if let Some(check_first_cmd) = check_first_cmd {
+            Some(check_first_cmd.command())
+        } else {
+            self.run_cmd(job.run_type)
+        };
+        let ran_check_list_files = matches!(check_first_cmd, Some(CheckFirstCmd::ListFiles(_)))
+            || (check_first_cmd.is_none() && run_cmd == self.check_list_files.as_ref());
+        let ran_check_diff = matches!(check_first_cmd, Some(CheckFirstCmd::Diff(_)))
+            || (check_first_cmd.is_none() && run_cmd == self.check_diff.as_ref());
+        let Some(run_cmd) = run_cmd.filter(|command| !command.is_empty()) else {
+            eyre::bail!("{self}: no run command");
+        };
+        // Render twice: once with the full file list for execution, and
+        // once with the display context — which truncates `files` /
+        // `workspace_files` to `first_file …` when there are multiple
+        // files. A 98-file step would otherwise emit ~4KB of paths in the
+        // progress message; this keeps the command shape and one
+        // concrete example path visible without unbounded expansion.
+        let run_for_display = run_cmd
+            .render(&tctx.for_display(), self.prefix.as_ref())
+            .map(|command| command.display(self.shell_type()))
+            .unwrap_or_else(|_| run_cmd.to_string());
+        let rendered_command = run_cmd
+            .render(&tctx, self.prefix.as_ref())
+            .wrap_err_with(|| format!("{self}: failed to render command template"))?;
+        let run = rendered_command.display(self.shell_type());
+        let display_pattern = |pattern: &Pattern| match pattern {
+            Pattern::Globs(globs) => globs.join(" "),
+            Pattern::Regex { pattern, .. } => format!("regex: {pattern}"),
+        };
+        let pattern_display = if let Some(selectors) = &self.match_any {
+            selectors
+                .iter()
+                .map(|selector| {
+                    let mut parts = Vec::new();
+                    if let Some(pattern) = &selector.glob {
+                        parts.push(display_pattern(pattern));
+                    }
+                    if let Some(types) = &selector.types {
+                        parts.push(format!("types: {}", types.join(", ")));
+                    }
+                    format!("({})", parts.join(" AND "))
+                })
+                .join(" OR ")
+        } else {
+            self.glob.as_ref().map(display_pattern).unwrap_or_default()
+        };
+        // Cap the full progress message: a `check =` value can be a
+        // multi-line shell script or an inline-generated command, and
+        // text mode prints every render verbatim. 2KB is generous for
+        // any realistic diagnostic and bounds the pathological case
+        // (e.g. a 200-line embedded script dumped on every prop update).
+        let raw_message = format!(
+            "{} – {} – {}",
+            file_msg(&job.files),
+            pattern_display,
+            run_for_display
+        );
+        let message = truncate_progress_message(&raw_message, MAX_PROGRESS_MESSAGE_CHARS);
+        job.progress.as_ref().unwrap().prop("message", &message);
+        job.progress.as_ref().unwrap().update();
+        if log::log_enabled!(log::Level::Trace) {
+            for file in &job.files {
+                trace!("{self}: {}", file.display());
+            }
+        }
+        // On Windows, `cmd.exe` has its own quoting rules that collide with
+        // Rust's MSVCRT-style argv escaping. `ShellType::Cmd::quote` produces
+        // cmd-appropriate quoting for rendered `{{files}}` / `{{workspace_files}}`
+        // strings, so we must append the final command line verbatim via
+        // `raw_arg` — otherwise Rust re-escapes the already-quoted payload and
+        // cmd.exe delivers tools arguments with literal `"` characters embedded.
+        let mut cmd = match &rendered_command {
+            RenderedCommand::Argv(argv) => CmdLineRunner::new_direct(&argv[0]).args(&argv[1..]),
+            RenderedCommand::Shell(run) => {
+                let use_raw_cmd = cfg!(windows) && matches!(self.shell_type(), ShellType::Cmd);
+                if let Some(shell) = &self.shell {
+                    let shell = shell.to_string();
+                    let shell = shell.split_whitespace().collect_vec();
+                    let mut cmd = if use_raw_cmd {
+                        CmdLineRunner::new_direct(shell[0])
+                    } else {
+                        CmdLineRunner::new(shell[0])
+                    };
+                    for arg in shell[1..].iter() {
+                        cmd = cmd.arg(arg);
+                    }
+                    if use_raw_cmd {
+                        cmd.raw_arg(run)
+                    } else {
+                        cmd.arg(run)
+                    }
+                } else if use_raw_cmd {
+                    CmdLineRunner::new_direct("cmd.exe").arg("/c").raw_arg(run)
+                } else {
+                    CmdLineRunner::new("sh")
+                        .arg("-o")
+                        .arg("errexit")
+                        .arg("-c")
+                        .arg(run)
+                }
+            }
+        };
+        cmd = cmd
+            .with_pr(job.progress.as_ref().unwrap().clone())
+            .with_cancel_token(ctx.hook_ctx.failed.clone())
+            .show_stderr_on_error(false)
+            .stderr_to_progress(true);
+        if let Some(stdin) = &self.stdin {
+            let rendered_stdin = tera::render(stdin, &tctx)?;
+            cmd = cmd.stdin_string(rendered_stdin);
+        }
+
+        if self.interactive {
+            clx::progress::pause();
+            cmd = cmd
+                .stdin(Stdio::inherit())
+                .stdout(Stdio::inherit())
+                .stderr(Stdio::inherit());
+        }
+        // Git invokes hooks from the work-tree root, so GIT_DIR alone is
+        // sufficient until hk scopes a step to a subdirectory. Make the root
+        // explicit only in the child process, keeping the temporary index from
+        // GIT_INDEX_FILE without mutating the environment shared by workers.
+        if std::env::var_os("GIT_DIR").is_some() && std::env::var_os("GIT_WORK_TREE").is_none() {
+            let root = std::env::current_dir()?;
+            if root.join(".git").exists() {
+                cmd = cmd.env("GIT_WORK_TREE", root);
+            }
+        }
+        if let Some(dir) = &self.dir {
+            cmd = cmd.current_dir(dir);
+            // With HK_MISE enabled, resolve the mise environment for the step's
+            // directory so tools/env from that directory's mise config (e.g. a
+            // subproject's mise.toml) are available even when hk was started
+            // from the repo root. Explicit step env still wins below.
+            if *env::HK_MISE {
+                let mise_env = crate::mise_env::mise_env_for_dir(Path::new(dir)).await;
+                for (key, value) in mise_env.iter() {
+                    cmd = cmd.env(key, value);
+                }
+            }
+        }
+        for (key, value) in &self.env {
+            let value = tera::render(value, &tctx)?;
+            cmd = cmd.env(key, value);
+        }
+        let timing_guard = StepTimingGuard::new(ctx.hook_ctx.timing.clone(), self);
+        let exec_result = cmd.execute().await;
+        timing_guard.finish();
+        // Record only commands that reached a running process. Template,
+        // environment, mise, or spawn failures must not claim an effect that
+        // never occurred. Script failures, cancellation, and timeouts all
+        // happen after the child started and therefore do count.
+        if matches!(
+            &exec_result,
+            Ok(_)
+                | Err(ensembler::Error::ScriptFailed(_))
+                | Err(ensembler::Error::Cancelled)
+                | Err(ensembler::Error::TimedOut)
+        ) {
+            ctx.hook_ctx.record_step_effect(
+                &self.name,
+                self.command_field(run_cmd),
+                run_cmd.effect(),
+            );
+        }
+        if self.interactive {
+            clx::progress::resume();
+        }
+        match exec_result {
+            Ok(result) => {
+                if self.diagnostic_format.is_some() && matches!(job.run_type, RunType::Check) {
+                    ctx.hook_ctx
+                        .append_diagnostic_output(&self.name, &result.combined_output);
+                }
+                // For both check_list_files and check_diff: stderr is informational only
+                // Files are read from stdout; stderr may contain warnings, debug info, etc.
+                if ran_check_list_files {
+                    debug!(
+                        "{self}: check_list_files succeeded (exit 0), stdout len={}, stderr len={}",
+                        result.stdout.len(),
+                        result.stderr.len()
+                    );
+                    if !result.stderr.trim().is_empty() {
+                        debug!("{self}: check_list_files stderr output:\n{}", result.stderr);
+                    }
+                    // Warn if exit 0 but stdout has content (misconfigured tool)
+                    if !result.stdout.trim().is_empty() {
+                        warn!(
+                            "{self}: check_list_files exited 0 (success) but returned files in stdout. This may indicate misconfiguration - the tool should exit non-zero when files need fixing."
+                        );
+                    }
+                } else if ran_check_diff {
+                    // For check_diff, stderr with exit 0 is just informational (e.g., "N files already formatted")
+                    debug!(
+                        "{self}: check_diff succeeded (exit 0), stdout len={}, stderr len={}",
+                        result.stdout.len(),
+                        result.stderr.len()
+                    );
+                }
+                // Save output for end-of-run summary based on configured mode
+                self.save_output_summary(
+                    ctx,
+                    job,
+                    &result.stdout,
+                    &result.stderr,
+                    &result.combined_output,
+                    false, // not a failure
+                );
+            }
+            Err(err) => {
+                if let ensembler::Error::ScriptFailed(e) = &err {
+                    if self.diagnostic_format.is_some() && matches!(job.run_type, RunType::Check) {
+                        ctx.hook_ctx
+                            .append_diagnostic_output(&self.name, &e.3.combined_output);
+                    }
+                    self.collect_failure_hint(ctx, &e.3.combined_output);
+                    if job.check_first && matches!(job.run_type, RunType::Check) {
+                        return Err(Error::CheckListFailed {
+                            source: eyre::eyre!("{}", err),
+                            stdout: e.3.stdout.clone(),
+                            stderr: e.3.stderr.clone(),
+                            combined: e.3.combined_output.clone(),
+                        })?;
+                    }
+                    // Save output from a failed command as well
+                    self.save_output_summary(
+                        ctx,
+                        job,
+                        &e.3.stdout,
+                        &e.3.stderr,
+                        &e.3.combined_output,
+                        true, // is a failure
+                    );
+
+                    // If we're in check mode and a fix command exists, collect a helpful suggestion
+                    self.collect_fix_suggestion(ctx, job, Some(run_cmd), Some(&e.3));
+                }
+                if job.check_first && job.run_type == RunType::Check {
+                    ctx.progress.set_status(ProgressStatus::Warn);
+                } else {
+                    ctx.progress.set_status(ProgressStatus::Failed);
+                }
+                return Err(err).wrap_err(run);
+            }
+        }
+        ctx.decrement_job_count();
+        job.status_finished()?;
+        Ok(())
+    }
+}
+
+impl Step {
+    /// Initialize the step with its name and validate configuration.
+    ///
+    /// Must be called after deserialization to set the step name and
+    /// validate that incompatible options aren't set together.
+    ///
+    /// # Arguments
+    ///
+    /// * `name` - The step name from the configuration
+    ///
+    /// # Errors
+    ///
+    /// Returns an error if both `stdin` and `interactive` are set.
+    pub(crate) fn init(&mut self, name: &str) -> Result<()> {
+        if self.stdin.is_some() && self.interactive {
+            eyre::bail!(
+                "Step '{}' can't have both `stdin` and `interactive = true`.",
+                name
+            );
+        }
+        if self.check_failed_files
+            && (self.check.is_none()
+                || (self.check_diff.is_none() && self.check_list_files.is_none()))
+        {
+            eyre::bail!(
+                "Step '{name}' with `check_failed_files = true` requires `check` and at least one \
+                 of `check_diff` or `check_list_files`."
+            );
+        }
+        let commands = [
+            self.check.as_ref(),
+            self.check_list_files.as_ref(),
+            self.check_diff.as_ref(),
+            self.fix.as_ref(),
+        ];
+        let has_argv = commands.iter().flatten().any(|command| command.is_argv());
+        let has_shell = commands.iter().flatten().any(|command| !command.is_argv());
+        if has_argv {
+            if self.shell.is_some() {
+                eyre::bail!("Step '{name}' can't combine structured argv commands with `shell`.");
+            }
+            if matches!(self.prefix, Some(CommandPrefix::Shell(_))) {
+                eyre::bail!(
+                    "Step '{name}' can't combine structured argv commands with a shell `prefix`."
+                );
+            }
+        }
+        if has_shell && matches!(self.prefix, Some(CommandPrefix::Argv(_))) {
+            eyre::bail!("Step '{name}' can't combine shell commands with an argv `prefix`.");
+        }
+        self.name = name.to_string();
+        if self.interactive {
+            self.exclusive = true;
+        }
+        Ok(())
+    }
+
+    /// Get the command to run for the given run type.
+    ///
+    /// For Fix mode, returns the fix command if available, otherwise falls back to check.
+    /// For Check mode, returns check, check_diff, or check_list_files (in that preference order).
+    pub fn run_cmd(&self, run_type: RunType) -> Option<&Command> {
+        match run_type {
+            RunType::Fix => {
+                self.fix
+                    .as_ref()
+                    // NB: Even if we don't have a fix command,
+                    // we still can run the `check` command.
+                    .or(self.run_cmd(RunType::Check))
+            }
+            RunType::Check => self
+                .check
+                .as_ref()
+                .or(self.check_diff.as_ref())
+                .or(self.check_list_files.as_ref()),
+        }
+    }
+
+    /// Get the command to run in "check first" mode.
+    ///
+    /// Prefers check_diff, then check_list_files, then check.
+    pub fn check_first_cmd(&self) -> Option<CheckFirstCmd<'_>> {
+        let is_present = |command: &&Command| !command.is_empty();
+        self.check_diff
+            .as_ref()
+            .filter(is_present)
+            .map(CheckFirstCmd::Diff)
+            .or_else(|| {
+                self.check_list_files
+                    .as_ref()
+                    .filter(is_present)
+                    .map(CheckFirstCmd::ListFiles)
+            })
+            .or_else(|| {
+                self.check
+                    .as_ref()
+                    .filter(is_present)
+                    .map(CheckFirstCmd::Check)
+            })
+    }
+
+    /// Check if this step has a command for the given run type.
+    pub fn has_command_for(&self, run_type: RunType) -> bool {
+        self.run_cmd(run_type)
+            .map(|command| !command.is_empty())
+            .unwrap_or(false)
+    }
+
+    /// Get the shell type for this step.
+    ///
+    /// Parses the shell configuration to determine the shell type,
+    /// defaulting to Sh on Unix or Cmd on Windows if not specified.
+    pub fn shell_type(&self) -> ShellType {
+        let shell = self
+            .shell
+            .as_ref()
+            .map(|s| s.to_string())
+            .unwrap_or_default();
+        let shell = shell.split_whitespace().next().unwrap_or_default();
+        let shell = shell.split(['/', '\\']).next_back().unwrap_or_default();
+        // Use case-insensitive matching for shell names
+        // Include .exe variants for Windows environments (Git Bash, MSYS2, Cygwin)
+        let shell_lower = shell.to_lowercase();
+        match shell_lower.as_str() {
+            "bash" | "bash.exe" => ShellType::Bash,
+            "dash" | "dash.exe" => ShellType::Dash,
+            "fish" | "fish.exe" => ShellType::Fish,
+            "sh" | "sh.exe" => ShellType::Sh,
+            "zsh" | "zsh.exe" => ShellType::Zsh,
+            "cmd" | "cmd.exe" => ShellType::Cmd,
+            "powershell" | "powershell.exe" | "pwsh" | "pwsh.exe" => ShellType::PowerShell,
+            "" if cfg!(windows) => ShellType::Cmd,
+            "" => ShellType::Sh,
+            _ => ShellType::Other(shell.to_string()),
+        }
+    }
+
+    /// Mark this step as skipped with the given reason.
+    ///
+    /// Updates the progress display and marks dependencies as satisfied.
+    pub fn mark_skipped(&self, ctx: &StepContext, reason: &SkipReason) -> Result<()> {
+        // Track all skip reasons for potential future use
+        ctx.hook_ctx.track_skip(&self.name, reason.clone());
+
+        if reason.should_display() {
+            ctx.progress.prop("message", &reason.message());
+            let status =
+                ProgressStatus::DoneCustom(crate::ui::style::eblue("⇢").bold().to_string());
+            ctx.progress.set_status(status);
+        } else {
+            // Step is skipped but message shouldn't be displayed
+            ctx.progress.set_status(ProgressStatus::Hide);
+        }
+        ctx.depends.mark_done(&self.name)?;
+        Ok(())
+    }
+}
+
+#[cfg(test)]
+mod tests {
+    use super::*;
+    use crate::step::Script;
+    use crate::step::types::ArgvCommand;
+
+    #[test]
+    fn truncate_progress_message_passes_short_input() {
+        assert_eq!(truncate_progress_message("hello", 100), "hello");
+    }
+
+    #[test]
+    fn truncate_progress_message_caps_long_input() {
+        let s = "a".repeat(5000);
+        let out = truncate_progress_message(&s, 2048);
+        assert_eq!(console::measure_text_width(&out), 2048);
+        assert!(out.ends_with('…'));
+    }
+
+    #[test]
+    fn truncate_progress_message_preserves_ansi_escapes() {
+        // Color escape + long plain run; truncation must be width-aware
+        // so the ANSI bytes don't count toward the budget.
+        let s = format!("\x1b[31m{}\x1b[0m", "a".repeat(100));
+        let out = truncate_progress_message(&s, 50);
+        assert_eq!(console::measure_text_width(&out), 50);
+    }
+
+    #[test]
+    fn truncate_progress_message_at_exact_length_unchanged() {
+        let s = "x".repeat(2048);
+        assert_eq!(truncate_progress_message(&s, 2048), s);
+    }
+
+    #[test]
+    fn test_has_command_for_empty_command() {
+        // Mirror the nix_fmt.pkl pattern: windows is empty, other has the real command.
+        // On Windows the empty string should make has_command_for return false;
+        // on every other platform the `other` fallback provides a valid command.
+        let step = Step {
+            name: "test_step".to_string(),
+            check: Some(Command::Shell(Script {
+                linux: None,
+                macos: None,
+                windows: Some("".to_string()),
+                other: Some("other_cmd".to_string()),
+            })),
+            fix: None,
+            ..Default::default()
+        };
+
+        #[cfg(target_os = "windows")]
+        {
+            assert!(!step.has_command_for(RunType::Check));
+        }
+
+        #[cfg(not(target_os = "windows"))]
+        {
+            assert!(step.has_command_for(RunType::Check));
+        }
+    }
+
+    #[test]
+    fn test_has_command_for_valid_command() {
+        // Test that has_command_for returns true when command is valid
+        let step = Step {
+            name: "test_step".to_string(),
+            check: Some(Command::Shell(Script {
+                linux: Some("cmd".to_string()),
+                macos: Some("cmd".to_string()),
+                windows: Some("cmd".to_string()),
+                other: Some("cmd".to_string()),
+            })),
+            fix: None,
+            ..Default::default()
+        };
+
+        // Should have a command on all platforms
+        assert!(step.has_command_for(RunType::Check));
+    }
+
+    #[test]
+    fn test_has_command_for_no_command() {
+        // Test that has_command_for returns false when no command is defined
+        let step = Step {
+            name: "test_step".to_string(),
+            check: None,
+            fix: None,
+            ..Default::default()
+        };
+
+        assert!(!step.has_command_for(RunType::Check));
+        assert!(!step.has_command_for(RunType::Fix));
+    }
+
+    #[test]
+    fn init_rejects_shell_prefix_for_structured_command() {
+        let mut step = Step {
+            check: Some(Command::Argv(ArgvCommand {
+                argv: vec!["tool".to_string()],
+            })),
+            prefix: Some(CommandPrefix::Shell("mise x --".to_string())),
+            ..Default::default()
+        };
+
+        let err = step.init("test").unwrap_err();
+
+        assert!(err.to_string().contains("shell `prefix`"));
+    }
+
+    #[test]
+    fn init_rejects_argv_prefix_for_shell_command() {
+        let mut step = Step {
+            check: Some("tool".parse().unwrap()),
+            prefix: Some(CommandPrefix::Argv(vec!["mise".to_string()])),
+            ..Default::default()
+        };
+
+        let err = step.init("test").unwrap_err();
+
+        assert!(err.to_string().contains("argv `prefix`"));
+    }
+}

@@ -1,0 +1,87 @@
+//! Step configuration and execution.
+//!
+//! This module provides the core step functionality for hk. A step represents
+//! a single linting or formatting task that operates on files.
+//!
+//! # Module Organization
+//!
+//! - [`types`] - Core type definitions (Step, Pattern, Script, RunType, OutputSummary)
+//! - [`shell`] - Shell type detection and quoting utilities
+//! - [`filtering`] - File filtering, binary/symlink detection, profile handling
+//! - [`batching`] - ARG_MAX handling and job batching
+//! - [`job_builder`] - Step job creation
+//! - [`execution`] - Async job orchestration
+//! - [`runner`] - Single job execution
+//! - [`check_parsing`] - Parsing check_list_files and check_diff output
+//! - [`diff`] - Applying unified diffs directly
+//! - [`output`] - Output capture and fix suggestions
+//! - [`progress`] - Progress bar management
+//! - [`expr_env`] - Expression evaluation for conditions
+//!
+//! # Usage
+//!
+//! Steps are typically created from configuration (hk.pkl) and executed via hooks:
+//!
+//! ```ignore
+//! // Steps are defined in hk.pkl
+//! ["eslint"] {
+//!     glob = "*.{js,ts}"
+//!     check = "eslint {{files}}"
+//!     fix = "eslint --fix {{files}}"
+//! }
+//! ```
+
+mod batching;
+mod check_parsing;
+mod diff;
+mod execution;
+mod expr_env;
+mod filtering;
+mod job_builder;
+mod output;
+mod progress;
+mod runner;
+mod shell;
+mod types;
+
+// Re-export public API
+pub use expr_env::{EXPR_CTX, eval_condition};
+pub use shell::ShellType;
+pub(crate) use types::RenderedCommand;
+#[cfg(test)]
+pub(crate) use types::{ArgvCommand, Command};
+pub use types::{
+    CommandEffect, CommandPrefix, DiagnosticFormat, FileSelector, OutputSummary, Pattern, RunType,
+    Script, Step,
+};
+
+// Re-export for potential external use (currently only used internally)
+#[allow(unused_imports)]
+pub use filtering::{is_binary_file, is_symlink_file};
+
+/// Strip ".orig" suffix from "---" lines when the next "+++" line doesn't have it.
+/// Go tools like gofmt add ".orig" only to the "---" line.
+pub(crate) fn strip_orig_suffix(diff: &str) -> String {
+    let mut result: Vec<String> = Vec::new();
+    let mut lines = diff.lines().peekable();
+    while let Some(line) = lines.next() {
+        if let Some(after_prefix) = line.strip_prefix("--- ")
+            && let Some(next) = lines.peek()
+            && next.starts_with("+++ ")
+            && !next.contains(".orig")
+        {
+            // Extract path portion (before any tab-separated timestamp)
+            let (path, rest) = after_prefix.split_once('\t').unwrap_or((after_prefix, ""));
+            if let Some(stripped) = path.strip_suffix(".orig") {
+                if rest.is_empty() {
+                    result.push(format!("--- {stripped}"));
+                } else {
+                    result.push(format!("--- {stripped}\t{rest}"));
+                }
+                continue;
+            }
+        }
+        result.push(line.to_string());
+    }
+    result.join("\n") + "\n"
+}

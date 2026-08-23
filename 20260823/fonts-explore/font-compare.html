@@ -1,0 +1,476 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>6 字体 9pt UI 对比 — Fraunces / Space Grotesk / Satoshi / Neue Protest / Gelasio / Merriweather</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,400;0,9..144,500;0,9..144,600;0,9..144,700;1,9..144,400&family=Gelasio:ital,wght@0,400;0,500;0,700;1,400&family=Merriweather:ital,wght@0,400;0,700;1,400&family=Space+Grotesk:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+<link href="https://api.fontshare.com/v2/css?f[]=neue-protest@400,700&f[]=satoshi@400;500;700&display=swap" rel="stylesheet">
+<style>
+:root{
+  --bg:#ece9e2;
+  --fg:#1a1815;
+  --muted:#6b6760;
+  --border:#c9c2b6;
+  --win-bg:#fbfaf7;
+  --win-chrome:#f0ede6;
+  --win-border:#d4cec3;
+  --hover:#ece8df;
+  --sel:#dfe9f7;
+  --radius:8px;
+  --ui-size:9pt;
+  --c-f:#b8472d;
+  --c-g:#2a5d8f;
+  --c-s:#5a7d3a;
+  --c-n:#7a3a8f;
+  --c-x:#1a6b6b;
+  --c-m:#8a5a2b;
+}
+*{margin:0;padding:0;box-sizing:border-box}
+body{background:var(--bg);color:var(--fg);font-family:'Space Grotesk',system-ui,sans-serif;line-height:1.5;-webkit-font-smoothing:antialiased;padding:2rem 1.5rem 4rem}
+
+.page-head{max-width:1400px;margin:0 auto 1.5rem}
+.page-head h1{font-family:'Fraunces',serif;font-size:1.8rem;font-weight:600;letter-spacing:-.02em;margin-bottom:.4rem}
+.page-head p{font-size:.9rem;color:var(--muted);max-width:720px;line-height:1.6}
+.page-head p code{font-family:'JetBrains Mono',monospace;font-size:.82rem;background:rgba(0,0,0,.06);padding:.1em .35em;border-radius:3px}
+
+.controls{max-width:1400px;margin:0 auto 1.5rem;display:flex;gap:.5rem;flex-wrap:wrap;align-items:center}
+.controls .label{font-family:'JetBrains Mono',monospace;font-size:.72rem;color:var(--muted);text-transform:uppercase;letter-spacing:.1em;margin-right:.5rem}
+.btn{font-family:'JetBrains Mono',monospace;font-size:.78rem;padding:.45rem .9rem;border:1px solid var(--border);background:var(--win-bg);color:var(--fg);border-radius:6px;cursor:pointer;transition:all .15s}
+.btn:hover{background:var(--hover)}
+.btn.active{background:var(--fg);color:var(--win-bg);border-color:var(--fg)}
+
+.compare{max-width:1400px;margin:0 auto;display:grid;grid-template-columns:repeat(4,1fr);gap:1rem;transition:all .3s}
+.compare.cols-2{grid-template-columns:1fr 1fr}
+.compare.cols-1{grid-template-columns:1fr;max-width:560px}
+.win-col{display:flex;flex-direction:column;gap:.5rem;min-width:0}
+.win-col.hide{display:none}
+
+.col-label{font-family:'JetBrains Mono',monospace;font-size:.72rem;color:var(--muted);text-transform:uppercase;letter-spacing:.1em;display:flex;justify-content:space-between;align-items:baseline}
+.col-label .font-name{font-weight:700}
+.col-label .pt{opacity:.6}
+.win-col[data-font="f"] .font-name{color:var(--c-f)}
+.win-col[data-font="g"] .font-name{color:var(--c-g)}
+.win-col[data-font="s"] .font-name{color:var(--c-s)}
+.win-col[data-font="n"] .font-name{color:var(--c-n)}
+.win-col[data-font="x"] .font-name{color:var(--c-x)}
+.win-col[data-font="m"] .font-name{color:var(--c-m)}
+
+.win{background:var(--win-bg);border:1px solid var(--win-border);border-radius:var(--radius);overflow:hidden;box-shadow:0 4px 16px rgba(0,0,0,.06);font-size:var(--ui-size)}
+.win.f{font-family:'Fraunces',serif;font-optical-sizing:auto;font-variation-settings:'opsz' 9}
+.win.g{font-family:'Space Grotesk',sans-serif}
+.win.s{font-family:'Satoshi',sans-serif}
+.win.n{font-family:'Neue Protest',serif}
+.win.x{font-family:'Gelasio',Georgia,serif}
+.win.m{font-family:'Merriweather',Georgia,serif}
+
+.titlebar{display:flex;align-items:center;justify-content:space-between;background:var(--win-chrome);padding:.32rem .6rem;border-bottom:1px solid var(--win-border)}
+.titlebar .tb-title{font-size:9pt;font-weight:500;color:var(--fg);display:flex;align-items:center;gap:.4rem;min-width:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.titlebar .tb-icon{width:.8rem;height:.8rem;border-radius:2px;opacity:.7;flex-shrink:0}
+.win-col[data-font="f"] .tb-icon{background:var(--c-f)}
+.win-col[data-font="g"] .tb-icon{background:var(--c-g)}
+.win-col[data-font="s"] .tb-icon{background:var(--c-s)}
+.win-col[data-font="n"] .tb-icon{background:var(--c-n)}
+.win-col[data-font="x"] .tb-icon{background:var(--c-x)}
+.win-col[data-font="m"] .tb-icon{background:var(--c-m)}
+.titlebar .tb-controls{display:flex;gap:.3rem;flex-shrink:0}
+.titlebar .tb-controls span{display:inline-block;width:.7rem;height:.7rem;border-radius:50%;background:var(--border)}
+.titlebar .tb-controls span:last-child{background:#d9534f;opacity:.5}
+
+.menubar{display:flex;gap:.05rem;padding:.2rem .5rem;border-bottom:1px solid var(--win-border);background:var(--win-bg)}
+.menubar span{font-size:9pt;padding:.1rem .4rem;border-radius:3px;color:var(--fg);white-space:nowrap}
+.menubar span:hover{background:var(--hover)}
+
+.toolbar{display:flex;align-items:center;gap:.3rem;padding:.3rem .5rem;border-bottom:1px solid var(--win-border);background:var(--win-chrome);flex-wrap:wrap}
+.tbtn{font-size:9pt;padding:.18rem .5rem;border:1px solid var(--win-border);background:var(--win-bg);border-radius:4px;color:var(--fg);white-space:nowrap}
+.tbtn.primary{background:var(--c-f);color:#fff;border-color:var(--c-f)}
+.win-col[data-font="g"] .tbtn.primary{background:var(--c-g);border-color:var(--c-g)}
+.win-col[data-font="s"] .tbtn.primary{background:var(--c-s);border-color:var(--c-s)}
+.win-col[data-font="n"] .tbtn.primary{background:var(--c-n);border-color:var(--c-n)}
+.win-col[data-font="x"] .tbtn.primary{background:var(--c-x);border-color:var(--c-x)}
+.win-col[data-font="m"] .tbtn.primary{background:var(--c-m);border-color:var(--c-m)}
+.search{flex:1;font-size:9pt;padding:.18rem .5rem;border:1px solid var(--win-border);background:var(--win-bg);border-radius:4px;color:var(--muted);min-width:60px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+
+.body{display:grid;grid-template-columns:90px 1fr;min-height:180px}
+.sidebar{border-right:1px solid var(--win-border);padding:.4rem .25rem;background:var(--win-chrome);font-size:9pt;min-width:0;overflow:hidden}
+.sidebar .grp{font-weight:600;color:var(--muted);font-size:8pt;text-transform:uppercase;letter-spacing:.05em;padding:.3rem .3rem .15rem;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.sidebar .item{padding:.2rem .3rem;border-radius:3px;color:var(--fg);display:flex;align-items:center;gap:.3rem;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.sidebar .item.active{background:var(--sel)}
+.sidebar .item .dot{width:.55rem;height:.55rem;border-radius:2px;background:var(--c-f);opacity:.4;flex-shrink:0}
+
+.main{padding:.4rem .4rem;font-size:9pt;min-width:0;overflow:hidden}
+.list-head{display:grid;grid-template-columns:1fr 50px 70px;gap:.4rem;padding:.2rem .2rem;border-bottom:1px solid var(--win-border);font-size:8pt;color:var(--muted);text-transform:uppercase;letter-spacing:.04em;font-weight:600}
+.list-row{display:grid;grid-template-columns:1fr 50px 70px;gap:.4rem;padding:.22rem .2rem;border-bottom:1px solid var(--hover);align-items:center}
+.list-row:hover{background:var(--hover)}
+.list-row .name{color:var(--fg);display:flex;align-items:center;gap:.3rem;min-width:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.list-row .name .ic{width:.65rem;height:.65rem;border-radius:2px;background:var(--border);flex-shrink:0}
+.list-row .name .ic.pdf{background:#d9534f;opacity:.6}
+.list-row .name .ic.txt{background:#5a9fd4;opacity:.6}
+.list-row .name .ic.jpg{background:#7ab55c;opacity:.6}
+.list-row .size,.list-row .date{color:var(--muted);font-variant-numeric:tabular-nums;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+
+.statusbar{display:flex;justify-content:space-between;padding:.22rem .6rem;border-top:1px solid var(--win-border);background:var(--win-chrome);font-size:8pt;color:var(--muted);white-space:nowrap;overflow:hidden}
+
+/* detail / glyph zoom */
+.detail{max-width:1400px;margin:3.5rem auto 0}
+.detail-head{display:flex;justify-content:space-between;align-items:baseline;margin-bottom:1rem;border-bottom:1px solid var(--border);padding-bottom:.75rem;flex-wrap:wrap;gap:.5rem}
+.detail-head h2{font-family:'Fraunces',serif;font-size:1.3rem;font-weight:600;letter-spacing:-.01em}
+.detail-head .hint{font-family:'JetBrains Mono',monospace;font-size:.72rem;color:var(--muted)}
+.legend{display:flex;gap:.75rem;flex-wrap:wrap}
+.legend span{font-family:'JetBrains Mono',monospace;font-size:.72rem;display:flex;align-items:center;gap:.3rem}
+.legend i{display:inline-block;width:.7rem;height:.7rem;border-radius:2px;font-style:normal}
+.legend .lf i{background:var(--c-f)}
+.legend .lg i{background:var(--c-g)}
+.legend .ls i{background:var(--c-s)}
+.legend .ln i{background:var(--c-n)}
+.legend .lx i{background:var(--c-x)}
+.legend .lm i{background:var(--c-m)}
+
+.glyph-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(220px,1fr));gap:.75rem}
+.glyph{background:var(--win-bg);border:1px solid var(--win-border);border-radius:var(--radius);overflow:hidden}
+.glyph .chars{display:grid;grid-template-columns:repeat(6,1fr);border-bottom:1px solid var(--win-border)}
+.glyph .ch{font-size:2.6rem;line-height:1;padding:1rem 0;text-align:center;border-right:1px solid var(--win-border)}
+.glyph .ch:last-child{border-right:none}
+.glyph .ch.f{font-family:'Fraunces',serif;font-optical-sizing:auto;font-variation-settings:'opsz' 9;color:var(--c-f)}
+.glyph .ch.g{font-family:'Space Grotesk',sans-serif;color:var(--c-g)}
+.glyph .ch.s{font-family:'Satoshi',sans-serif;color:var(--c-s)}
+.glyph .ch.n{font-family:'Neue Protest',serif;color:var(--c-n)}
+.glyph .ch.x{font-family:'Gelasio',Georgia,serif;color:var(--c-x)}
+.glyph .ch.m{font-family:'Merriweather',Georgia,serif;color:var(--c-m)}
+.glyph .meta{display:grid;grid-template-columns:repeat(6,1fr);font-size:8pt}
+.glyph .meta div{padding:.3rem .2rem;text-align:center;border-right:1px solid var(--win-border)}
+.glyph .meta div:last-child{border-right:none}
+.glyph .meta .lbl{font-family:'JetBrains Mono',monospace;color:var(--muted);display:block;font-size:7pt;text-transform:uppercase;letter-spacing:.06em}
+.glyph .meta .nm{font-weight:600;color:var(--fg);font-size:8.5pt}
+
+/* notes */
+.notes{max-width:1400px;margin:3rem auto 0;font-size:.88rem;color:var(--muted);line-height:1.7;border-top:1px solid var(--border);padding-top:1.5rem}
+.notes h3{font-family:'Fraunces',serif;font-size:1.05rem;font-weight:600;color:var(--fg);margin-bottom:.5rem}
+.notes ul{list-style:none;padding-left:0}
+.notes li{padding:.2rem 0;padding-left:1.1rem;position:relative}
+.notes li::before{content:'—';position:absolute;left:0;color:var(--accent)}
+.notes strong{color:var(--fg);font-weight:600}
+.tag-f{font-family:'Fraunces',serif;font-weight:600;color:var(--c-f)}
+.tag-g{font-family:'Space Grotesk',sans-serif;font-weight:600;color:var(--c-g)}
+.tag-s{font-family:'Satoshi',sans-serif;font-weight:600;color:var(--c-s)}
+.tag-n{font-family:'Neue Protest',serif;font-weight:600;color:var(--c-n)}
+.tag-x{font-family:'Gelasio',Georgia,serif;font-weight:600;color:var(--c-x)}
+.tag-m{font-family:'Merriweather',Georgia,serif;font-weight:600;color:var(--c-m)}
+
+@media(max-width:1400px){
+  .compare{grid-template-columns:1fr 1fr 1fr}
+  .compare.cols-2{grid-template-columns:1fr 1fr}
+  .compare.cols-1{grid-template-columns:1fr}
+}
+@media(max-width:1100px){
+  .compare{grid-template-columns:1fr 1fr}
+  .compare.cols-1{grid-template-columns:1fr}
+}
+@media(max-width:680px){
+  .compare,.compare.cols-2,.compare.cols-1{grid-template-columns:1fr;max-width:560px}
+  .glyph .ch{font-size:2rem;padding:.8rem 0}
+  .page-head h1{font-size:1.4rem}
+  .body{grid-template-columns:80px 1fr}
+}
+</style>
+</head>
+<body>
+
+<div class="page-head">
+  <h1>6 字体 9pt UI 对比</h1>
+  <p>六个字体在 <code>9pt</code> 下渲染同一 Windows 应用 UI。Fraunces / Neue Protest / Gelasio / Merriweather 是衬线，Space Grotesk / Satoshi 是无衬线。Fraunces 启用 <code>opsz 9</code> optical sizing。目标：找出有性格又能扛 9pt UI chrome 的字。</p>
+</div>
+
+<div class="controls">
+  <span class="label">View</span>
+  <button class="btn active" data-mode="all">六字并排</button>
+  <button class="btn" data-mode="f">Fraunces</button>
+  <button class="btn" data-mode="g">Space Grotesk</button>
+  <button class="btn" data-mode="s">Satoshi</button>
+  <button class="btn" data-mode="n">Neue Protest</button>
+  <button class="btn" data-mode="x">Gelasio</button>
+  <button class="btn" data-mode="m">Merriweather</button>
+  <span class="label" style="margin-left:1rem">Pairs</span>
+  <button class="btn" data-mode="fg">衬线 vs 无衬线</button>
+  <button class="btn" data-mode="gs">两无衬线</button>
+  <button class="btn" data-mode="xg">Gelasio vs Georgia 风</button>
+  <button class="btn" data-mode="serif">四衬线同框</button>
+</div>
+
+<div class="compare" id="compare">
+
+  <!-- Fraunces -->
+  <div class="win-col" data-font="f">
+    <div class="col-label"><span class="font-name">Fraunces</span><span class="pt">9pt · opsz 9</span></div>
+    <div class="win f">
+      <div class="titlebar"><div class="tb-title"><span class="tb-icon"></span>File Explorer</div><div class="tb-controls"><span></span><span></span><span></span></div></div>
+      <div class="menubar"><span>File</span><span>Edit</span><span>View</span><span>Help</span></div>
+      <div class="toolbar"><div class="tbtn">New</div><div class="tbtn">Open</div><div class="tbtn primary">Save</div><div class="search">Search…</div></div>
+      <div class="body">
+        <div class="sidebar">
+          <div class="grp">Quick</div>
+          <div class="item"><span class="dot"></span>Desktop</div>
+          <div class="item active"><span class="dot"></span>Docs</div>
+          <div class="item"><span class="dot"></span>Downloads</div>
+          <div class="grp">This PC</div>
+          <div class="item"><span class="dot"></span>Disk (C:)</div>
+        </div>
+        <div class="main">
+          <div class="list-head"><span>Name</span><span>Size</span><span>Modified</span></div>
+          <div class="list-row"><span class="name"><span class="ic pdf"></span>report.pdf</span><span class="size">2.4 MB</span><span class="date">03-14</span></div>
+          <div class="list-row"><span class="name"><span class="ic txt"></span>notes.txt</span><span class="size">12 KB</span><span class="date">03-12</span></div>
+          <div class="list-row"><span class="name"><span class="ic jpg"></span>cover.jpg</span><span class="size">4.1 MB</span><span class="date">03-10</span></div>
+          <div class="list-row"><span class="name"><span class="ic txt"></span>config.yaml</span><span class="size">3 KB</span><span class="date">03-09</span></div>
+          <div class="list-row"><span class="name"><span class="ic pdf"></span>invoice.pdf</span><span class="size">880 KB</span><span class="date">03-08</span></div>
+        </div>
+      </div>
+      <div class="statusbar"><span>5 items</span><span>6.5 MB</span></div>
+    </div>
+  </div>
+
+  <!-- Space Grotesk -->
+  <div class="win-col" data-font="g">
+    <div class="col-label"><span class="font-name">Space Grotesk</span><span class="pt">9pt</span></div>
+    <div class="win g">
+      <div class="titlebar"><div class="tb-title"><span class="tb-icon"></span>File Explorer</div><div class="tb-controls"><span></span><span></span><span></span></div></div>
+      <div class="menubar"><span>File</span><span>Edit</span><span>View</span><span>Help</span></div>
+      <div class="toolbar"><div class="tbtn">New</div><div class="tbtn">Open</div><div class="tbtn primary">Save</div><div class="search">Search…</div></div>
+      <div class="body">
+        <div class="sidebar">
+          <div class="grp">Quick</div>
+          <div class="item"><span class="dot"></span>Desktop</div>
+          <div class="item active"><span class="dot"></span>Docs</div>
+          <div class="item"><span class="dot"></span>Downloads</div>
+          <div class="grp">This PC</div>
+          <div class="item"><span class="dot"></span>Disk (C:)</div>
+        </div>
+        <div class="main">
+          <div class="list-head"><span>Name</span><span>Size</span><span>Modified</span></div>
+          <div class="list-row"><span class="name"><span class="ic pdf"></span>report.pdf</span><span class="size">2.4 MB</span><span class="date">03-14</span></div>
+          <div class="list-row"><span class="name"><span class="ic txt"></span>notes.txt</span><span class="size">12 KB</span><span class="date">03-12</span></div>
+          <div class="list-row"><span class="name"><span class="ic jpg"></span>cover.jpg</span><span class="size">4.1 MB</span><span class="date">03-10</span></div>
+          <div class="list-row"><span class="name"><span class="ic txt"></span>config.yaml</span><span class="size">3 KB</span><span class="date">03-09</span></div>
+          <div class="list-row"><span class="name"><span class="ic pdf"></span>invoice.pdf</span><span class="size">880 KB</span><span class="date">03-08</span></div>
+        </div>
+      </div>
+      <div class="statusbar"><span>5 items</span><span>6.5 MB</span></div>
+    </div>
+  </div>
+
+  <!-- Satoshi -->
+  <div class="win-col" data-font="s">
+    <div class="col-label"><span class="font-name">Satoshi</span><span class="pt">9pt</span></div>
+    <div class="win s">
+      <div class="titlebar"><div class="tb-title"><span class="tb-icon"></span>File Explorer</div><div class="tb-controls"><span></span><span></span><span></span></div></div>
+      <div class="menubar"><span>File</span><span>Edit</span><span>View</span><span>Help</span></div>
+      <div class="toolbar"><div class="tbtn">New</div><div class="tbtn">Open</div><div class="tbtn primary">Save</div><div class="search">Search…</div></div>
+      <div class="body">
+        <div class="sidebar">
+          <div class="grp">Quick</div>
+          <div class="item"><span class="dot"></span>Desktop</div>
+          <div class="item active"><span class="dot"></span>Docs</div>
+          <div class="item"><span class="dot"></span>Downloads</div>
+          <div class="grp">This PC</div>
+          <div class="item"><span class="dot"></span>Disk (C:)</div>
+        </div>
+        <div class="main">
+          <div class="list-head"><span>Name</span><span>Size</span><span>Modified</span></div>
+          <div class="list-row"><span class="name"><span class="ic pdf"></span>report.pdf</span><span class="size">2.4 MB</span><span class="date">03-14</span></div>
+          <div class="list-row"><span class="name"><span class="ic txt"></span>notes.txt</span><span class="size">12 KB</span><span class="date">03-12</span></div>
+          <div class="list-row"><span class="name"><span class="ic jpg"></span>cover.jpg</span><span class="size">4.1 MB</span><span class="date">03-10</span></div>
+          <div class="list-row"><span class="name"><span class="ic txt"></span>config.yaml</span><span class="size">3 KB</span><span class="date">03-09</span></div>
+          <div class="list-row"><span class="name"><span class="ic pdf"></span>invoice.pdf</span><span class="size">880 KB</span><span class="date">03-08</span></div>
+        </div>
+      </div>
+      <div class="statusbar"><span>5 items</span><span>6.5 MB</span></div>
+    </div>
+  </div>
+
+  <!-- Neue Protest -->
+  <div class="win-col" data-font="n">
+    <div class="col-label"><span class="font-name">Neue Protest</span><span class="pt">9pt</span></div>
+    <div class="win n">
+      <div class="titlebar"><div class="tb-title"><span class="tb-icon"></span>File Explorer</div><div class="tb-controls"><span></span><span></span><span></span></div></div>
+      <div class="menubar"><span>File</span><span>Edit</span><span>View</span><span>Help</span></div>
+      <div class="toolbar"><div class="tbtn">New</div><div class="tbtn">Open</div><div class="tbtn primary">Save</div><div class="search">Search…</div></div>
+      <div class="body">
+        <div class="sidebar">
+          <div class="grp">Quick</div>
+          <div class="item"><span class="dot"></span>Desktop</div>
+          <div class="item active"><span class="dot"></span>Docs</div>
+          <div class="item"><span class="dot"></span>Downloads</div>
+          <div class="grp">This PC</div>
+          <div class="item"><span class="dot"></span>Disk (C:)</div>
+        </div>
+        <div class="main">
+          <div class="list-head"><span>Name</span><span>Size</span><span>Modified</span></div>
+          <div class="list-row"><span class="name"><span class="ic pdf"></span>report.pdf</span><span class="size">2.4 MB</span><span class="date">03-14</span></div>
+          <div class="list-row"><span class="name"><span class="ic txt"></span>notes.txt</span><span class="size">12 KB</span><span class="date">03-12</span></div>
+          <div class="list-row"><span class="name"><span class="ic jpg"></span>cover.jpg</span><span class="size">4.1 MB</span><span class="date">03-10</span></div>
+          <div class="list-row"><span class="name"><span class="ic txt"></span>config.yaml</span><span class="size">3 KB</span><span class="date">03-09</span></div>
+          <div class="list-row"><span class="name"><span class="ic pdf"></span>invoice.pdf</span><span class="size">880 KB</span><span class="date">03-08</span></div>
+        </div>
+      </div>
+      <div class="statusbar"><span>5 items</span><span>6.5 MB</span></div>
+    </div>
+  </div>
+
+  <!-- Gelasio -->
+  <div class="win-col" data-font="x">
+    <div class="col-label"><span class="font-name">Gelasio</span><span class="pt">9pt</span></div>
+    <div class="win x">
+      <div class="titlebar"><div class="tb-title"><span class="tb-icon"></span>File Explorer</div><div class="tb-controls"><span></span><span></span><span></span></div></div>
+      <div class="menubar"><span>File</span><span>Edit</span><span>View</span><span>Help</span></div>
+      <div class="toolbar"><div class="tbtn">New</div><div class="tbtn">Open</div><div class="tbtn primary">Save</div><div class="search">Search…</div></div>
+      <div class="body">
+        <div class="sidebar">
+          <div class="grp">Quick</div>
+          <div class="item"><span class="dot"></span>Desktop</div>
+          <div class="item active"><span class="dot"></span>Docs</div>
+          <div class="item"><span class="dot"></span>Downloads</div>
+          <div class="grp">This PC</div>
+          <div class="item"><span class="dot"></span>Disk (C:)</div>
+        </div>
+        <div class="main">
+          <div class="list-head"><span>Name</span><span>Size</span><span>Modified</span></div>
+          <div class="list-row"><span class="name"><span class="ic pdf"></span>report.pdf</span><span class="size">2.4 MB</span><span class="date">03-14</span></div>
+          <div class="list-row"><span class="name"><span class="ic txt"></span>notes.txt</span><span class="size">12 KB</span><span class="date">03-12</span></div>
+          <div class="list-row"><span class="name"><span class="ic jpg"></span>cover.jpg</span><span class="size">4.1 MB</span><span class="date">03-10</span></div>
+          <div class="list-row"><span class="name"><span class="ic txt"></span>config.yaml</span><span class="size">3 KB</span><span class="date">03-09</span></div>
+          <div class="list-row"><span class="name"><span class="ic pdf"></span>invoice.pdf</span><span class="size">880 KB</span><span class="date">03-08</span></div>
+        </div>
+      </div>
+      <div class="statusbar"><span>5 items</span><span>6.5 MB</span></div>
+    </div>
+  </div>
+
+  <!-- Merriweather -->
+  <div class="win-col" data-font="m">
+    <div class="col-label"><span class="font-name">Merriweather</span><span class="pt">9pt</span></div>
+    <div class="win m">
+      <div class="titlebar"><div class="tb-title"><span class="tb-icon"></span>File Explorer</div><div class="tb-controls"><span></span><span></span><span></span></div></div>
+      <div class="menubar"><span>File</span><span>Edit</span><span>View</span><span>Help</span></div>
+      <div class="toolbar"><div class="tbtn">New</div><div class="tbtn">Open</div><div class="tbtn primary">Save</div><div class="search">Search…</div></div>
+      <div class="body">
+        <div class="sidebar">
+          <div class="grp">Quick</div>
+          <div class="item"><span class="dot"></span>Desktop</div>
+          <div class="item active"><span class="dot"></span>Docs</div>
+          <div class="item"><span class="dot"></span>Downloads</div>
+          <div class="grp">This PC</div>
+          <div class="item"><span class="dot"></span>Disk (C:)</div>
+        </div>
+        <div class="main">
+          <div class="list-head"><span>Name</span><span>Size</span><span>Modified</span></div>
+          <div class="list-row"><span class="name"><span class="ic pdf"></span>report.pdf</span><span class="size">2.4 MB</span><span class="date">03-14</span></div>
+          <div class="list-row"><span class="name"><span class="ic txt"></span>notes.txt</span><span class="size">12 KB</span><span class="date">03-12</span></div>
+          <div class="list-row"><span class="name"><span class="ic jpg"></span>cover.jpg</span><span class="size">4.1 MB</span><span class="date">03-10</span></div>
+          <div class="list-row"><span class="name"><span class="ic txt"></span>config.yaml</span><span class="size">3 KB</span><span class="date">03-09</span></div>
+          <div class="list-row"><span class="name"><span class="ic pdf"></span>invoice.pdf</span><span class="size">880 KB</span><span class="date">03-08</span></div>
+        </div>
+      </div>
+      <div class="statusbar"><span>5 items</span><span>6.5 MB</span></div>
+    </div>
+  </div>
+
+</div>
+
+<!-- Glyph detail -->
+<div class="detail">
+  <div class="detail-head">
+    <h2>字形细节</h2>
+    <div class="legend">
+      <span class="lf"><i></i>Fraunces</span>
+      <span class="lg"><i></i>Space Grotesk</span>
+      <span class="ls"><i></i>Satoshi</span>
+      <span class="ln"><i></i>Neue Protest</span>
+      <span class="lx"><i></i>Gelasio</span>
+      <span class="lm"><i></i>Merriweather</span>
+    </div>
+  </div>
+  <div class="glyph-grid" id="glyphGrid"></div>
+</div>
+
+<!-- Notes -->
+<div class="notes">
+  <h3>观察要点</h3>
+  <ul>
+    <li><strong>衬线 vs 无衬线</strong>：<span class="tag-f">Fraunces</span> <span class="tag-n">Neue Protest</span> <span class="tag-x">Gelasio</span> <span class="tag-m">Merriweather</span> 是衬线，9pt 下细笔画在 ClearType 易发虚；<span class="tag-g">Space Grotesk</span> <span class="tag-s">Satoshi</span> 无衬线，笔画均匀，小字号锐利。</li>
+    <li><strong>温度梯度</strong>：从冷到暖大致是 <span class="tag-g">Space Grotesk</span>（几何冷）→ <span class="tag-s">Satoshi</span>（humanist 暖）→ <span class="tag-x">Gelasio</span>（Georgia 风衬线，温和）→ <span class="tag-m">Merriweather</span>（屏读衬线，厚实）→ <span class="tag-n">Neue Protest</span>（展示衬线，有棱角）→ <span class="tag-f">Fraunces</span>（高对比衬线，最暖但最不适合 UI）。</li>
+    <li><strong>g / a</strong>：两个无衬线都是单层 a、开口 g；四个衬线里 Fraunces 是传统双层，Gelasio 接近 Georgia 的温和双层，Merriweather 的 g 偏圆厚，Neue Protest 的 g 更几何化——这是六套字体最一眼的辨识点。</li>
+    <li><strong>9pt 可读性</strong>：<span class="tag-s">Satoshi</span> 的 humanist 结构和较高 x-height 让它在 9pt 最舒服；<span class="tag-g">Space Grotesk</span> 紧随其后但更冷；四个衬线在 UI chrome 密度下都吃力，其中 <span class="tag-m">Merriweather</span> 笔画最粗、x-height 最高，是衬线里 9pt 最清晰的，但字形偏宽、占空间多；<span class="tag-x">Gelasio</span> 对比度低、字形紧凑，是衬线里 9pt 最稳的。</li>
+    <li><strong>性格留存</strong>：如果你要“有性格的 UI 字”，<span class="tag-s">Satoshi</span> 是最稳的选择——温度够、9pt 能用、不像 Inter 那么透明。如果你执意要衬线当 UI，<span class="tag-x">Gelasio</span> 是四个衬线里最稳的（笔画均匀、对比度低、字形紧凑），<span class="tag-m">Merriweather</span> 次之（笔画粗但占宽）。<span class="tag-n">Neue Protest</span> 性格最强但 9pt 下笔画粗细跳跃大，UI 里会“跳”。<span class="tag-f">Fraunces</span> 留给大字号。</li>
+  </ul>
+</div>
+
+<script>
+const glyphs = [
+  { ch:'a', note:'单层 vs 双层 a' },
+  { ch:'g', note:'g 的结构' },
+  { ch:'e', note:'横眼高度' },
+  { ch:'s', note:'s 收尾' },
+  { ch:'0', note:'零的椭圆' },
+  { ch:'O', note:'大写 O' },
+  { ch:'1', note:'一的起笔' },
+  { ch:'l', note:'小写 L' },
+  { ch:'@', note:'@ 螺旋' },
+  { ch:'&', note:'& 腰身' },
+  { ch:'R', note:'R 的腿' },
+  { ch:'Q', note:'Q 的尾巴' }
+];
+const grid = document.getElementById('glyphGrid');
+grid.innerHTML = glyphs.map(function(g){
+  return '<div class="glyph">' +
+    '<div class="chars">' +
+      '<div class="ch f">'+g.ch+'</div>' +
+      '<div class="ch g">'+g.ch+'</div>' +
+      '<div class="ch s">'+g.ch+'</div>' +
+      '<div class="ch n">'+g.ch+'</div>' +
+      '<div class="ch x">'+g.ch+'</div>' +
+      '<div class="ch m">'+g.ch+'</div>' +
+    '</div>' +
+    '<div class="meta">' +
+      '<div><span class="lbl">Fraunces</span></div>' +
+      '<div><span class="lbl">Grotesk</span></div>' +
+      '<div><span class="lbl">Satoshi</span></div>' +
+      '<div><span class="lbl">Protest</span></div>' +
+      '<div><span class="lbl">Gelasio</span></div>' +
+      '<div><span class="lbl">Merri</span></div>' +
+    '</div>' +
+  '</div>';
+}).join('');
+
+const compare = document.getElementById('compare');
+const cols = document.querySelectorAll('.win-col');
+document.querySelectorAll('.btn').forEach(function(b){
+  b.addEventListener('click', function(){
+    document.querySelectorAll('.btn').forEach(function(x){x.classList.remove('active')});
+    b.classList.add('active');
+    const mode = b.dataset.mode;
+    const show = {
+      all: ['f','g','s','n','x','m'],
+      f:   ['f'],
+      g:   ['g'],
+      s:   ['s'],
+      n:   ['n'],
+      x:   ['x'],
+      m:   ['m'],
+      fg:  ['f','n','x','m','g','s'],
+      gs:  ['g','s'],
+      xg:  ['x','f','n'],
+      serif: ['f','n','x','m']
+    }[mode];
+    cols.forEach(function(c){
+      c.classList.toggle('hide', show.indexOf(c.dataset.font) === -1);
+    });
+    const n = show.length;
+    compare.classList.remove('cols-1','cols-2');
+    if(n <= 1) compare.classList.add('cols-1');
+    else if(n === 2) compare.classList.add('cols-2');
+  });
+});
+</script>
+</body>
+</html>
