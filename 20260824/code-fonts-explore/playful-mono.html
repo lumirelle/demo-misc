@@ -1,0 +1,318 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>俏皮编程字体深挖 · Playful Code Type</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,400;9..144,600;9..144,700&family=Space+Mono:ital,wght@0,400;0,700;1,400;1,700&family=Comic+Neue:ital,wght@0,400;0,700;1,400;1,700&family=Patrick+Hand&family=Architects+Daughter&family=Caveat:wght@400;700&family=Kalam:wght@400;700&display=swap" rel="stylesheet">
+<link href="https://api.fontshare.com/v2/css?f[]=satoshi@400;500;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fontsource-variable/kode-mono@latest/wght.css">
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fontsource-variable/victor-mono@latest/wght.css">
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fontsource-variable/victor-mono@latest/wght-italic.css">
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fontsource/comic-mono@latest/400.css">
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fontsource/comic-mono@latest/700.css">
+<style>
+@font-face{
+  font-family:'Fantasque Sans Mono';
+  src:url('FantasqueSansMono-Regular.ttf') format('truetype');
+  font-weight:400;
+  font-display:swap;
+}
+@font-face{
+  font-family:'Fantasque Sans Mono';
+  src:url('FantasqueSansMono-Bold.ttf') format('truetype');
+  font-weight:700;
+  font-display:swap;
+}
+@font-face{
+  font-family:'Fantasque Sans Mono';
+  src:url('FantasqueSansMono-Italic.ttf') format('truetype');
+  font-weight:400;
+  font-style:italic;
+  font-display:swap;
+}
+:root{
+  --bg:#fbf6ec;
+  --fg:#2a2620;
+  --muted:#8a8074;
+  --border:#e0d6c4;
+  --card-bg:#fffdf7;
+  --card-chrome:#f5efe2;
+  --card-border:#e8ddc9;
+  --code-bg:#241f1a;
+  --code-fg:#f0ebe0;
+  --radius:12px;
+  --c-fs:#e8743b;   /* Fantasque 橙 — 主角 */
+  --c-sm:#d4a44e;   /* Space Mono 金 */
+  --c-cm:#c85a8f;   /* Comic Mono 粉 */
+  --c-km:#5a9d6a;   /* Kode Mono 绿 */
+  --c-vm:#9b6dc4;   /* Victor Mono 紫 */
+  --c-cn:#3a8fb7;   /* Comic Neue 蓝 */
+}
+*{margin:0;padding:0;box-sizing:border-box}
+body{background:var(--bg);color:var(--fg);font-family:'Satoshi',system-ui,sans-serif;line-height:1.5;-webkit-font-smoothing:antialiased;padding:2rem 1.5rem 4rem;
+  background-image:radial-gradient(circle at 1px 1px, rgba(0,0,0,.04) 1px, transparent 0);
+  background-size:24px 24px;}
+
+.page-head{max-width:1100px;margin:0 auto 2rem}
+.crumb{font-family:'Fantasque Sans Mono',ui-monospace,monospace;font-size:.74rem;color:var(--muted);text-transform:uppercase;letter-spacing:.08em;margin-bottom:.6rem}
+.crumb a{color:var(--c-fs);text-decoration:none}
+.page-head h1{font-family:'Fraunces',serif;font-size:2rem;font-weight:600;letter-spacing:-.02em;margin-bottom:.5rem}
+.page-head h1 .em{font-style:italic;color:var(--c-fs)}
+.page-head p{font-size:.92rem;color:var(--muted);max-width:760px;line-height:1.65}
+.page-head p code{font-family:'Fantasque Sans Mono',ui-monospace,monospace;font-size:.82rem;background:rgba(232,116,59,.12);padding:.1em .35em;border-radius:3px;color:var(--c-fs)}
+
+/* ===== controls ===== */
+.controls{max-width:1100px;margin:0 auto 1.5rem;display:flex;gap:.5rem;flex-wrap:wrap;align-items:center}
+.controls .label{font-family:'Fantasque Sans Mono',ui-monospace,monospace;font-size:.72rem;color:var(--muted);text-transform:uppercase;letter-spacing:.08em;margin-right:.5rem}
+.btn{font-family:'Fantasque Sans Mono',ui-monospace,monospace;font-size:.78rem;padding:.45rem .9rem;border:1px solid var(--border);background:var(--card-bg);color:var(--fg);border-radius:20px;cursor:pointer;transition:all .15s}
+.btn:hover{background:var(--card-chrome)}
+.btn.active{background:var(--fg);color:var(--card-bg);border-color:var(--fg)}
+
+/* ===== font cards ===== */
+.grid{max-width:1100px;margin:0 auto;display:grid;grid-template-columns:1fr;gap:1.5rem}
+.grid .fcard.hide{display:none}
+
+.fcard{background:var(--card-bg);border:1px solid var(--card-border);border-radius:var(--radius);overflow:hidden;box-shadow:0 4px 20px rgba(0,0,0,.06);display:grid;grid-template-columns:1fr 1.4fr;transition:transform .2s,box-shadow .2s}
+.fcard:hover{transform:translateY(-2px);box-shadow:0 8px 28px rgba(0,0,0,.1)}
+.fcard[data-font="fs"]{--accent:var(--c-fs)}
+.fcard[data-font="sm"]{--accent:var(--c-sm)}
+.fcard[data-font="cm"]{--accent:var(--c-cm)}
+.fcard[data-font="km"]{--accent:var(--c-km)}
+.fcard[data-font="vm"]{--accent:var(--c-vm)}
+.fcard[data-font="cn"]{--accent:var(--c-cn)}
+
+/* left: identity panel */
+.fcard .id-panel{padding:1.5rem 1.5rem;background:var(--card-chrome);border-right:1px solid var(--card-border);display:flex;flex-direction:column;gap:.75rem}
+.fcard .id-num{font-family:'Fantasque Sans Mono',monospace;font-size:.68rem;color:var(--muted);text-transform:uppercase;letter-spacing:.1em}
+.fcard .id-name{font-family:'Fraunces',serif;font-size:1.5rem;font-weight:600;color:var(--fg);line-height:1.1;letter-spacing:-.01em}
+.fcard .id-tag{font-family:'Fantasque Sans Mono',monospace;font-size:.7rem;color:var(--accent);font-weight:600;text-transform:uppercase;letter-spacing:.06em}
+.fcard .id-meta{font-family:'Fantasque Sans Mono',monospace;font-size:.68rem;color:var(--muted);line-height:1.5}
+.fcard .id-note{font-size:.82rem;color:var(--muted);line-height:1.6;margin-top:auto;padding-top:.75rem;border-top:1px solid var(--card-border)}
+.fcard .id-note strong{color:var(--fg)}
+
+/* big specimen glyph */
+.fcard .id-glyph{font-size:4rem;line-height:1;color:var(--accent);margin:.25rem 0 .5rem;text-align:center}
+.fcard[data-font="fs"] .id-glyph{font-family:'Fantasque Sans Mono',monospace}
+.fcard[data-font="sm"] .id-glyph{font-family:'Space Mono',monospace}
+.fcard[data-font="cm"] .id-glyph{font-family:'Comic Mono',monospace}
+.fcard[data-font="km"] .id-glyph{font-family:'Kode Mono Variable',monospace;font-variation-settings:'wght' 400}
+.fcard[data-font="vm"] .id-glyph{font-family:'Victor Mono Variable',monospace;font-variation-settings:'wght' 430}
+.fcard[data-font="cn"] .id-glyph{font-family:'Comic Neue',monospace}
+
+/* right: code + glyphs */
+.fcard .show-panel{padding:1.25rem;display:flex;flex-direction:column;gap:1rem;min-width:0}
+.code-win{background:var(--code-bg);border-radius:8px;overflow:hidden;border:1px solid #3a342e}
+.code-bar{display:flex;justify-content:space-between;align-items:center;padding:.3rem .6rem;background:#1f1b16;font-family:'Fantasque Sans Mono',monospace;font-size:.64rem;color:var(--muted)}
+.code-bar .lang{color:var(--accent);font-weight:600}
+.code-body{padding:.7rem .8rem;overflow-x:auto;white-space:pre;font-size:9pt;line-height:1.75;color:var(--code-fg)}
+.fcard[data-font="fs"] .code-body{font-family:'Fantasque Sans Mono',monospace}
+.fcard[data-font="sm"] .code-body{font-family:'Space Mono',monospace}
+.fcard[data-font="cm"] .code-body{font-family:'Comic Mono',monospace}
+.fcard[data-font="km"] .code-body{font-family:'Kode Mono Variable',monospace;font-variation-settings:'wght' 400}
+.fcard[data-font="vm"] .code-body{font-family:'Victor Mono Variable',monospace;font-variation-settings:'wght' 430}
+.fcard[data-font="cn"] .code-body{font-family:'Comic Neue',monospace}
+.code-body .c{color:#8ab36a;font-style:italic}
+.code-body .k{color:#7ab8e8}
+.code-body .t{color:#6ec9b0}
+.code-body .s{color:#e8a87c}
+.code-body .n{color:#d4c97e}
+.code-body .f{color:#e8d97a}
+.code-body .m{color:#d092d0}
+
+/* glyph strip */
+.glyphs{display:flex;gap:0;border:1px solid var(--card-border);border-radius:8px;overflow:hidden;background:var(--card-bg)}
+.glyphs .g{flex:1;text-align:center;font-size:1.4rem;line-height:1;padding:.5rem 0;color:var(--accent);border-right:1px solid var(--card-border);white-space:nowrap;overflow:hidden}
+.glyphs .g:last-child{border-right:none}
+.fcard[data-font="fs"] .glyphs .g{font-family:'Fantasque Sans Mono',monospace}
+.fcard[data-font="sm"] .glyphs .g{font-family:'Space Mono',monospace}
+.fcard[data-font="cm"] .glyphs .g{font-family:'Comic Mono',monospace}
+.fcard[data-font="km"] .glyphs .g{font-family:'Kode Mono Variable',monospace;font-variation-settings:'wght' 400}
+.fcard[data-font="vm"] .glyphs .g{font-family:'Victor Mono Variable',monospace;font-variation-settings:'wght' 430}
+.fcard[data-font="cn"] .glyphs .g{font-family:'Comic Neue',monospace}
+
+/* ===== glyph comparison ===== */
+.detail{max-width:1100px;margin:3rem auto 0}
+.detail-head{display:flex;justify-content:space-between;align-items:baseline;margin-bottom:1rem;border-bottom:1px solid var(--border);padding-bottom:.75rem;flex-wrap:wrap;gap:.5rem}
+.detail-head h2{font-family:'Fraunces',serif;font-size:1.3rem;font-weight:600;letter-spacing:-.01em}
+.legend{display:flex;gap:.6rem;flex-wrap:wrap}
+.legend span{font-family:'Fantasque Sans Mono',monospace;font-size:.68rem;display:flex;align-items:center;gap:.3rem;color:var(--muted)}
+.legend i{display:inline-block;width:.6rem;height:.6rem;border-radius:2px;font-style:normal}
+.legend .lfs i{background:var(--c-fs)}
+.legend .lsm i{background:var(--c-sm)}
+.legend .lcm i{background:var(--c-cm)}
+.legend .lkm i{background:var(--c-km)}
+.legend .lvm i{background:var(--c-vm)}
+.legend .lcn i{background:var(--c-cn)}
+
+.glyph-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(200px,1fr));gap:.6rem}
+.glyph-card{background:var(--card-bg);border:1px solid var(--card-border);border-radius:8px;overflow:hidden}
+.glyph-card .chars{display:grid;grid-template-columns:repeat(3,1fr);border-bottom:1px solid var(--card-border)}
+.glyph-card .ch{font-size:1.8rem;line-height:1;padding:.8rem 0;text-align:center;border-right:1px solid var(--card-border);white-space:nowrap;overflow:hidden}
+.glyph-card .ch:last-child{border-right:none}
+.glyph-card .ch.fs{font-family:'Fantasque Sans Mono',monospace;color:var(--c-fs)}
+.glyph-card .ch.sm{font-family:'Space Mono',monospace;color:var(--c-sm)}
+.glyph-card .ch.cm{font-family:'Comic Mono',monospace;color:var(--c-cm)}
+.glyph-card .ch.km{font-family:'Kode Mono Variable',monospace;font-variation-settings:'wght' 400;color:var(--c-km)}
+.glyph-card .ch.vm{font-family:'Victor Mono Variable',monospace;font-variation-settings:'wght' 430;color:var(--c-vm)}
+.glyph-card .ch.cn{font-family:'Comic Neue',monospace;color:var(--c-cn)}
+.glyph-card .meta{display:grid;grid-template-columns:repeat(3,1fr);font-size:7pt}
+.glyph-card .meta div{padding:.2rem .1rem;text-align:center;border-right:1px solid var(--card-border)}
+.glyph-card .meta div:last-child{border-right:none}
+.glyph-card .meta .lbl{font-family:'Fantasque Sans Mono',monospace;font-size:6pt;color:var(--muted);text-transform:uppercase;letter-spacing:.04em}
+
+/* ===== notes ===== */
+.notes{max-width:1100px;margin:3rem auto 0;font-size:.88rem;color:var(--muted);line-height:1.7;border-top:1px solid var(--border);padding-top:1.5rem}
+.notes h3{font-family:'Fraunces',serif;font-size:1.05rem;font-weight:600;color:var(--fg);margin-bottom:.5rem}
+.notes ul{list-style:none;padding-left:0}
+.notes li{padding:.2rem 0;padding-left:1.1rem;position:relative}
+.notes li::before{content:'✦';position:absolute;left:0;color:var(--c-fs);font-size:.8rem}
+.notes strong{color:var(--fg);font-weight:600}
+.tag-fs{font-family:'Fantasque Sans Mono',monospace;font-weight:700;color:var(--c-fs)}
+.tag-sm{font-family:'Space Mono',monospace;font-weight:700;color:var(--c-sm)}
+.tag-cm{font-family:'Comic Mono',monospace;font-weight:700;color:var(--c-cm)}
+.tag-km{font-family:'Kode Mono Variable',monospace;font-variation-settings:'wght' 700;color:var(--c-km)}
+.tag-vm{font-family:'Victor Mono Variable',monospace;font-variation-settings:'wght' 700;color:var(--c-vm)}
+.tag-cn{font-family:'Comic Neue',monospace;font-weight:700;color:var(--c-cn)}
+
+@media(max-width:760px){
+  .fcard{grid-template-columns:1fr}
+  .fcard .id-panel{border-right:none;border-bottom:1px solid var(--card-border)}
+  .glyph-grid{grid-template-columns:1fr 1fr}
+  .page-head h1{font-size:1.5rem}
+}
+</style>
+</head>
+<body>
+
+<div class="page-head">
+  <div class="crumb"><a href="../../20260823/fonts-explore/font-compare.html">20260823 · fonts-explore</a> &nbsp;›&nbsp; <a href="distinctive-mono.html">distinctive-mono</a> &nbsp;›&nbsp; <span class="em">playful</span></div>
+  <h1>俏皮编程字体<span class="em">深挖</span></h1>
+  <p>你说俏皮方向最对味。这页聚焦 <code>playful</code>——圆润、手写感、quirky 收尾、不严肃但能干活。六个字体按"俏皮浓度"从高到低排：<span class="tag-fs">Fantasque</span> 最疯（手写感拉满），<span class="tag-cn">Comic Neue</span> 最克制（Comic Sans 的体面版）。每个配带斜体注释的代码——俏皮字体的斜体往往才是灵魂。</p>
+</div>
+
+<div class="controls">
+  <span class="label">View</span>
+  <button class="btn active" data-mode="all">全部六字</button>
+  <button class="btn" data-mode="fs">Fantasque</button>
+  <button class="btn" data-mode="sm">Space Mono</button>
+  <button class="btn" data-mode="cm">Comic Mono</button>
+  <button class="btn" data-mode="km">Kode Mono</button>
+  <button class="btn" data-mode="vm">Victor Mono</button>
+  <button class="btn" data-mode="cn">Comic Neue</button>
+</div>
+
+<div class="grid" id="grid"></div>
+
+<!-- ===== glyph comparison ===== -->
+<div class="detail">
+  <div class="detail-head">
+    <h2>字形横评 · 俏皮辨识</h2>
+    <div class="legend">
+      <span class="lfs"><i></i>Fantasque</span>
+      <span class="lsm"><i></i>Space</span>
+      <span class="lcm"><i></i>ComicM</span>
+      <span class="lkm"><i></i>Kode</span>
+      <span class="lvm"><i></i>Victor</span>
+      <span class="lcn"><i></i>ComicN</span>
+    </div>
+  </div>
+  <div class="glyph-grid" id="glyphGrid"></div>
+</div>
+
+<!-- ===== notes ===== -->
+<div class="notes">
+  <h3>俏皮浓度笔记</h3>
+  <ul>
+    <li><strong>俏皮浓度排名</strong>（从疯到克制）：<span class="tag-fs">Fantasque Sans Mono</span>（手写感拉满，g/k 带 quirky 弯钩）&gt; <span class="tag-cm">Comic Mono</span>（Comic Sans 等宽，圆润亲和）&gt; <span class="tag-vm">Victor Mono</span>（正体内敛，斜体是草书灵魂）&gt; <span class="tag-sm">Space Mono</span>（复古印刷 quirky）&gt; <span class="tag-km">Kode Mono</span>（几何圆润，设计感）&gt; <span class="tag-cn">Comic Neue</span>（Comic Sans 的体面版，最克制）。</li>
+    <li><strong>主角 · <span class="tag-fs">Fantasque Sans Mono</span></strong>：如果你要"俏皮但能日常用"，这是最佳答案。它有手写感的温度，但等宽 metrics 严谨、9pt 可读性好——是少数"俏皮又不耽误干活"的字体。斜体尤其出彩（带连字）。开源免费，自托管。</li>
+    <li><strong>斜体是俏皮字体的灵魂</strong>：<span class="tag-vm">Victor Mono</span> 正体是规矩 humanist，但斜体是真正的手写草书——配 italic 主题（注释、类型名走斜体）瞬间出彩。<span class="tag-fs">Fantasque</span> 的斜体也带手写弯钩。代码里斜体注释是展示俏皮的最佳位置。</li>
+    <li><strong>g 和 k 是俏皮辨识码</strong>：<span class="tag-fs">Fantasque</span> 的 g 是双层带下伸弯钩、k 带圆肚；<span class="tag-sm">Space Mono</span> 的 g 是单层 quirky 收尾；<span class="tag-cm">Comic Mono</span> 的 g 圆润单层。看 g 就能认出俏皮字体的"流派"。</li>
+    <li><strong>和 Merriweather 搭不搭</strong>：俏皮字体配 <span style="font-family:Merriweather,serif;font-weight:700">Merriweather</span>（厚实屏读衬线）会有"正经 + 俏皮"的反差萌——正文严肃、代码活泼。其中 <span class="tag-fs">Fantasque</span> 的手写温度和 Merriweather 的暖厚实最同温；<span class="tag-km">Kode Mono</span> 的几何圆润则提供"现代俏皮"的反差。</li>
+    <li><strong>正经项目慎用清单</strong>：<span class="tag-cm">Comic Mono</span> 和 <span class="tag-cn">Comic Neue</span> 带"Comic Sans 污名"，在严肃代码库可能被吐槽。但用于个人项目、教学、演示、博客代码块——俏皮就是风格声明。<span class="tag-fs">Fantasque</span> 和 <span class="tag-km">Kode</span> 是"俏皮但不会被吐槽"的安全选择。</li>
+  </ul>
+</div>
+
+<script>
+/* ---- code snippet with italic comments ---- */
+const code = `<span class="c">// a little event bus — 0Oo 1lI| => !== ::</span>
+<span class="k">type</span> <span class="t">Handler</span>&lt;T&gt; = (p: T) =&gt; <span class="t">void</span>;
+
+<span class="k">class</span> <span class="t">Bus</span>&lt;E <span class="k">extends</span> <span class="t">Record</span>&lt;<span class="k">string</span>, <span class="k">unknown</span>&gt;&gt; {
+  <span class="c">// register a handler, get back an unsubscribe fn</span>
+  <span class="f">on</span>&lt;K <span class="k">extends</span> <span class="k">keyof</span> E&gt;(ev: K, fn: <span class="t">Handler</span>&lt;E[K]&gt;): () =&gt; <span class="k">void</span> {
+    <span class="k">const</span> s = <span class="k">this</span>.<span class="m">#h</span>.<span class="f">get</span>(ev) ?? <span class="k">new</span> <span class="t">Set</span>();
+    s.<span class="f">add</span>(fn);
+    <span class="k">return</span> () =&gt; s.<span class="f">delete</span>(fn);
+  }
+}
+
+<span class="k">const</span> bus = <span class="k">new</span> <span class="t">Bus</span>&lt;{ login: { id: <span class="k">number</span> } }&gt;();
+bus.<span class="f">on</span>(<span class="s">'login'</span>, ({ id }) =&gt; <span class="f">log</span>(<span class="s">\`user #\${id}\`</span>));`;
+
+/* ---- font definitions ---- */
+const fonts = [
+  { id:'fs', num:'01', name:'Fantasque Sans Mono', tag:'HANDWRITTEN WARM', glyph:'g', meta:'400 / 700 / italic\n开源 · 自托管', note:'<strong>俏皮但能日常用</strong>。手写感温度拉满，g/k 带 quirky 弯钩，但等宽严谨、9pt 可读。斜体带连字，是灵魂。' },
+  { id:'sm', num:'02', name:'Space Mono', tag:'RETRO QUIRKY', glyph:'g', meta:'400 / 700 / italic\nGoogle Fonts', note:'<strong>复古印刷感</strong>。Colophon Foundry 出品，单层 g/a 带 quirky 收尾。Google Fonts 上最有设计气质的俏皮 mono。' },
+  { id:'cm', num:'03', name:'Comic Mono', tag:'COMIC SANS MONO', glyph:'a', meta:'400 / 700\nFontsource', note:'<strong>Comic Sans 等宽版</strong>。圆润亲和、不吓人。教学/演示专用，正经项目带"污名"——但俏皮就是声明。' },
+  { id:'km', num:'04', name:'Kode Mono', tag:'GEOMETRIC SOFT', glyph:'a', meta:'var · wght 100–700\nFontsource', note:'<strong>几何骨架 + 圆润收尾</strong>。Indian Type Foundry 出品。俏皮但有设计感、不会被吐槽，可变字体。' },
+  { id:'vm', num:'05', name:'Victor Mono', tag:'CURSIVE ITALIC', glyph:'g', meta:'var · wght 100–700\nFontsource', note:'<strong>正体内敛，斜体是草书灵魂</strong>。配 italic 主题（注释走斜体）瞬间出彩。可变字体，免费 Operator Mono 平替。' },
+  { id:'cn', num:'06', name:'Comic Neue', tag:'COMIC REFINED', glyph:'a', meta:'400 / 700 / italic\nGoogle Fonts', note:'<strong>Comic Sans 的体面版</strong>。最克制的俏皮——保留了圆润亲和，但笔画更规整。俏皮浓度最低，最"安全"。' }
+];
+
+/* ---- build cards ---- */
+document.getElementById('grid').innerHTML = fonts.map(function(f){
+  return '<div class="fcard" data-font="'+f.id+'">' +
+    '<div class="id-panel">' +
+      '<div class="id-num">'+f.num+' / 06</div>' +
+      '<div class="id-glyph">'+f.glyph+'</div>' +
+      '<div class="id-name">'+f.name+'</div>' +
+      '<div class="id-tag">'+f.tag+'</div>' +
+      '<div class="id-meta">'+f.meta.replace(/\n/g,'<br>')+'</div>' +
+      '<div class="id-note">'+f.note+'</div>' +
+    '</div>' +
+    '<div class="show-panel">' +
+      '<div class="code-win">' +
+        '<div class="code-bar"><span>emitter.ts</span><span class="lang">'+f.name+'</span></div>' +
+        '<div class="code-body">'+code+'</div>' +
+      '</div>' +
+      '<div class="glyphs">' +
+        '<div class="g">0Oo</div><div class="g">1lI|</div><div class="g">g</div><div class="g">a</div><div class="g">=&gt;</div><div class="g">::</div><div class="g">@</div>' +
+      '</div>' +
+    '</div>' +
+  '</div>';
+}).join('');
+
+/* ---- view controls ---- */
+const cards = document.querySelectorAll('.fcard');
+document.querySelectorAll('.btn').forEach(function(b){
+  b.addEventListener('click', function(){
+    document.querySelectorAll('.btn').forEach(function(x){ x.classList.remove('active'); });
+    b.classList.add('active');
+    const mode = b.dataset.mode;
+    cards.forEach(function(c){ c.classList.toggle('hide', mode !== 'all' && c.dataset.font !== mode); });
+  });
+});
+
+/* ---- glyph comparison ---- */
+const glyphs = [
+  { ch:'g', note:'g' }, { ch:'a', note:'a' }, { ch:'k', note:'k' },
+  { ch:'0', note:'零' }, { ch:'@', note:'@' }, { ch:'=>', note:'箭头' },
+  { ch:'::', note:'双冒号' }, { ch:'&', note:'&' }, { ch:'Q', note:'Q' }
+];
+const fontIds = ['fs','sm','cm','km','vm','cn'];
+document.getElementById('glyphGrid').innerHTML = glyphs.map(function(g){
+  return '<div class="glyph-card">' +
+    '<div class="chars">' +
+      fontIds.map(function(id){ return '<div class="ch '+id+'">'+g.ch+'</div>'; }).join('') +
+    '</div>' +
+    '<div class="meta">' +
+      fontIds.map(function(id){ return '<div><span class="lbl">'+id.toUpperCase()+'</span></div>'; }).join('') +
+    '</div>' +
+  '</div>';
+}).join('');
+</script>
+</body>
+</html>

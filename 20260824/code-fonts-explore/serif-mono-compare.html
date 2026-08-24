@@ -1,0 +1,404 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>更衬线的编程字体 · Serif Mono for Merriweather</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,400;9..144,600;9..144,700&family=Merriweather:ital,wght@0,400;0,700;1,400&family=Cutive+Mono&family=Nova+Mono&display=swap" rel="stylesheet">
+<link href="https://api.fontshare.com/v2/css?f[]=satoshi@400;500;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fontsource/monaspace-radon@latest/400.css">
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fontsource/monaspace-radon@latest/500.css">
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fontsource/monaspace-radon@latest/700.css">
+<style>
+@font-face{
+  font-family:'Recursive';
+  src:url('Recursive-var.ttf') format('truetype-variations');
+  font-weight:300 1000;
+  font-display:swap;
+}
+@font-face{
+  font-family:'Monaspace Xenon';
+  src:url('monaspace-xenon-var.ttf') format('truetype-variations');
+  font-weight:200 800;
+  font-display:swap;
+}
+:root{
+  --bg:#ece9e2;
+  --fg:#1a1815;
+  --muted:#6b6760;
+  --border:#c9c2b6;
+  --win-bg:#fbfaf7;
+  --win-chrome:#f0ede6;
+  --win-border:#d4cec3;
+  --hover:#ece8df;
+  --radius:8px;
+  --ui-size:9pt;
+  --code-bg:#1c1b19;
+  --code-fg:#d4d4d4;
+  --c-r:#2a5d8f;   /* Recursive 蓝 */
+  --c-x:#1a6b6b;   /* Xenon 青绿 — 主角 */
+  --c-d:#7a3a8f;   /* Radon 紫 */
+  --c-c:#8a5a2b;   /* Cutive 棕 — 打字机 */
+  --c-n:#b8472d;   /* Nova 红橙 */
+  --casl:0.5;
+  --xen-wght:480;
+}
+*{margin:0;padding:0;box-sizing:border-box}
+body{background:var(--bg);color:var(--fg);font-family:'Satoshi',system-ui,sans-serif;line-height:1.5;-webkit-font-smoothing:antialiased;padding:2rem 1.5rem 4rem}
+
+.page-head{max-width:1200px;margin:0 auto 1.5rem}
+.crumb{font-family:'Recursive',ui-monospace,monospace;font-variation-settings:'CASL' 0.4,'MONO' 1,'slnt' 0,'wght' 450;font-size:.72rem;color:var(--muted);text-transform:uppercase;letter-spacing:.1em;margin-bottom:.6rem}
+.crumb a{color:var(--c-x);text-decoration:none}
+.page-head h1{font-family:'Fraunces',serif;font-size:1.8rem;font-weight:600;letter-spacing:-.02em;margin-bottom:.4rem}
+.page-head p{font-size:.9rem;color:var(--muted);max-width:780px;line-height:1.6}
+.page-head p code{font-family:'Recursive',ui-monospace,monospace;font-variation-settings:'CASL' 0.4,'MONO' 1,'slnt' 0,'wght' 450;font-size:.82rem;background:rgba(0,0,0,.06);padding:.1em .35em;border-radius:3px}
+
+/* ===== Xenon weight tuner ===== */
+.tuner{max-width:1200px;margin:0 auto 2rem;background:var(--win-bg);border:1px solid var(--win-border);border-radius:12px;padding:1.25rem 1.75rem;box-shadow:0 4px 16px rgba(0,0,0,.05)}
+.tuner-top{display:flex;justify-content:space-between;align-items:baseline;margin-bottom:.75rem;flex-wrap:wrap;gap:.5rem}
+.tuner-label{font-family:'Recursive',ui-monospace,monospace;font-variation-settings:'CASL' 0.4,'MONO' 1,'slnt' 0,'wght' 450;font-size:.72rem;color:var(--muted);text-transform:uppercase;letter-spacing:.1em}
+.tuner-label b{color:var(--c-x)}
+.tuner-value{font-family:'Monaspace Xenon',monospace;font-variation-settings:'wght' var(--xen-wght);font-size:1.8rem;font-weight:700;color:var(--c-x);line-height:1;letter-spacing:-.02em}
+.slider-wrap{position:relative;padding:.25rem 0 .75rem}
+input[type=range].xen{width:100%;-webkit-appearance:none;appearance:none;height:6px;border-radius:3px;background:linear-gradient(to right,#c9c2b6,var(--c-x));outline:none;cursor:pointer}
+input[type=range].xen::-webkit-slider-thumb{-webkit-appearance:none;appearance:none;width:22px;height:22px;border-radius:50%;background:var(--win-bg);border:3px solid var(--c-x);cursor:grab;box-shadow:0 2px 6px rgba(0,0,0,.15)}
+input[type=range].xen::-moz-range-thumb{width:22px;height:22px;border-radius:50%;background:var(--win-bg);border:3px solid var(--c-x);cursor:grab}
+.ticks{display:flex;justify-content:space-between;font-family:'Recursive',ui-monospace,monospace;font-variation-settings:'CASL' 0.4,'MONO' 1,'slnt' 0,'wght' 450;font-size:.62rem;color:var(--muted);margin-top:.4rem}
+.tuner-hint{font-size:.82rem;color:var(--muted);line-height:1.6;margin-top:.75rem;padding-top:.75rem;border-top:1px solid var(--border)}
+.tuner-hint strong{color:var(--fg)}
+
+/* ===== controls ===== */
+.controls{max-width:1200px;margin:0 auto 1.5rem;display:flex;gap:.5rem;flex-wrap:wrap;align-items:center}
+.controls .label{font-family:'Recursive',ui-monospace,monospace;font-variation-settings:'CASL' 0.4,'MONO' 1,'slnt' 0,'wght' 450;font-size:.72rem;color:var(--muted);text-transform:uppercase;letter-spacing:.1em;margin-right:.5rem}
+.btn{font-family:'Recursive',ui-monospace,monospace;font-variation-settings:'CASL' 0.4,'MONO' 1,'slnt' 0,'wght' 450;font-size:.78rem;padding:.45rem .9rem;border:1px solid var(--border);background:var(--win-bg);color:var(--fg);border-radius:6px;cursor:pointer;transition:all .15s}
+.btn:hover{background:var(--hover)}
+.btn.active{background:var(--fg);color:var(--win-bg);border-color:var(--fg)}
+
+/* ===== comparison grid ===== */
+.compare{max-width:1200px;margin:0 auto;display:grid;grid-template-columns:repeat(3,1fr);gap:1rem;transition:all .3s}
+.compare.cols-2{grid-template-columns:1fr 1fr}
+.compare.cols-1{grid-template-columns:1fr;max-width:680px}
+.win-col{display:flex;flex-direction:column;gap:.5rem;min-width:0}
+.win-col.hide{display:none}
+
+.col-label{font-family:'Recursive',ui-monospace,monospace;font-variation-settings:'CASL' 0.4,'MONO' 1,'slnt' 0,'wght' 450;font-size:.72rem;color:var(--muted);text-transform:uppercase;letter-spacing:.1em;display:flex;justify-content:space-between;align-items:baseline}
+.col-label .font-name{font-weight:700}
+.col-label .pt{opacity:.6}
+.col-label .role{font-size:.62rem;opacity:.55;font-style:italic}
+.win-col[data-font="r"] .font-name{color:var(--c-r)}
+.win-col[data-font="x"] .font-name{color:var(--c-x)}
+.win-col[data-font="d"] .font-name{color:var(--c-d)}
+.win-col[data-font="c"] .font-name{color:var(--c-c)}
+.win-col[data-font="n"] .font-name{color:var(--c-n)}
+
+.card{background:var(--win-bg);border:1px solid var(--win-border);border-radius:var(--radius);overflow:hidden;box-shadow:0 4px 16px rgba(0,0,0,.06);display:flex;flex-direction:column}
+.card-head{display:flex;align-items:center;justify-content:space-between;padding:.4rem .65rem;background:var(--win-chrome);border-bottom:1px solid var(--win-border)}
+.card-head .tag{font-family:'Recursive',ui-monospace,monospace;font-variation-settings:'CASL' 0.4,'MONO' 1,'slnt' 0,'wght' 450;font-size:.66rem;text-transform:uppercase;letter-spacing:.08em;color:var(--muted);display:flex;align-items:center;gap:.35rem}
+.card-head .tag b{color:var(--fg)}
+.win-col[data-font="r"] .tag b{color:var(--c-r)}
+.win-col[data-font="x"] .tag b{color:var(--c-x)}
+.win-col[data-font="d"] .tag b{color:var(--c-d)}
+.win-col[data-font="c"] .tag b{color:var(--c-c)}
+.win-col[data-font="n"] .tag b{color:var(--c-n)}
+.card-head .dot{width:.6rem;height:.6rem;border-radius:2px}
+.win-col[data-font="r"] .dot{background:var(--c-r)}
+.win-col[data-font="x"] .dot{background:var(--c-x)}
+.win-col[data-font="d"] .dot{background:var(--c-d)}
+.win-col[data-font="c"] .dot{background:var(--c-c)}
+.win-col[data-font="n"] .dot{background:var(--c-n)}
+
+/* Merriweather article body */
+.article{padding:.85rem 1rem .6rem}
+.article .meta{font-family:'Recursive',ui-monospace,monospace;font-variation-settings:'CASL' 0.4,'MONO' 1,'slnt' 0,'wght' 450;font-size:.64rem;color:var(--muted);text-transform:uppercase;letter-spacing:.1em;margin-bottom:.4rem}
+.article h3{font-family:'Merriweather',Georgia,serif;font-size:1rem;font-weight:700;line-height:1.3;margin-bottom:.45rem;color:var(--fg)}
+.article p{font-family:'Merriweather',Georgia,serif;font-size:.82rem;line-height:1.65;color:#2a2724;margin-bottom:.5rem}
+.article p code{font-size:.78rem;background:rgba(0,0,0,.05);padding:.05em .3em;border-radius:3px}
+.win-col[data-font="r"] .article p code{font-family:'Recursive',monospace;font-variation-settings:'CASL' var(--casl),'MONO' 1,'slnt' 0,'wght' 500;color:var(--c-r)}
+.win-col[data-font="x"] .article p code{font-family:'Monaspace Xenon',monospace;font-variation-settings:'wght' var(--xen-wght);color:var(--c-x)}
+.win-col[data-font="d"] .article p code{font-family:'Monaspace Radon',monospace;color:var(--c-d)}
+.win-col[data-font="c"] .article p code{font-family:'Cutive Mono',monospace;color:var(--c-c)}
+.win-col[data-font="n"] .article p code{font-family:'Nova Mono',monospace;color:var(--c-n)}
+
+/* code block */
+.code-block{margin:0 1rem .85rem;background:var(--code-bg);border-radius:6px;overflow:hidden}
+.code-head{display:flex;justify-content:space-between;align-items:center;padding:.28rem .55rem;background:#2a2825;font-family:'Recursive',ui-monospace,monospace;font-variation-settings:'CASL' 0.4,'MONO' 1,'slnt' 0,'wght' 450;font-size:.64rem;color:#8a8880}
+.code-head .lang{font-weight:600}
+.win-col[data-font="r"] .lang{color:var(--c-r)}
+.win-col[data-font="x"] .lang{color:var(--c-x)}
+.win-col[data-font="d"] .lang{color:var(--c-d)}
+.win-col[data-font="c"] .lang{color:var(--c-c)}
+.win-col[data-font="n"] .lang{color:var(--c-n)}
+.code-body{padding:.5rem .6rem;overflow-x:auto;white-space:pre;font-size:8pt;line-height:1.65;color:var(--code-fg)}
+.win-col[data-font="r"] .code-body{font-family:'Recursive',monospace;font-variation-settings:'CASL' var(--casl),'MONO' 1,'slnt' 0,'wght' var(--xen-wght)}
+.win-col[data-font="x"] .code-body{font-family:'Monaspace Xenon',monospace;font-variation-settings:'wght' var(--xen-wght)}
+.win-col[data-font="d"] .code-body{font-family:'Monaspace Radon',monospace}
+.win-col[data-font="c"] .code-body{font-family:'Cutive Mono',monospace}
+.win-col[data-font="n"] .code-body{font-family:'Nova Mono',monospace}
+.code-body .c{color:#6a9955}
+.code-body .k{color:#569cd6}
+.code-body .t{color:#4ec9b0}
+.code-body .s{color:#ce9178}
+.code-body .n{color:#b5cea8}
+
+/* ===== glyph detail ===== */
+.detail{max-width:1200px;margin:3rem auto 0}
+.detail-head{display:flex;justify-content:space-between;align-items:baseline;margin-bottom:1rem;border-bottom:1px solid var(--border);padding-bottom:.75rem;flex-wrap:wrap;gap:.5rem}
+.detail-head h2{font-family:'Fraunces',serif;font-size:1.3rem;font-weight:600;letter-spacing:-.01em}
+.legend{display:flex;gap:.75rem;flex-wrap:wrap}
+.legend span{font-family:'Recursive',ui-monospace,monospace;font-variation-settings:'CASL' 0.4,'MONO' 1,'slnt' 0,'wght' 450;font-size:.7rem;display:flex;align-items:center;gap:.3rem}
+.legend i{display:inline-block;width:.65rem;height:.65rem;border-radius:2px;font-style:normal}
+.legend .lr i{background:var(--c-r)}
+.legend .lx i{background:var(--c-x)}
+.legend .ld i{background:var(--c-d)}
+.legend .lc i{background:var(--c-c)}
+.legend .ln i{background:var(--c-n)}
+
+.glyph-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(200px,1fr));gap:.75rem}
+.glyph{background:var(--win-bg);border:1px solid var(--win-border);border-radius:var(--radius);overflow:hidden}
+.glyph .chars{display:grid;grid-template-columns:repeat(5,1fr);border-bottom:1px solid var(--win-border)}
+.glyph .ch{font-size:2rem;line-height:1;padding:.85rem 0;text-align:center;border-right:1px solid var(--win-border);white-space:nowrap;overflow:hidden}
+.glyph .ch:last-child{border-right:none}
+.glyph .ch.r{font-family:'Recursive',monospace;font-variation-settings:'CASL' var(--casl),'MONO' 1,'slnt' 0,'wght' 450;color:var(--c-r)}
+.glyph .ch.x{font-family:'Monaspace Xenon',monospace;font-variation-settings:'wght' var(--xen-wght);color:var(--c-x)}
+.glyph .ch.d{font-family:'Monaspace Radon',monospace;color:var(--c-d)}
+.glyph .ch.c{font-family:'Cutive Mono',monospace;color:var(--c-c)}
+.glyph .ch.n{font-family:'Nova Mono',monospace;color:var(--c-n)}
+.glyph .meta{display:grid;grid-template-columns:repeat(5,1fr);font-size:7.5pt}
+.glyph .meta div{padding:.25rem .15rem;text-align:center;border-right:1px solid var(--win-border)}
+.glyph .meta div:last-child{border-right:none}
+.glyph .meta .lbl{font-family:'Recursive',ui-monospace,monospace;font-variation-settings:'CASL' 0.4,'MONO' 1,'slnt' 0,'wght' 450;color:var(--muted);display:block;font-size:6.5pt;text-transform:uppercase;letter-spacing:.05em}
+
+/* ===== notes ===== */
+.notes{max-width:1200px;margin:3rem auto 0;font-size:.88rem;color:var(--muted);line-height:1.7;border-top:1px solid var(--border);padding-top:1.5rem}
+.notes h3{font-family:'Fraunces',serif;font-size:1.05rem;font-weight:600;color:var(--fg);margin-bottom:.5rem}
+.notes ul{list-style:none;padding-left:0}
+.notes li{padding:.2rem 0;padding-left:1.1rem;position:relative}
+.notes li::before{content:'—';position:absolute;left:0;color:var(--c-x)}
+.notes strong{color:var(--fg);font-weight:600}
+.tag-r{font-family:'Recursive',monospace;font-variation-settings:'CASL' .5,'MONO' 1,'slnt' 0,'wght' 700;color:var(--c-r)}
+.tag-x{font-family:'Monaspace Xenon',monospace;font-variation-settings:'wght' 700;color:var(--c-x)}
+.tag-d{font-family:'Monaspace Radon',monospace;font-weight:700;color:var(--c-d)}
+.tag-c{font-family:'Cutive Mono',monospace;color:var(--c-c)}
+.tag-n{font-family:'Nova Mono',monospace;color:var(--c-n)}
+.tag-m{font-family:'Merriweather',serif;font-weight:700;color:#8a5a2b}
+
+@media(max-width:1100px){
+  .compare{grid-template-columns:1fr 1fr}
+  .compare.cols-1{grid-template-columns:1fr}
+}
+@media(max-width:680px){
+  .compare,.compare.cols-2,.compare.cols-1{grid-template-columns:1fr;max-width:680px}
+  .glyph .ch{font-size:1.5rem}
+  .page-head h1{font-size:1.4rem}
+}
+</style>
+</head>
+<body>
+
+<div class="page-head">
+  <div class="crumb"><a href="../../20260823/fonts-explore/font-compare.html">20260823 · fonts-explore</a> &nbsp;›&nbsp; <a href="code-font-compare.html">code-font-compare</a> &nbsp;›&nbsp; <a href="recursive-casl-tune.html">CASL 调节</a> &nbsp;›&nbsp; serif-mono</div>
+  <h1>更衬线的编程字体 · 比 Recursive 0.5 多一点衬线</h1>
+  <p>你定了 <code>Recursive @ CASL 0.5</code>（humanist、可控、不花），现在要"更衬线一点"。方向是：保留 humanist 骨架 + 可控，加上衬线脚 / 双层 g。主角是 <span style="font-family:'Monaspace Xenon',monospace;font-weight:700;color:var(--c-x)">Monaspace Xenon</span>——Radon 的 slab serif 同族兄弟，有衬线但没人文手写味，且可变（wght 200–800）。下面五个字体在 9pt 下配 <span style="font-family:'Merriweather',serif;font-weight:700;color:#8a5a2b">Merriweather</span> 正文同框对比。</p>
+</div>
+
+<!-- ===== Xenon weight tuner ===== -->
+<div class="tuner">
+  <div class="tuner-top">
+    <div>
+      <div class="tuner-label"><b>Monaspace Xenon</b> · wght 轴</div>
+      <div class="tuner-value" id="xenValue">480</div>
+    </div>
+    <div class="tuner-label" id="xenMode">Regular-ish · 屏读甜点</div>
+  </div>
+  <div class="slider-wrap">
+    <input type="range" class="xen" id="xenSlider" min="200" max="800" step="10" value="480">
+    <div class="ticks"><span>200 Thin</span><span>400 Reg</span><span>500 Med</span><span>600 SemiBold</span><span>800 ExtraBold</span></div>
+  </div>
+  <p class="tuner-hint"><strong>怎么读</strong>：Xenon 是可变字体，拖滑块调字重。代码窗口和字形细节里的 Xenon 列会实时变。<strong>450–500</strong> 是和 Merriweather 正文搭配最和谐的区间——Merriweather 本身笔画厚实，配一个中等字重的 slab serif 代码字，厚实感呼应但不抢戏。</p>
+</div>
+
+<!-- ===== controls ===== -->
+<div class="controls">
+  <span class="label">View</span>
+  <button class="btn active" data-mode="all">五字并排</button>
+  <button class="btn" data-mode="r">Recursive 0.5</button>
+  <button class="btn" data-mode="x">Xenon</button>
+  <button class="btn" data-mode="d">Radon</button>
+  <button class="btn" data-mode="c">Cutive</button>
+  <button class="btn" data-mode="n">Nova</button>
+  <span class="label" style="margin-left:1rem">Pairs</span>
+  <button class="btn" data-mode="rx">Recursive vs Xenon</button>
+  <button class="btn" data-mode="xd">Xenon vs Radon</button>
+  <button class="btn" data-mode="serif">三衬线 mono</button>
+</div>
+
+<div class="compare" id="compare"></div>
+
+<!-- ===== glyph detail ===== -->
+<div class="detail">
+  <div class="detail-head">
+    <h2>字形细节 · 衬线辨识字符</h2>
+    <div class="legend">
+      <span class="lr"><i></i>Recursive@0.5</span>
+      <span class="lx"><i></i>Xenon</span>
+      <span class="ld"><i></i>Radon</span>
+      <span class="lc"><i></i>Cutive</span>
+      <span class="ln"><i></i>Nova</span>
+    </div>
+  </div>
+  <div class="glyph-grid" id="glyphGrid"></div>
+</div>
+
+<!-- ===== notes ===== -->
+<div class="notes">
+  <h3>观察要点</h3>
+  <ul>
+    <li><strong>衬线谱系</strong>：<span class="tag-r">Recursive@0.5</span> 无衬线（humanist sans-mono）；<span class="tag-x">Xenon</span> 是 <strong>slab serif</strong>（矩形衬线脚，块状）；<span class="tag-d">Radon</span> 是 humanist 带衬线味（脚更柔和、带人文气）；<span class="tag-c">Cutive Mono</span> 是打字机 slab serif（Courier 血统）；<span class="tag-n">Nova Mono</span> 是装饰性 slab。从"无衬线"到"重 slab"的梯度：Recursive → Radon → Xenon → Cutive。</li>
+    <li><strong>为什么 Xenon 是主角</strong>：<span class="tag-x">Xenon</span> 和 <span class="tag-d">Radon</span> 是同族（Monaspace 五兄弟），共享 humanist 骨架和等宽 metrics——但 Xenon 用 slab serif 脚替代了 Radon 的手写味。它是"Radon 去掉手写感、换成正经衬线"的版本。如果你嫌 Radon 偏手写，Xenon 就是答案。而且它可变（wght/wdth/slnt），和 Recursive 一样能调。</li>
+    <li><strong>g 的故事</strong>：<span class="tag-r">Recursive</span> 单层 g；<span class="tag-x">Xenon</span> 双层 g（slab 风格，和 Merriweather 的 g 呼应！）；<span class="tag-d">Radon</span> 双层 g 带人文脚；<span class="tag-c">Cutive</span> 双层 g 打字机风；<span class="tag-n">Nova</span> 双层 g 装饰。Xenon 和 Radon 的双层 g 是它们和 <span class="tag-m">Merriweather</span> 衬线 UI 搭配的关键——同属"有衬线传统"。</li>
+    <li><strong>和 Merriweather 的配对</strong>：<span class="tag-m">Merriweather</span> 是屏读衬线、笔画厚实、有 bracketed serif（带弧度过渡的衬线）。<span class="tag-x">Xenon</span> 的 slab 是矩形无弧度的——和 Merriweather 的 bracketed serif 是不同衬线亚类，但都是"正经衬线"，搭在一起有"同族不同支"的和谐。字重调到 450–500，厚实感呼应。</li>
+    <li><strong>Xenon vs Recursive 怎么选</strong>：要"humanist + 可控 + 无衬线、最现代"选 <span class="tag-r">Recursive@0.5</span>；要"humanist + 可控 + 有衬线、和 Merriweather 同属衬线传统"选 <span class="tag-x">Xenon</span>。两者都可变、都暖、都 humanist——差别只在"有没有衬线脚"。</li>
+    <li><strong>Cutive / Nova 的定位</strong>：<span class="tag-c">Cutive Mono</span> 是打字机 slab，气质偏复古/文学，适合想要"代码像手稿"的氛围，但 9pt 下笔画偏粗、占宽大；<span class="tag-n">Nova Mono</span> 是装饰 slab，只有一个字重、气质强，适合点缀不适合正文代码。两者都不可变，作为"更传统的 slab"参照。</li>
+    <li><strong>没出现的 Iosevka Slab</strong>：理论上 <span style="font-family:ui-monospace,monospace">Iosevka Slab</span> 是"超可变 slab serif mono"的理想答案（wght/wdth/slnt 全可调），但它的 release 包 100MB+、不在 Fontsource，无法直接 CDN 引用。如果你愿意本地安装，Iosevka Slab 是 Recursive 的"全衬线版"平替——可定制程度甚至超过 Recursive。</li>
+  </ul>
+</div>
+
+<script>
+/* ---- code snippet ---- */
+const code = `// type-safe event bus — 0Oo 1lI| => !== >= <= -> :: ?? ?.
+type Handler<T> = (payload: T) => void | Promise<void>;
+
+class Bus<E extends Record<string, unknown>> {
+  #handlers = new Map<keyof E, Set<Handler<unknown>>>();
+
+  on<K extends keyof E>(event: K, fn: Handler<E[K]>): () => void {
+    const set = this.#handlers.get(event) ?? new Set();
+    set.add(fn);
+    this.#handlers.set(event, set);
+    return () => set.delete(fn);
+  }
+
+  async emit<K extends keyof E>(event: K, payload: E[K]) {
+    const set = this.#handlers.get(event);
+    if (!set) return;
+    await Promise.all([...set].map(fn => fn(payload)));
+  }
+}
+
+const bus = new Bus<{ login: { id: number }; logout: void }>();
+bus.on('login', ({ id }) => console.log(\`user #\${id} in\`));
+bus.emit('login', { id: 42 });`;
+
+/* ---- highlighter ---- */
+function highlight(src) {
+  let h = src.replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;');
+  const stash = [];
+  h = h.replace(/(\/\/[^\n]*|`[^`]*`|'[^']*'|"[^"]*")/g, function(m){
+    const cls = m.indexOf('//') === 0 ? 'c' : 's';
+    stash.push('<span class="'+cls+'">'+m+'</span>');
+    return '\x00' + (stash.length - 1) + '\x00';
+  });
+  h = h.replace(/\b(type|class|extends|new|const|let|void|async|await|return|if|keyof|unknown|number)\b/g, '<span class="k">$1</span>');
+  h = h.replace(/\b(Handler|Bus|Map|Set|Promise|Record)\b/g, '<span class="t">$1</span>');
+  h = h.replace(/\b(\d+)\b/g, '<span class="n">$1</span>');
+  h = h.replace(/\x00(\d+)\x00/g, function(_, n){ return stash[+n]; });
+  return h;
+}
+const highlighted = highlight(code);
+
+/* ---- font definitions ---- */
+const fonts = [
+  { id:'r', name:'Recursive @0.5',  pt:'9pt · 基准',  role:'reference', file:'emitter.ts', lang:'Recursive' },
+  { id:'x', name:'Monaspace Xenon', pt:'9pt · slab 可变', role:'★ 主角',  file:'emitter.ts', lang:'Xenon' },
+  { id:'d', name:'Monaspace Radon', pt:'9pt · 衬线味',  role:'对比',    file:'emitter.ts', lang:'Radon' },
+  { id:'c', name:'Cutive Mono',     pt:'9pt · 打字机',  role:'参照',    file:'emitter.ts', lang:'Cutive' },
+  { id:'n', name:'Nova Mono',       pt:'9pt · 装饰',    role:'参照',    file:'emitter.ts', lang:'Nova' }
+];
+
+const compare = document.getElementById('compare');
+compare.innerHTML = fonts.map(function(f){
+  return '<div class="win-col" data-font="'+f.id+'">' +
+    '<div class="col-label"><span class="font-name">'+f.name+'</span><span class="pt">'+f.pt+'</span></div>' +
+    '<div class="card">' +
+      '<div class="card-head"><span class="tag"><span class="dot"></span> <b>'+f.role+'</b></span><span class="tag">'+f.lang+'</span></div>' +
+      '<div class="article">' +
+        '<div class="meta">Essay · 3 min</div>' +
+        '<h3>代码字体的温度</h3>' +
+        '<p>A typeface for code should sit beside the body text without friction. <span style="font-family:Merriweather,serif;font-weight:700">Merriweather</span> carries prose with a warm, sturdy hand.</p>' +
+        '<p>代码字体的温度，应和正文走在同一侧。配一个同暖的等宽字，<code>code block</code> 就自然嵌入页面。</p>' +
+      '</div>' +
+      '<div class="code-block">' +
+        '<div class="code-head"><span>'+f.file+'</span><span class="lang">'+f.lang+' · TS</span></div>' +
+        '<div class="code-body">'+highlighted+'</div>' +
+      '</div>' +
+    '</div>' +
+  '</div>';
+}).join('');
+
+/* ---- glyph grid ---- */
+const glyphs = [
+  { ch:'0', note:'零' }, { ch:'O', note:'大写 O' },
+  { ch:'1', note:'一' }, { ch:'l', note:'小写 L' },
+  { ch:'g', note:'g 单/双层' }, { ch:'a', note:'a 单/双层' },
+  { ch:'=>', note:'箭头' }, { ch:'{', note:'花括号' },
+  { ch:'$', note:'美元' }, { ch:'@', note:'@' }
+];
+document.getElementById('glyphGrid').innerHTML = glyphs.map(function(g){
+  return '<div class="glyph">' +
+    '<div class="chars">' +
+      '<div class="ch r">'+g.ch+'</div>' +
+      '<div class="ch x">'+g.ch+'</div>' +
+      '<div class="ch d">'+g.ch+'</div>' +
+      '<div class="ch c">'+g.ch+'</div>' +
+      '<div class="ch n">'+g.ch+'</div>' +
+    '</div>' +
+    '<div class="meta">' +
+      '<div><span class="lbl">Rec@.5</span></div>' +
+      '<div><span class="lbl">Xenon</span></div>' +
+      '<div><span class="lbl">Radon</span></div>' +
+      '<div><span class="lbl">Cutive</span></div>' +
+      '<div><span class="lbl">Nova</span></div>' +
+    '</div>' +
+  '</div>';
+}).join('');
+
+/* ---- view controls ---- */
+const cols = document.querySelectorAll('.win-col');
+document.querySelectorAll('.btn').forEach(function(b){
+  b.addEventListener('click', function(){
+    document.querySelectorAll('.btn').forEach(function(x){ x.classList.remove('active'); });
+    b.classList.add('active');
+    const mode = b.dataset.mode;
+    var show = { all:['r','x','d','c','n'], r:['r'], x:['x'], d:['d'], c:['c'], n:['n'],
+                 rx:['r','x'], xd:['x','d'], serif:['x','d','c'] }[mode];
+    cols.forEach(function(c){ c.classList.toggle('hide', show.indexOf(c.dataset.font) === -1); });
+    compare.classList.remove('cols-1','cols-2');
+    if(show.length <= 1) compare.classList.add('cols-1');
+    else if(show.length === 2) compare.classList.add('cols-2');
+  });
+});
+
+/* ---- Xenon weight slider ---- */
+const slider = document.getElementById('xenSlider');
+const valEl = document.getElementById('xenValue');
+const modeEl = document.getElementById('xenMode');
+function modeName(w) {
+  if (w <= 250) return 'Thin · 太细';
+  if (w <= 350) return 'Light · 偏细';
+  if (w <= 480) return 'Regular-ish · 屏读甜点';
+  if (w <= 580) return 'Medium · 稍重';
+  if (w <= 680) return 'SemiBold · 重';
+  return 'Bold+ · 很重';
+}
+function update(w) {
+  document.documentElement.style.setProperty('--xen-wght', w);
+  valEl.textContent = w;
+  modeEl.textContent = modeName(w);
+}
+slider.addEventListener('input', function(e){ update(parseInt(e.target.value)); });
+update(480);
+</script>
+</body>
+</html>

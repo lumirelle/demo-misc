@@ -1,0 +1,332 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>独特风格编程字体调研 · Distinctive Code Type</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,400;9..144,600;9..144,700&family=Space+Mono:ital,wght@0,400;0,700;1,400&family=Share+Tech+Mono&family=Major+Mono+Display&display=swap" rel="stylesheet">
+<link href="https://api.fontshare.com/v2/css?f[]=satoshi@400;500;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fontsource-variable/victor-mono@latest/wght.css">
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fontsource-variable/victor-mono@latest/wght-italic.css">
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fontsource-variable/martian-mono@latest/wght.css">
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fontsource-variable/kode-mono@latest/wght.css">
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fontsource/comic-mono@latest/400.css">
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fontsource/comic-mono@latest/700.css">
+<style>
+@font-face{
+  font-family:'Departure Mono';
+  src:url('departure-mono.woff2') format('woff2');
+  font-weight:400;
+  font-display:swap;
+}
+@font-face{
+  font-family:'JuliaMono';
+  src:url('JuliaMono-Regular.ttf') format('truetype');
+  font-weight:400;
+  font-display:swap;
+}
+@font-face{
+  font-family:'JuliaMono';
+  src:url('JuliaMono-Bold.ttf') format('truetype');
+  font-weight:700;
+  font-display:swap;
+}
+:root{
+  --bg:#1a1815;
+  --fg:#ece9e2;
+  --muted:#8a8680;
+  --border:#3a3835;
+  --card-bg:#252320;
+  --card-chrome:#2e2b27;
+  --card-border:#3a3835;
+  --code-bg:#161513;
+  --code-fg:#d4d4d4;
+  --radius:10px;
+  /* accent per font */
+  --c-vm:#e06c9f;   /* Victor Mono 粉 — 草书 */
+  --c-mm:#5b9bd5;   /* Martian 蓝 — 工业 */
+  --c-km:#7ab55c;   /* Kode 绿 — 几何 */
+  --c-sm:#d4a44e;   /* Space Mono 金 — 复古 */
+  --c-st:#569cd6;   /* Share Tech 蓝 — CRT */
+  --c-dm:#b5cea8;   /* Departure 绿 — 像素 */
+  --c-jm:#ce9178;   /* JuliaMono 橙 — 数学 */
+  --c-cm:#c586c0;   /* Comic Mono 紫 — 俏皮 */
+}
+*{margin:0;padding:0;box-sizing:border-box}
+body{background:var(--bg);color:var(--fg);font-family:'Satoshi',system-ui,sans-serif;line-height:1.5;-webkit-font-smoothing:antialiased;padding:2rem 1.5rem 4rem}
+
+.page-head{max-width:1200px;margin:0 auto 2rem}
+.crumb{font-family:'Victor Mono Variable',ui-monospace,monospace;font-size:.72rem;color:var(--muted);text-transform:uppercase;letter-spacing:.1em;margin-bottom:.6rem}
+.crumb a{color:var(--c-vm);text-decoration:none}
+.page-head h1{font-family:'Fraunces',serif;font-size:1.9rem;font-weight:600;letter-spacing:-.02em;margin-bottom:.5rem}
+.page-head p{font-size:.92rem;color:var(--muted);max-width:780px;line-height:1.65}
+.page-head p code{font-family:'Victor Mono Variable',ui-monospace,monospace;font-size:.82rem;background:rgba(255,255,255,.08);padding:.1em .35em;border-radius:3px;color:var(--fg)}
+
+/* ===== personality spectrum ===== */
+.spectrum{max-width:1200px;margin:0 auto 2.5rem;display:flex;flex-wrap:wrap;gap:.5rem}
+.spec-chip{font-family:'Victor Mono Variable',ui-monospace,monospace;font-size:.74rem;padding:.4rem .8rem;border-radius:20px;border:1px solid var(--border);background:var(--card-bg);display:flex;align-items:center;gap:.4rem;cursor:pointer;transition:all .15s}
+.spec-chip:hover{border-color:var(--fg)}
+.spec-chip .dot{width:.6rem;height:.6rem;border-radius:50%}
+.spec-chip .cat{color:var(--muted);font-size:.66rem;text-transform:uppercase;letter-spacing:.06em}
+.spec-chip .nm{color:var(--fg);font-weight:600}
+
+/* ===== font cards grid ===== */
+.grid{max-width:1200px;margin:0 auto;display:grid;grid-template-columns:repeat(2,1fr);gap:1.25rem}
+.grid .fcard.hide{display:none}
+
+.fcard{background:var(--card-bg);border:1px solid var(--card-border);border-radius:var(--radius);overflow:hidden;box-shadow:0 4px 20px rgba(0,0,0,.25);display:flex;flex-direction:column;transition:transform .2s,border-color .2s}
+.fcard:hover{transform:translateY(-2px);border-color:var(--accent)}
+.fcard[data-font="vm"]{--accent:var(--c-vm)}
+.fcard[data-font="mm"]{--accent:var(--c-mm)}
+.fcard[data-font="km"]{--accent:var(--c-km)}
+.fcard[data-font="sm"]{--accent:var(--c-sm)}
+.fcard[data-font="st"]{--accent:var(--c-st)}
+.fcard[data-font="dm"]{--accent:var(--c-dm)}
+.fcard[data-font="jm"]{--accent:var(--c-jm)}
+.fcard[data-font="cm"]{--accent:var(--c-cm)}
+
+.fcard-head{display:flex;align-items:center;justify-content:space-between;padding:.6rem .85rem;background:var(--card-chrome);border-bottom:1px solid var(--card-border)}
+.fcard-head .id{display:flex;align-items:center;gap:.5rem}
+.fcard-head .dot{width:.7rem;height:.7rem;border-radius:2px;background:var(--accent)}
+.fcard-head .name{font-family:'Fraunces',serif;font-size:1rem;font-weight:600;color:var(--fg)}
+.fcard-head .tag{font-family:'Victor Mono Variable',ui-monospace,monospace;font-size:.62rem;text-transform:uppercase;letter-spacing:.08em;color:var(--accent);font-weight:600}
+.fcard-head .meta{font-family:'Victor Mono Variable',ui-monospace,monospace;font-size:.62rem;color:var(--muted);text-align:right}
+
+/* code window */
+.code-win{background:var(--code-bg);margin:.6rem;border-radius:6px;overflow:hidden;border:1px solid var(--border)}
+.code-bar{display:flex;justify-content:space-between;align-items:center;padding:.25rem .5rem;background:#1f1d1a;font-family:'Victor Mono Variable',ui-monospace,monospace;font-size:.6rem;color:var(--muted)}
+.code-bar .lang{color:var(--accent);font-weight:600}
+.code-body{padding:.6rem .7rem;overflow-x:auto;white-space:pre;font-size:8.5pt;line-height:1.7;color:var(--code-fg)}
+.fcard[data-font="vm"] .code-body{font-family:'Victor Mono Variable',monospace;font-variation-settings:'wght' 430}
+.fcard[data-font="mm"] .code-body{font-family:'Martian Mono Variable',monospace;font-variation-settings:'wght' 400}
+.fcard[data-font="km"] .code-body{font-family:'Kode Mono Variable',monospace;font-variation-settings:'wght' 400}
+.fcard[data-font="sm"] .code-body{font-family:'Space Mono',monospace}
+.fcard[data-font="st"] .code-body{font-family:'Share Tech Mono',monospace}
+.fcard[data-font="dm"] .code-body{font-family:'Departure Mono',monospace}
+.fcard[data-font="jm"] .code-body{font-family:'JuliaMono',monospace}
+.fcard[data-font="cm"] .code-body{font-family:'Comic Mono',monospace}
+.code-body .c{color:#6a9955;font-style:italic}
+.code-body .k{color:#569cd6}
+.code-body .t{color:#4ec9b0}
+.code-body .s{color:#ce9178}
+.code-body .n{color:#b5cea8}
+.code-body .f{color:#dcdcaa}
+.code-body .m{color:#c586c0}
+
+/* glyph strip */
+.glyphs{display:flex;gap:0;margin:.6rem;border-top:1px solid var(--border);padding-top:.6rem}
+.glyphs .g{flex:1;text-align:center;font-size:1.5rem;line-height:1;padding:.3rem 0;color:var(--accent);border-right:1px solid var(--border);white-space:nowrap;overflow:hidden}
+.glyphs .g:last-child{border-right:none}
+.fcard[data-font="vm"] .glyphs .g{font-family:'Victor Mono Variable',monospace;font-variation-settings:'wght' 430}
+.fcard[data-font="mm"] .glyphs .g{font-family:'Martian Mono Variable',monospace;font-variation-settings:'wght' 400}
+.fcard[data-font="km"] .glyphs .g{font-family:'Kode Mono Variable',monospace;font-variation-settings:'wght' 400}
+.fcard[data-font="sm"] .glyphs .g{font-family:'Space Mono',monospace}
+.fcard[data-font="st"] .glyphs .g{font-family:'Share Tech Mono',monospace}
+.fcard[data-font="dm"] .glyphs .g{font-family:'Departure Mono',monospace}
+.fcard[data-font="jm"] .glyphs .g{font-family:'JuliaMono',monospace}
+.fcard[data-font="cm"] .glyphs .g{font-family:'Comic Mono',monospace}
+
+/* personality note */
+.pnote{padding:.5rem .85rem .7rem;font-size:.78rem;color:var(--muted);line-height:1.55;border-top:1px solid var(--border)}
+.pnote strong{color:var(--fg)}
+
+/* ===== glyph comparison ===== */
+.detail{max-width:1200px;margin:3rem auto 0}
+.detail-head{display:flex;justify-content:space-between;align-items:baseline;margin-bottom:1rem;border-bottom:1px solid var(--border);padding-bottom:.75rem;flex-wrap:wrap;gap:.5rem}
+.detail-head h2{font-family:'Fraunces',serif;font-size:1.3rem;font-weight:600;letter-spacing:-.01em}
+.legend{display:flex;gap:.6rem;flex-wrap:wrap}
+.legend span{font-family:'Victor Mono Variable',ui-monospace,monospace;font-size:.68rem;display:flex;align-items:center;gap:.3rem;color:var(--muted)}
+.legend i{display:inline-block;width:.6rem;height:.6rem;border-radius:2px;font-style:normal}
+.legend .lvm i{background:var(--c-vm)}
+.legend .lmm i{background:var(--c-mm)}
+.legend .lkm i{background:var(--c-km)}
+.legend .lsm i{background:var(--c-sm)}
+.legend .lst i{background:var(--c-st)}
+.legend .ldm i{background:var(--c-dm)}
+.legend .ljm i{background:var(--c-jm)}
+.legend .lcm i{background:var(--c-cm)}
+
+.glyph-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(180px,1fr));gap:.6rem}
+.glyph-card{background:var(--card-bg);border:1px solid var(--card-border);border-radius:var(--radius);overflow:hidden}
+.glyph-card .chars{display:grid;grid-template-columns:repeat(4,1fr);border-bottom:1px solid var(--border)}
+.glyph-card .ch{font-size:1.6rem;line-height:1;padding:.7rem 0;text-align:center;border-right:1px solid var(--border);white-space:nowrap;overflow:hidden}
+.glyph-card .ch:last-child{border-right:none}
+.glyph-card .ch.vm{font-family:'Victor Mono Variable',monospace;font-variation-settings:'wght' 430;color:var(--c-vm)}
+.glyph-card .ch.mm{font-family:'Martian Mono Variable',monospace;font-variation-settings:'wght' 400;color:var(--c-mm)}
+.glyph-card .ch.km{font-family:'Kode Mono Variable',monospace;font-variation-settings:'wght' 400;color:var(--c-km)}
+.glyph-card .ch.sm{font-family:'Space Mono',monospace;color:var(--c-sm)}
+.glyph-card .ch.st{font-family:'Share Tech Mono',monospace;color:var(--c-st)}
+.glyph-card .ch.dm{font-family:'Departure Mono',monospace;color:var(--c-dm)}
+.glyph-card .ch.jm{font-family:'JuliaMono',monospace;color:var(--c-jm)}
+.glyph-card .ch.cm{font-family:'Comic Mono',monospace;color:var(--c-cm)}
+.glyph-card .meta{display:grid;grid-template-columns:repeat(4,1fr);font-size:7pt}
+.glyph-card .meta div{padding:.2rem .1rem;text-align:center;border-right:1px solid var(--border)}
+.glyph-card .meta div:last-child{border-right:none}
+.glyph-card .meta .lbl{font-family:'Victor Mono Variable',ui-monospace,monospace;font-size:6pt;color:var(--muted);text-transform:uppercase;letter-spacing:.04em}
+
+/* ===== notes ===== */
+.notes{max-width:1200px;margin:3rem auto 0;font-size:.88rem;color:var(--muted);line-height:1.7;border-top:1px solid var(--border);padding-top:1.5rem}
+.notes h3{font-family:'Fraunces',serif;font-size:1.05rem;font-weight:600;color:var(--fg);margin-bottom:.5rem}
+.notes ul{list-style:none;padding-left:0}
+.notes li{padding:.2rem 0;padding-left:1.1rem;position:relative}
+.notes li::before{content:'—';position:absolute;left:0;color:var(--c-vm)}
+.notes strong{color:var(--fg);font-weight:600}
+.tag-vm{font-family:'Victor Mono Variable',monospace;font-variation-settings:'wght' 700;color:var(--c-vm)}
+.tag-mm{font-family:'Martian Mono Variable',monospace;font-variation-settings:'wght' 700;color:var(--c-mm)}
+.tag-km{font-family:'Kode Mono Variable',monospace;font-variation-settings:'wght' 700;color:var(--c-km)}
+.tag-sm{font-family:'Space Mono',monospace;font-weight:700;color:var(--c-sm)}
+.tag-st{font-family:'Share Tech Mono',monospace;color:var(--c-st)}
+.tag-dm{font-family:'Departure Mono',monospace;color:var(--c-dm)}
+.tag-jm{font-family:'JuliaMono',monospace;font-weight:700;color:var(--c-jm)}
+.tag-cm{font-family:'Comic Mono',monospace;font-weight:700;color:var(--c-cm)}
+
+@media(max-width:760px){
+  .grid{grid-template-columns:1fr}
+  .glyph-grid{grid-template-columns:1fr 1fr}
+  .page-head h1{font-size:1.4rem}
+}
+</style>
+</head>
+<body>
+
+<div class="page-head">
+  <div class="crumb"><a href="../../20260823/fonts-explore/font-compare.html">20260823 · fonts-explore</a> &nbsp;›&nbsp; <a href="code-font-compare.html">code-font-compare</a> &nbsp;›&nbsp; distinctive</div>
+  <h1>独特风格编程字体调研</h1>
+  <p>不再围绕 Merriweather 搭配，专看"性格光谱"的极端——那些有强烈辨识度、一眼能认出的编程字体。按性格类型分组：草书斜体 / 宽体工业 / 几何怪趣 / 复古 CRT / 像素 lo-fi / 数学符号 / 俏皮。每个字体配一段带斜体注释的代码，展示它最 distinctive 的特征。</p>
+</div>
+
+<!-- ===== personality spectrum ===== -->
+<div class="spectrum" id="spectrum"></div>
+
+<!-- ===== font cards ===== -->
+<div class="grid" id="grid"></div>
+
+<!-- ===== glyph comparison ===== -->
+<div class="detail">
+  <div class="detail-head">
+    <h2>字形横评 · 八字辨识</h2>
+    <div class="legend">
+      <span class="lvm"><i></i>Victor</span>
+      <span class="lmm"><i></i>Martian</span>
+      <span class="lkm"><i></i>Kode</span>
+      <span class="lsm"><i></i>Space</span>
+      <span class="lst"><i></i>ShareTech</span>
+      <span class="ldm"><i></i>Departure</span>
+      <span class="ljm"><i></i>Julia</span>
+      <span class="lcm"><i></i>Comic</span>
+    </div>
+  </div>
+  <div class="glyph-grid" id="glyphGrid"></div>
+</div>
+
+<!-- ===== notes ===== -->
+<div class="notes">
+  <h3>性格光谱笔记</h3>
+  <ul>
+    <li><strong>草书斜体 · <span class="tag-vm">Victor Mono</span></strong>：免费字体里最 distinctive 的斜体——italic 是真正的手写草书（cursive），不是普通倾斜。配 italic 主题（如 One Dark italic）效果拉满。它的正体是 humanist sans-mono，但斜体才是灵魂。可变字体（wght 100–700）。</li>
+    <li><strong>宽体工业 · <span class="tag-mm">Martian Mono</span></strong>：字宽明显比常规 mono 宽（每个字符占更多横向空间），块状、建筑感、工业风。由 Mooniak 设计。适合想要"代码像蓝图"的氛围。可变（wght 100–800）。缺点是同样字号下每行能放的字符少。</li>
+    <li><strong>几何怪趣 · <span class="tag-km">Kode Mono</span></strong>：Indian Type Foundry 出品，几何骨架但带圆润收尾，有"设计感"不像传统 mono。可变（wght 100–700）。性格比 JetBrains Mono 强，比 Victor Mono 内敛。</li>
+    <li><strong>复古俏皮 · <span class="tag-sm">Space Mono</span></strong>：Colophon Foundry 出品，复古印刷感，g 和 a 是单层、带 quirky 收尾。Google Fonts 上最有"设计字体"气质的 mono。只有 400/700 两档，不可变。</li>
+    <li><strong>CRT 终端 · <span class="tag-st">Share Tech Mono</span></strong>：纯终端/CRT 复古风，像老式示波器或 DOS 屏幕。只有一个字重。适合想要"黑客电影"氛围的展示场景，正文代码偏累。</li>
+    <li><strong>像素 lo-fi · <span class="tag-dm">Departure Mono</span></strong>：像素/位图美学，lo-fi techy vibe。字形带像素锯齿感，适合 retro-cyberpunk 场景。只有一个字重，小字号下最有味道。</li>
+    <li><strong>数学符号 · <span class="tag-jm">JuliaMono</span></strong>：为 Julia 语言设计，最大特色是内置海量 Unicode 数学/技术符号（∑ ∫ √ λ ⊗ ∈ ⊂ …），在代码里直接写数学公式不缺字。正体是干净 humanist。如果你写 LaTeX/Julia/数学密集代码，无可替代。</li>
+    <li><strong>俏皮亲和 · <span class="tag-cm">Comic Mono</span></strong>：Comic Sans 的等宽版，圆润、手写、不严肃。适合想要"代码不吓人"的教学/演示场景。正经项目慎用——但它的"不正经"本身就是一种风格声明。</li>
+    <li><strong>没出现的付费字体</strong>：<span style="font-family:ui-monospace,monospace">Operator Mono</span>（草书斜体鼻祖，付费）、<span style="font-family:ui-monospace,monospace">Dank Mono</span>（草书斜体，免费但不在 CDN）、<span style="font-family:ui-monospace,monospace">Berkeley Mono</span>（quiet luxury，付费）、<span style="font-family:ui-monospace,monospace">PragmataPro</span>（极致紧凑，付费）、<span style="font-family:ui-monospace,monospace">MonoLisa</span>（可读性优先，付费）。如果你愿意付费，Operator Mono 和 Berkeley Mono 是"有性格的工作马"的两个极端。</li>
+  </ul>
+</div>
+
+<script>
+/* ---- code snippet with italic comments ---- */
+const code = `<span class="c">// type-safe event bus — 0Oo 1lI| => !== ::</span>
+<span class="k">type</span> <span class="t">Handler</span>&lt;T&gt; = (p: T) =&gt; <span class="t">void</span>;
+
+<span class="k">class</span> <span class="t">Bus</span>&lt;E <span class="k">extends</span> <span class="t">Record</span>&lt;<span class="k">string</span>, <span class="k">unknown</span>&gt;&gt; {
+  <span class="c">// register a handler, returns unsubscribe</span>
+  <span class="f">on</span>&lt;K <span class="k">extends</span> <span class="k">keyof</span> E&gt;(ev: K, fn: <span class="t">Handler</span>&lt;E[K]&gt;): () =&gt; <span class="k">void</span> {
+    <span class="k">const</span> s = <span class="k">this</span>.<span class="m">#h</span>.<span class="f">get</span>(ev) ?? <span class="k">new</span> <span class="t">Set</span>();
+    s.<span class="f">add</span>(fn);
+    <span class="k">return</span> () =&gt; s.<span class="f">delete</span>(fn);
+  }
+}
+
+<span class="k">const</span> bus = <span class="k">new</span> <span class="t">Bus</span>&lt;{ login: { id: <span class="k">number</span> } }&gt;();
+bus.<span class="f">on</span>(<span class="s">'login'</span>, ({ id }) =&gt; <span class="f">log</span>(<span class="s">\`user #\${id}\`</span>));`;
+
+/* ---- font definitions ---- */
+const fonts = [
+  { id:'vm', name:'Victor Mono',     cat:'草书斜体',  tag:'CURSIVE ITALIC',  meta:'var · wght 100–700', note:'<strong>斜体是手写草书</strong>——免费 mono 里最 distinctive 的 italic。配 italic 主题灵魂出窍。' },
+  { id:'mm', name:'Martian Mono',    cat:'宽体工业',  tag:'WIDE INDUSTRIAL', meta:'var · wght 100–800', note:'<strong>字宽明显偏宽</strong>，块状建筑感。代码像蓝图。代价是每行字符少。' },
+  { id:'km', name:'Kode Mono',       cat:'几何怪趣',  tag:'GEOMETRIC',       meta:'var · wght 100–700', note:'<strong>几何骨架 + 圆润收尾</strong>，Indian Type Foundry 出品。有设计感不传统。' },
+  { id:'sm', name:'Space Mono',      cat:'复古俏皮',  tag:'RETRO QUIRKY',    meta:'400 / 700',          note:'<strong>复古印刷感</strong>，单层 g/a 带 quirky 收尾。Google Fonts 上最有设计气质的 mono。' },
+  { id:'st', name:'Share Tech Mono', cat:'CRT 终端',  tag:'CRT TERMINAL',    meta:'400 only',           note:'<strong>纯终端复古</strong>，像老式示波器。展示场景利器，正文偏累。' },
+  { id:'dm', name:'Departure Mono',  cat:'像素 lo-fi',tag:'PIXEL LO-FI',      meta:'400 only',           note:'<strong>像素锯齿美学</strong>，lo-fi techy。小字号下最有味道，retro-cyberpunk 专用。' },
+  { id:'jm', name:'JuliaMono',      cat:'数学符号',  tag:'MATH SYMBOLS',    meta:'400 / 700',          note:'<strong>内置海量 Unicode 数学符号</strong>（∑∫√λ⊗∈⊂）。写 Julia/LaTeX 无可替代。' },
+  { id:'cm', name:'Comic Mono',     cat:'俏皮亲和',  tag:'PLAYFUL',         meta:'400 / 700',          note:'<strong>Comic Sans 等宽版</strong>，圆润手写不严肃。教学演示专用，正经慎用。' }
+];
+
+/* ---- build spectrum chips ---- */
+document.getElementById('spectrum').innerHTML = fonts.map(function(f){
+  return '<span class="spec-chip" data-font="'+f.id+'"><span class="dot" style="background:var(--c-'+f.id+')"></span><span class="cat">'+f.cat+'</span><span class="nm">'+f.name+'</span></span>';
+}).join('');
+
+/* ---- build font cards ---- */
+document.getElementById('grid').innerHTML = fonts.map(function(f){
+  return '<div class="fcard" data-font="'+f.id+'">' +
+    '<div class="fcard-head">' +
+      '<div class="id"><span class="dot"></span><span class="name">'+f.name+'</span></div>' +
+      '<div><span class="tag">'+f.tag+'</span></div>' +
+      '<div class="meta">'+f.meta+'</div>' +
+    '</div>' +
+    '<div class="code-win">' +
+      '<div class="code-bar"><span>emitter.ts</span><span class="lang">'+f.name+'</span></div>' +
+      '<div class="code-body">'+code+'</div>' +
+    '</div>' +
+    '<div class="glyphs">' +
+      '<div class="g">0Oo</div><div class="g">1lI|</div><div class="g">g</div><div class="g">=&gt;</div><div class="g">@</div><div class="g">::</div>' +
+    '</div>' +
+    '<div class="pnote">'+f.note+'</div>' +
+  '</div>';
+}).join('');
+
+/* ---- spectrum chip filter ---- */
+const chips = document.querySelectorAll('.spec-chip');
+const cards = document.querySelectorAll('.fcard');
+chips.forEach(function(chip){
+  chip.addEventListener('click', function(){
+    const id = chip.dataset.font;
+    const active = chip.classList.toggle('on');
+    if(active){
+      chips.forEach(function(c){ if(c!==chip) c.classList.remove('on'); });
+      cards.forEach(function(c){ c.classList.toggle('hide', c.dataset.font !== id); });
+    } else {
+      cards.forEach(function(c){ c.classList.remove('hide'); });
+    }
+  });
+});
+
+/* ---- glyph comparison grid ---- */
+const glyphs = [
+  { ch:'0', note:'零' }, { ch:'O', note:'大写 O' },
+  { ch:'g', note:'g' }, { ch:'a', note:'a' },
+  { ch:'@', note:'@' }, { ch:'=>', note:'箭头' },
+  { ch:'$', note:'美元' }, { ch:'λ', note:'lambda' },
+  { ch:'∑', note:'求和' }, { ch:'::', note:'双冒号' }
+];
+const fontIds = ['vm','mm','km','sm','st','dm','jm','cm'];
+document.getElementById('glyphGrid').innerHTML = glyphs.map(function(g){
+  // pick 4 representative fonts per glyph to keep cards compact
+  var picks = fontIds;
+  return '<div class="glyph-card">' +
+    '<div class="chars">' +
+      picks.map(function(id){ return '<div class="ch '+id+'">'+g.ch+'</div>'; }).join('') +
+    '</div>' +
+    '<div class="meta">' +
+      picks.map(function(id){ return '<div><span class="lbl">'+id.toUpperCase()+'</span></div>'; }).join('') +
+    '</div>' +
+  '</div>';
+}).join('');
+</script>
+</body>
+</html>

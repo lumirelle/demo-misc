@@ -1,0 +1,370 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>编程字体探索 · Code Type for Merriweather UI</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,400;9..144,600;9..144,700&family=Recursive:CASL,MONO,slnt,wght@1,1,0,400;1,1,0,500;1,1,0,700&family=Spline+Sans+Mono:ital,wght@0,400;0,500;0,700;1,400&family=Inconsolata:wght@400;500;700&display=swap" rel="stylesheet">
+<link href="https://api.fontshare.com/v2/css?f[]=satoshi@400;500;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fontsource/commit-mono@latest/400.css">
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fontsource/commit-mono@latest/500.css">
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fontsource/commit-mono@latest/700.css">
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fontsource/monaspace-radon@latest/400.css">
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fontsource/monaspace-radon@latest/500.css">
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fontsource/monaspace-radon@latest/700.css">
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fontsource/maple-mono@latest/400.css">
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fontsource/maple-mono@latest/500.css">
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fontsource/maple-mono@latest/700.css">
+<style>
+:root{
+  --bg:#ece9e2;
+  --fg:#1a1815;
+  --muted:#6b6760;
+  --border:#c9c2b6;
+  --win-bg:#fbfaf7;
+  --win-chrome:#f0ede6;
+  --win-border:#d4cec3;
+  --hover:#ece8df;
+  --sel:#dfe9f7;
+  --radius:8px;
+  --ui-size:9pt;
+  --c-f:#b8472d;
+  --c-g:#2a5d8f;
+  --c-s:#5a7d3a;
+  --c-n:#7a3a8f;
+  --c-x:#1a6b6b;
+  --c-m:#8a5a2b;
+  --code-bg:#1c1b19;
+  --code-fg:#d4d4d4;
+}
+*{margin:0;padding:0;box-sizing:border-box}
+body{background:var(--bg);color:var(--fg);font-family:'Satoshi',system-ui,sans-serif;line-height:1.5;-webkit-font-smoothing:antialiased;padding:2rem 1.5rem 4rem}
+
+.page-head{max-width:1400px;margin:0 auto 1.5rem}
+.page-head h1{font-family:'Fraunces',serif;font-size:1.8rem;font-weight:600;letter-spacing:-.02em;margin-bottom:.4rem}
+.page-head p{font-size:.9rem;color:var(--muted);max-width:760px;line-height:1.6}
+.page-head p code{font-family:'JetBrains Mono',ui-monospace,monospace;font-size:.82rem;background:rgba(0,0,0,.06);padding:.1em .35em;border-radius:3px}
+.page-head .crumb{font-family:'JetBrains Mono',ui-monospace,monospace;font-size:.72rem;color:var(--muted);text-transform:uppercase;letter-spacing:.1em;margin-bottom:.6rem}
+.page-head .crumb a{color:var(--c-f);text-decoration:none}
+
+.controls{max-width:1400px;margin:0 auto 1.5rem;display:flex;gap:.5rem;flex-wrap:wrap;align-items:center}
+.controls .label{font-family:'JetBrains Mono',ui-monospace,monospace;font-size:.72rem;color:var(--muted);text-transform:uppercase;letter-spacing:.1em;margin-right:.5rem}
+.btn{font-family:'JetBrains Mono',ui-monospace,monospace;font-size:.78rem;padding:.45rem .9rem;border:1px solid var(--border);background:var(--win-bg);color:var(--fg);border-radius:6px;cursor:pointer;transition:all .15s}
+.btn:hover{background:var(--hover)}
+.btn.active{background:var(--fg);color:var(--win-bg);border-color:var(--fg)}
+.btn.toggle{margin-left:auto}
+.btn.toggle.on{background:var(--c-s);color:#fff;border-color:var(--c-s)}
+
+.compare{max-width:1400px;margin:0 auto;display:grid;grid-template-columns:repeat(3,1fr);gap:1rem;transition:all .3s}
+.compare.cols-2{grid-template-columns:1fr 1fr}
+.compare.cols-1{grid-template-columns:1fr;max-width:680px}
+.win-col{display:flex;flex-direction:column;gap:.5rem;min-width:0}
+.win-col.hide{display:none}
+
+.col-label{font-family:'JetBrains Mono',ui-monospace,monospace;font-size:.72rem;color:var(--muted);text-transform:uppercase;letter-spacing:.1em;display:flex;justify-content:space-between;align-items:baseline}
+.col-label .font-name{font-weight:700}
+.col-label .pt{opacity:.6}
+.col-label .role{font-size:.62rem;opacity:.5;font-style:italic}
+.win-col[data-font="f"] .font-name{color:var(--c-f)}
+.win-col[data-font="g"] .font-name{color:var(--c-g)}
+.win-col[data-font="s"] .font-name{color:var(--c-s)}
+.win-col[data-font="n"] .font-name{color:var(--c-n)}
+.win-col[data-font="x"] .font-name{color:var(--c-x)}
+.win-col[data-font="m"] .font-name{color:var(--c-m)}
+
+.win{background:var(--code-bg);border:1px solid var(--win-border);border-radius:var(--radius);overflow:hidden;box-shadow:0 4px 16px rgba(0,0,0,.06);font-size:var(--ui-size)}
+.win.f{font-family:'Commit Mono',ui-monospace,monospace}
+.win.g{font-family:'Monaspace Radon',ui-monospace,monospace}
+.win.s{font-family:'Recursive',ui-monospace,monospace;font-variation-settings:'CASL' 1,'MONO' 1,'slnt' 0}
+.win.n{font-family:'Spline Sans Mono',ui-monospace,monospace}
+.win.x{font-family:'Inconsolata',ui-monospace,monospace}
+.win.m{font-family:'Maple Mono',ui-monospace,monospace}
+
+.titlebar{display:flex;align-items:center;justify-content:space-between;background:#2a2825;padding:.32rem .6rem;border-bottom:1px solid #3a3835}
+.titlebar .tb-title{font-size:9pt;font-weight:500;color:#e8e6e0;display:flex;align-items:center;gap:.4rem;min-width:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.titlebar .tb-icon{width:.8rem;height:.8rem;border-radius:2px;opacity:.7;flex-shrink:0}
+.win-col[data-font="f"] .tb-icon{background:var(--c-f)}
+.win-col[data-font="g"] .tb-icon{background:var(--c-g)}
+.win-col[data-font="s"] .tb-icon{background:var(--c-s)}
+.win-col[data-font="n"] .tb-icon{background:var(--c-n)}
+.win-col[data-font="x"] .tb-icon{background:var(--c-x)}
+.win-col[data-font="m"] .tb-icon{background:var(--c-m)}
+.titlebar .tb-controls{display:flex;gap:.3rem;flex-shrink:0}
+.titlebar .tb-controls span{display:inline-block;width:.7rem;height:.7rem;border-radius:50%;background:#4a4845}
+.titlebar .tb-controls span:last-child{background:#d9534f;opacity:.5}
+
+.code-area{display:grid;grid-template-columns:2.2rem 1fr;min-height:340px;background:var(--code-bg);color:var(--code-fg);line-height:1.7}
+.gutter{padding:.5rem .3rem .5rem 0;text-align:right;color:#5a5855;font-size:8.5pt;user-select:none;border-right:1px solid #2e2c29}
+.gutter span{display:block}
+.code-body{padding:.5rem .6rem;overflow-x:auto;white-space:pre;font-size:var(--ui-size)}
+.code-body .c{color:#6a9955}
+.code-body .k{color:#569cd6}
+.code-body .t{color:#4ec9b0}
+.code-body .s{color:#ce9178}
+.code-body .n{color:#b5cea8}
+.code-body .p{color:#9cdcfe}
+.code-body .o{color:#d4d4d4}
+
+.statusbar{display:flex;justify-content:space-between;padding:.22rem .6rem;border-top:1px solid #3a3835;background:#2a2825;font-size:8pt;color:#8a8880;white-space:nowrap;overflow:hidden}
+.statusbar .lang{font-weight:600}
+.win-col[data-font="f"] .statusbar .lang{color:var(--c-f)}
+.win-col[data-font="g"] .statusbar .lang{color:var(--c-g)}
+.win-col[data-font="s"] .statusbar .lang{color:var(--c-s)}
+.win-col[data-font="n"] .statusbar .lang{color:var(--c-n)}
+.win-col[data-font="x"] .statusbar .lang{color:var(--c-x)}
+.win-col[data-font="m"] .statusbar .lang{color:var(--c-m)}
+
+/* ligature toggle */
+body.no-liga .code-body{font-variant-ligatures:none;font-feature-settings:'liga' 0,'calt' 0}
+
+/* detail / glyph zoom */
+.detail{max-width:1400px;margin:3.5rem auto 0}
+.detail-head{display:flex;justify-content:space-between;align-items:baseline;margin-bottom:1rem;border-bottom:1px solid var(--border);padding-bottom:.75rem;flex-wrap:wrap;gap:.5rem}
+.detail-head h2{font-family:'Fraunces',serif;font-size:1.3rem;font-weight:600;letter-spacing:-.01em}
+.detail-head .hint{font-family:'JetBrains Mono',ui-monospace,monospace;font-size:.72rem;color:var(--muted)}
+.legend{display:flex;gap:.75rem;flex-wrap:wrap}
+.legend span{font-family:'JetBrains Mono',ui-monospace,monospace;font-size:.72rem;display:flex;align-items:center;gap:.3rem}
+.legend i{display:inline-block;width:.7rem;height:.7rem;border-radius:2px;font-style:normal}
+.legend .lf i{background:var(--c-f)}
+.legend .lg i{background:var(--c-g)}
+.legend .ls i{background:var(--c-s)}
+.legend .ln i{background:var(--c-n)}
+.legend .lx i{background:var(--c-x)}
+.legend .lm i{background:var(--c-m)}
+
+.glyph-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(220px,1fr));gap:.75rem}
+.glyph{background:var(--win-bg);border:1px solid var(--win-border);border-radius:var(--radius);overflow:hidden}
+.glyph .chars{display:grid;grid-template-columns:repeat(6,1fr);border-bottom:1px solid var(--win-border)}
+.glyph .ch{font-size:2.4rem;line-height:1;padding:1rem 0;text-align:center;border-right:1px solid var(--win-border);white-space:nowrap;overflow:hidden}
+.glyph .ch:last-child{border-right:none}
+.glyph .ch.f{font-family:'Commit Mono',monospace;color:var(--c-f)}
+.glyph .ch.g{font-family:'Monaspace Radon',monospace;color:var(--c-g)}
+.glyph .ch.s{font-family:'Recursive',monospace;font-variation-settings:'CASL' 1,'MONO' 1,'slnt' 0;color:var(--c-s)}
+.glyph .ch.n{font-family:'Spline Sans Mono',monospace;color:var(--c-n)}
+.glyph .ch.x{font-family:'Inconsolata',monospace;color:var(--c-x)}
+.glyph .ch.m{font-family:'Maple Mono',monospace;color:var(--c-m)}
+.glyph .meta{display:grid;grid-template-columns:repeat(6,1fr);font-size:8pt}
+.glyph .meta div{padding:.3rem .2rem;text-align:center;border-right:1px solid var(--win-border)}
+.glyph .meta div:last-child{border-right:none}
+.glyph .meta .lbl{font-family:'JetBrains Mono',ui-monospace,monospace;color:var(--muted);display:block;font-size:7pt;text-transform:uppercase;letter-spacing:.06em}
+
+/* notes */
+.notes{max-width:1400px;margin:3rem auto 0;font-size:.88rem;color:var(--muted);line-height:1.7;border-top:1px solid var(--border);padding-top:1.5rem}
+.notes h3{font-family:'Fraunces',serif;font-size:1.05rem;font-weight:600;color:var(--fg);margin-bottom:.5rem}
+.notes ul{list-style:none;padding-left:0}
+.notes li{padding:.2rem 0;padding-left:1.1rem;position:relative}
+.notes li::before{content:'—';position:absolute;left:0;color:var(--c-f)}
+.notes strong{color:var(--fg);font-weight:600}
+.tag-f{font-family:'Commit Mono',monospace;font-weight:700;color:var(--c-f)}
+.tag-g{font-family:'Monaspace Radon',monospace;font-weight:700;color:var(--c-g)}
+.tag-s{font-family:'Recursive',monospace;font-weight:700;font-variation-settings:'CASL' 1,'MONO' 1,'slnt' 0;color:var(--c-s)}
+.tag-n{font-family:'Spline Sans Mono',monospace;font-weight:700;color:var(--c-n)}
+.tag-x{font-family:'Inconsolata',monospace;font-weight:700;color:var(--c-x)}
+.tag-m{font-family:'Maple Mono',monospace;font-weight:700;color:var(--c-m)}
+
+@media(max-width:1100px){
+  .compare{grid-template-columns:1fr 1fr}
+  .compare.cols-1{grid-template-columns:1fr}
+}
+@media(max-width:680px){
+  .compare,.compare.cols-2,.compare.cols-1{grid-template-columns:1fr;max-width:680px}
+  .glyph .ch{font-size:1.8rem;padding:.8rem 0}
+  .page-head h1{font-size:1.4rem}
+  .code-area{grid-template-columns:1.8rem 1fr}
+}
+</style>
+</head>
+<body>
+
+<div class="page-head">
+  <div class="crumb"><a href="../20260823/fonts-explore/font-compare.html">20260823 · fonts-explore</a> &nbsp;›&nbsp; 20260824 · code-fonts-explore</div>
+  <h1>编程字体探索 · 为 Merriweather UI 找同温代码字</h1>
+  <p>昨天从 6 个 UI 字体里选了 <code>Merriweather</code>（屏读衬线、厚实、暖）。代码字体锁定 <code>annotation mono + maple mono cn</code>——都是 humanist、偏暖、带连字、有性格。这页找"同温"的编程字体：暖色 / humanist / 有性格但不喧宾夺主 / 屏读优先。六个字体在 <code>9pt</code> 下渲染同一段 TypeScript，看谁和 Merriweather 坐在一起最和谐。</p>
+</div>
+
+<div class="controls">
+  <span class="label">View</span>
+  <button class="btn active" data-mode="all">六字并排</button>
+  <button class="btn" data-mode="m">Maple Mono</button>
+  <button class="btn" data-mode="f">Commit Mono</button>
+  <button class="btn" data-mode="g">Monaspace Radon</button>
+  <button class="btn" data-mode="s">Recursive</button>
+  <button class="btn" data-mode="n">Spline Sans Mono</button>
+  <button class="btn" data-mode="x">Inconsolata</button>
+  <span class="label" style="margin-left:1rem">Pairs</span>
+  <button class="btn" data-mode="mf">Maple vs Commit</button>
+  <button class="btn" data-mode="fg">Radon vs Commit</button>
+  <button class="btn" data-mode="warm">四暖候选</button>
+  <button class="btn toggle" id="ligaBtn">连字 ON</button>
+</div>
+
+<div class="compare" id="compare"></div>
+
+<!-- Glyph detail -->
+<div class="detail">
+  <div class="detail-head">
+    <h2>字形细节 · 代码辨识字符</h2>
+    <div class="legend">
+      <span class="lf"><i></i>Commit Mono</span>
+      <span class="lg"><i></i>Radon</span>
+      <span class="ls"><i></i>Recursive</span>
+      <span class="ln"><i></i>Spline</span>
+      <span class="lx"><i></i>Inconsolata</span>
+      <span class="lm"><i></i>Maple</span>
+    </div>
+  </div>
+  <div class="glyph-grid" id="glyphGrid"></div>
+</div>
+
+<!-- Notes -->
+<div class="notes">
+  <h3>观察要点</h3>
+  <ul>
+    <li><strong>温度梯度</strong>（从冷到暖）：<span class="tag-x">Inconsolata</span>（经典 humanist，中性偏暖）→ <span class="tag-n">Spline Sans Mono</span>（humanist，温和）→ <span class="tag-g">Monaspace Radon</span>（humanist 带衬线味，最暖的 Monaspace）→ <span class="tag-m">Maple Mono</span>（圆润、亲和、暖）→ <span class="tag-s">Recursive</span>（Casual 轴拉满，最松弛）→ <span class="tag-f">Commit Mono</span>（Stephen Nixon 手笔，暖且有骨气）。你现在的 <span class="tag-m">Maple Mono</span> 已经在暖端，往下找"同温或更暖"的伙伴。</li>
+    <li><strong>0 / O / o</strong>：代码字体的生死线。<span class="tag-f">Commit Mono</span> 和 <span class="tag-g">Radon</span> 的零带斜线（slash），最易辨；<span class="tag-m">Maple Mono</span> 零带竖线点（dotted zero），圆润可爱；<span class="tag-s">Recursive</span> 零偏窄椭圆，靠形状区分；<span class="tag-x">Inconsolata</span> 零带点，经典做法；<span class="tag-n">Spline</span> 零带斜线。六个都能过 0/O 关，但风格不同。</li>
+    <li><strong>1 / l / I</strong>：<span class="tag-f">Commit Mono</span> 的 l 带底弯钩，和 1 区分最清楚；<span class="tag-g">Radon</span> 的 l 是直竖带衬线底脚，有人文气；<span class="tag-m">Maple Mono</span> 的 l 带底钩，圆润；<span class="tag-s">Recursive</span> Casual 模式下 l 带手写味弯钩；<span class="tag-x">Inconsolata</span> 的 l 带顶底衬线，经典；<span class="tag-n">Spline</span> 的 l 简洁直竖。</li>
+    <li><strong>g / a</strong>：<span class="tag-f">Commit Mono</span> 单层 a + 单层 g（现代、干净）；<span class="tag-g">Radon</span> 双层 g 带衬线味（和 Merriweather 的 g 呼应！）；<span class="tag-m">Maple Mono</span> 单层 a + 圆润 g；<span class="tag-s">Recursive</span> Casual 下 g 带手写味；<span class="tag-x">Inconsolata</span> 单层 g；<span class="tag-n">Spline</span> 单层 a + 单层 g。<span class="tag-g">Radon</span> 是唯一双层 g——这是它和 Merriweather 衬线 UI 最搭的原因。</li>
+    <li><strong>连字 =>  ≠  ::</strong>：<span class="tag-m">Maple Mono</span>、<span class="tag-f">Commit Mono</span>、<span class="tag-g">Radon</span>、<span class="tag-s">Recursive</span> 都有连字；<span class="tag-x">Inconsolata</span> 和 <span class="tag-n">Spline</span> 无连字（更传统）。点右上角"连字 ON/OFF"切换对比。连字是"有性格"的标志，但传统派认为代码不该连字——看你站哪边。</li>
+    <li><strong>和 Merriweather 的配对</strong>：Merriweather 是厚实屏读衬线，配代码字要"暖但不抢戏"。<span class="tag-g">Radon</span> 是最佳配对——它本身带衬线味（双层 g、人文脚），和 Merriweather 同属"有温度的传统派"。<span class="tag-f">Commit Mono</span> 次之，骨气更足、更现代，适合想要"衬线 UI + 现代代码"的张力感。<span class="tag-m">Maple Mono</span>（你现在的选择）圆润亲和，和 Merriweather 的厚实感互补，已经很搭。</li>
+    <li><strong>和 annotation mono 的关系</strong>：<span class="tag-f">Commit Mono</span> 和 annotation mono 都出自 Stephen Nixon（Arrowtype）之手，同属"暖 humanist"血脉。如果你喜欢 annotation mono 的性格，<span class="tag-f">Commit Mono</span> 是最直接的免费同门——可以当 annotation mono 的开源替代或备选。</li>
+    <li><strong>9pt 可读性</strong>：<span class="tag-x">Inconsolata</span> 和 <span class="tag-n">Spline</span> 在 9pt 最稳（笔画均匀、x-height 高）；<span class="tag-f">Commit Mono</span> 和 <span class="tag-g">Radon</span> 紧随其后；<span class="tag-m">Maple Mono</span> 9pt 下圆润字形偶尔偏糊（尤其 o/a 收口）；<span class="tag-s">Recursive</span> Casual 模式 9pt 下手写味会加重，建议 CASL 调到 0.5 左右更稳。</li>
+  </ul>
+</div>
+
+<script>
+/* ---- code snippet (plain text, highlighted at runtime) ---- */
+const code = `// type-safe event bus — 0Oo 1lI| => !== >= <= -> :: ?? ?.
+type Handler<T> = (payload: T) => void | Promise<void>;
+
+class Bus<E extends Record<string, unknown>> {
+  #handlers = new Map<keyof E, Set<Handler<unknown>>>();
+
+  on<K extends keyof E>(event: K, fn: Handler<E[K]>): () => void {
+    const set = this.#handlers.get(event) ?? new Set();
+    set.add(fn);
+    this.#handlers.set(event, set);
+    return () => set.delete(fn);
+  }
+
+  async emit<K extends keyof E>(event: K, payload: E[K]) {
+    const set = this.#handlers.get(event);
+    if (!set) return;
+    await Promise.all([...set].map(fn => fn(payload)));
+  }
+}
+
+const bus = new Bus<{ login: { id: number }; logout: void }>();
+bus.on('login', ({ id }) => console.log(\`user #\${id} in\`));
+bus.emit('login', { id: 42 });`;
+
+/* ---- tiny syntax highlighter (stash comments/strings first) ---- */
+function highlight(src) {
+  let h = src.replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;');
+  const stash = [];
+  h = h.replace(/(\/\/[^\n]*|`[^`]*`|'[^']*'|"[^"]*")/g, function(m){
+    const cls = m.indexOf('//') === 0 ? 'c' : 's';
+    stash.push('<span class="'+cls+'">'+m+'</span>');
+    return '\x00' + (stash.length - 1) + '\x00';
+  });
+  h = h.replace(/\b(type|class|extends|new|const|let|void|async|await|return|if|private|keyof|unknown|number)\b/g, '<span class="k">$1</span>');
+  h = h.replace(/\b(Handler|Bus|Map|Set|Promise|Record)\b/g, '<span class="t">$1</span>');
+  h = h.replace(/\b(\d+)\b/g, '<span class="n">$1</span>');
+  h = h.replace(/\x00(\d+)\x00/g, function(_, n){ return stash[+n]; });
+  return h;
+}
+
+/* ---- font definitions ---- */
+const fonts = [
+  { id:'m', name:'Maple Mono',      pt:'9pt · 你当前的选择',  role:'reference',  file:'emitter.ts' },
+  { id:'f', name:'Commit Mono',     pt:'9pt · warm humanist',  role:'candidate',  file:'emitter.ts' },
+  { id:'g', name:'Monaspace Radon', pt:'9pt · humanist 衬线味', role:'candidate',  file:'emitter.ts' },
+  { id:'s', name:'Recursive',       pt:'9pt · Casual Mono',     role:'candidate',  file:'emitter.ts' },
+  { id:'n', name:'Spline Sans Mono',pt:'9pt · humanist',        role:'candidate',  file:'emitter.ts' },
+  { id:'x', name:'Inconsolata',      pt:'9pt · 经典暖',          role:'candidate',  file:'emitter.ts' }
+];
+
+const langLabel = { m:'Maple', f:'Commit', g:'Radon', s:'Recursive', n:'Spline', x:'Inconsolata' };
+
+/* ---- build code windows ---- */
+const highlighted = highlight(code);
+const lines = code.split('\n');
+const gutterHtml = lines.map(function(_, i){ return '<span>'+(i+1)+'</span>'; }).join('');
+
+const compare = document.getElementById('compare');
+compare.innerHTML = fonts.map(function(f){
+  return '<div class="win-col" data-font="'+f.id+'">' +
+    '<div class="col-label"><span class="font-name">'+f.name+'</span><span class="pt">'+f.pt+'</span></div>' +
+    '<div class="win '+f.id+'">' +
+      '<div class="titlebar"><div class="tb-title"><span class="tb-icon"></span>'+f.file+'</div><div class="tb-controls"><span></span><span></span><span></span></div></div>' +
+      '<div class="code-area"><div class="gutter">'+gutterHtml+'</div><div class="code-body">'+highlighted+'</div></div>' +
+      '<div class="statusbar"><span>Ln 18, Col 24</span><span class="lang">'+langLabel[f.id]+' · TS</span></div>' +
+    '</div>' +
+  '</div>';
+}).join('');
+
+/* ---- glyph grid ---- */
+const glyphs = [
+  { ch:'0',  note:'零 — 斜线/点/椭圆' },
+  { ch:'O',  note:'大写 O — 和零对比' },
+  { ch:'1',  note:'一 — 起笔' },
+  { ch:'l',  note:'小写 L — 底钩' },
+  { ch:'I',  note:'大写 i — 衬线?' },
+  { ch:'g',  note:'g — 单/双层' },
+  { ch:'a',  note:'a — 单/双层' },
+  { ch:'=>', note:'箭头连字' },
+  { ch:'{',  note:'左花括号' },
+  { ch:'$',  note:'美元符' },
+  { ch:'@',  note:'@ 螺旋' },
+  { ch:'*',  note:'星号 — 位置' }
+];
+document.getElementById('glyphGrid').innerHTML = glyphs.map(function(g){
+  return '<div class="glyph">' +
+    '<div class="chars">' +
+      '<div class="ch f">'+g.ch+'</div>' +
+      '<div class="ch g">'+g.ch+'</div>' +
+      '<div class="ch s">'+g.ch+'</div>' +
+      '<div class="ch n">'+g.ch+'</div>' +
+      '<div class="ch x">'+g.ch+'</div>' +
+      '<div class="ch m">'+g.ch+'</div>' +
+    '</div>' +
+    '<div class="meta">' +
+      '<div><span class="lbl">Commit</span></div>' +
+      '<div><span class="lbl">Radon</span></div>' +
+      '<div><span class="lbl">Recursive</span></div>' +
+      '<div><span class="lbl">Spline</span></div>' +
+      '<div><span class="lbl">Incon</span></div>' +
+      '<div><span class="lbl">Maple</span></div>' +
+    '</div>' +
+  '</div>';
+}).join('');
+
+/* ---- view controls ---- */
+const cols = document.querySelectorAll('.win-col');
+document.querySelectorAll('.btn:not(.toggle)').forEach(function(b){
+  b.addEventListener('click', function(){
+    document.querySelectorAll('.btn:not(.toggle)').forEach(function(x){ x.classList.remove('active'); });
+    b.classList.add('active');
+    const mode = b.dataset.mode;
+    var show = { all:['m','f','g','s','n','x'], m:['m'], f:['f'], g:['g'], s:['s'], n:['n'], x:['x'],
+                 mf:['m','f'], fg:['f','g'], warm:['f','g','s','x'] }[mode];
+    cols.forEach(function(c){ c.classList.toggle('hide', show.indexOf(c.dataset.font) === -1); });
+    compare.classList.remove('cols-1','cols-2');
+    if(show.length <= 1) compare.classList.add('cols-1');
+    else if(show.length === 2) compare.classList.add('cols-2');
+  });
+});
+
+/* ---- ligature toggle ---- */
+const ligaBtn = document.getElementById('ligaBtn');
+ligaBtn.addEventListener('click', function(){
+  document.body.classList.toggle('no-liga');
+  var on = !document.body.classList.contains('no-liga');
+  ligaBtn.textContent = on ? '连字 ON' : '连字 OFF';
+  ligaBtn.classList.toggle('on', on);
+});
+ligaBtn.classList.add('on');
+</script>
+</body>
+</html>

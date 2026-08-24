@@ -1,0 +1,354 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Recursive CASL 调节 · vs Radon · 为 Merriweather 找甜点</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,400;9..144,600;9..144,700&family=Merriweather:ital,wght@0,400;0,700;1,400&display=swap" rel="stylesheet">
+<link href="https://api.fontshare.com/v2/css?f[]=satoshi@400;500;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fontsource/monaspace-radon@latest/400.css">
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fontsource/monaspace-radon@latest/500.css">
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fontsource/monaspace-radon@latest/700.css">
+<style>
+@font-face{
+  font-family:'Recursive';
+  src:url('Recursive-var.ttf') format('truetype-variations');
+  font-weight:300 1000;
+  font-display:swap;
+}
+:root{
+  --bg:#ece9e2;
+  --fg:#1a1815;
+  --muted:#6b6760;
+  --border:#c9c2b6;
+  --win-bg:#fbfaf7;
+  --win-chrome:#f0ede6;
+  --win-border:#d4cec3;
+  --hover:#ece8df;
+  --radius:8px;
+  --code-bg:#1c1b19;
+  --code-fg:#d4d4d4;
+  --c-r:#7a3a8f;   /* Radon 紫 */
+  --c-c:#2a5d8f;   /* Recursive 蓝 */
+  --c-m:#8a5a2b;   /* Merriweather 棕 */
+  /* Recursive variable axes — controlled by slider */
+  --casl:0.5;
+  --rec-wght:450;
+}
+*{margin:0;padding:0;box-sizing:border-box}
+body{background:var(--bg);color:var(--fg);font-family:'Satoshi',system-ui,sans-serif;line-height:1.5;-webkit-font-smoothing:antialiased;padding:2rem 1.5rem 4rem}
+
+.page-head{max-width:1100px;margin:0 auto 1.5rem}
+.crumb{font-family:'Recursive',ui-monospace,monospace;font-variation-settings:'CASL' 0.4,'MONO' 1,'slnt' 0,'wght' 450;font-size:.72rem;color:var(--muted);text-transform:uppercase;letter-spacing:.1em;margin-bottom:.6rem}
+.crumb a{color:var(--c-r);text-decoration:none}
+.page-head h1{font-family:'Fraunces',serif;font-size:1.8rem;font-weight:600;letter-spacing:-.02em;margin-bottom:.4rem}
+.page-head p{font-size:.9rem;color:var(--muted);max-width:760px;line-height:1.6}
+.page-head p code{font-family:'Recursive',ui-monospace,monospace;font-variation-settings:'CASL' 0.4,'MONO' 1,'slnt' 0,'wght' 450;font-size:.82rem;background:rgba(0,0,0,.06);padding:.1em .35em;border-radius:3px}
+
+/* ===== CASL tuner ===== */
+.tuner{max-width:1100px;margin:0 auto 2rem;background:var(--win-bg);border:1px solid var(--win-border);border-radius:12px;padding:1.5rem 1.75rem;box-shadow:0 4px 16px rgba(0,0,0,.05)}
+.tuner-top{display:flex;justify-content:space-between;align-items:baseline;margin-bottom:1rem;flex-wrap:wrap;gap:.5rem}
+.tuner-label{font-family:'Recursive',ui-monospace,monospace;font-variation-settings:'CASL' 0.4,'MONO' 1,'slnt' 0,'wght' 450;font-size:.72rem;color:var(--muted);text-transform:uppercase;letter-spacing:.1em}
+.tuner-value{font-family:'Recursive',ui-monospace,monospace;font-variation-settings:'CASL' var(--casl),'MONO' 1,'slnt' 0,'wght' 700;font-size:2.2rem;font-weight:700;color:var(--c-c);line-height:1;letter-spacing:-.02em}
+.tuner-mode{font-family:'Fraunces',serif;font-size:1rem;color:var(--fg);font-style:italic}
+.tuner-mode .axis{color:var(--muted);font-style:normal;font-family:'Recursive',ui-monospace,monospace;font-variation-settings:'CASL' 0.4,'MONO' 1,'slnt' 0,'wght' 450;font-size:.78rem;margin-left:.4rem}
+
+.slider-wrap{position:relative;padding:.5rem 0 1.5rem}
+.slider-track-labels{display:flex;justify-content:space-between;font-family:'Recursive',ui-monospace,monospace;font-variation-settings:'CASL' 0.4,'MONO' 1,'slnt' 0,'wght' 450;font-size:.68rem;color:var(--muted);margin-bottom:.4rem}
+.slider-track-labels span:first-child{text-align:left}
+.slider-track-labels span:last-child{text-align:right}
+input[type=range].casl{width:100%;-webkit-appearance:none;appearance:none;height:6px;border-radius:3px;background:linear-gradient(to right,#c9c2b6,var(--c-c));outline:none;cursor:pointer}
+input[type=range].casl::-webkit-slider-thumb{-webkit-appearance:none;appearance:none;width:22px;height:22px;border-radius:50%;background:var(--win-bg);border:3px solid var(--c-c);cursor:grab;box-shadow:0 2px 6px rgba(0,0,0,.15);transition:transform .1s}
+input[type=range].casl::-webkit-slider-thumb:active{cursor:grabbing;transform:scale(1.15)}
+input[type=range].casl::-moz-range-thumb{width:22px;height:22px;border-radius:50%;background:var(--win-bg);border:3px solid var(--c-c);cursor:grab;box-shadow:0 2px 6px rgba(0,0,0,.15)}
+
+.ticks{display:flex;justify-content:space-between;margin-top:.5rem;font-family:'Recursive',ui-monospace,monospace;font-variation-settings:'CASL' 0.4,'MONO' 1,'slnt' 0,'wght' 450;font-size:.62rem;color:var(--muted)}
+
+.presets{display:flex;gap:.5rem;flex-wrap:wrap;margin-top:1rem}
+.preset{font-family:'Recursive',ui-monospace,monospace;font-variation-settings:'CASL' 0.4,'MONO' 1,'slnt' 0,'wght' 450;font-size:.76rem;padding:.4rem .8rem;border:1px solid var(--border);background:var(--win-bg);color:var(--fg);border-radius:6px;cursor:pointer;transition:all .15s}
+.preset:hover{background:var(--hover)}
+.preset.active{background:var(--c-c);color:#fff;border-color:var(--c-c)}
+.preset .v{color:var(--muted);margin-left:.3rem;font-size:.68rem}
+.preset.active .v{color:rgba(255,255,255,.7)}
+
+.tuner-hint{font-size:.82rem;color:var(--muted);line-height:1.6;margin-top:1rem;padding-top:1rem;border-top:1px solid var(--border)}
+.tuner-hint strong{color:var(--fg)}
+
+/* ===== utility: Recursive driven by --casl ===== */
+.rec{font-family:'Recursive',ui-monospace,monospace;font-variation-settings:'CASL' var(--casl),'MONO' 1,'slnt' 0,'wght' var(--rec-wght)}
+.rad{font-family:'Monaspace Radon',ui-monospace,monospace}
+.merri{font-family:'Merriweather',Georgia,serif}
+
+/* ===== side-by-side article+code cards ===== */
+.pair{max-width:1100px;margin:0 auto;display:grid;grid-template-columns:1fr 1fr;gap:1.25rem}
+.card{background:var(--win-bg);border:1px solid var(--win-border);border-radius:var(--radius);overflow:hidden;box-shadow:0 4px 16px rgba(0,0,0,.06);display:flex;flex-direction:column}
+.card-head{display:flex;align-items:center;justify-content:space-between;padding:.5rem .75rem;background:var(--win-chrome);border-bottom:1px solid var(--win-border)}
+.card-head .tag{font-family:'Recursive',ui-monospace,monospace;font-variation-settings:'CASL' 0.4,'MONO' 1,'slnt' 0,'wght' 450;font-size:.68rem;text-transform:uppercase;letter-spacing:.1em;color:var(--muted)}
+.card-head .tag b{color:var(--fg)}
+.card[data-font="r"] .tag b{color:var(--c-r)}
+.card[data-font="c"] .tag b{color:var(--c-c)}
+.card-head .dot{width:.7rem;height:.7rem;border-radius:2px}
+.card[data-font="r"] .dot{background:var(--c-r)}
+.card[data-font="c"] .dot{background:var(--c-c)}
+
+/* Merriweather article body */
+.article{padding:1.1rem 1.25rem .8rem}
+.article .meta{font-family:'Recursive',ui-monospace,monospace;font-variation-settings:'CASL' 0.4,'MONO' 1,'slnt' 0,'wght' 450;font-size:.68rem;color:var(--muted);text-transform:uppercase;letter-spacing:.1em;margin-bottom:.5rem}
+.article h3{font-family:'Merriweather',Georgia,serif;font-size:1.15rem;font-weight:700;line-height:1.3;margin-bottom:.6rem;color:var(--fg)}
+.article p{font-family:'Merriweather',Georgia,serif;font-size:.92rem;line-height:1.7;color:#2a2724;margin-bottom:.7rem}
+.article p code{font-size:.84rem;background:rgba(122,58,143,.08);padding:.05em .3em;border-radius:3px}
+.card[data-font="r"] .article p code{font-family:'Monaspace Radon',monospace;color:var(--c-r)}
+.card[data-font="c"] .article p code{font-family:'Recursive',monospace;font-variation-settings:'CASL' var(--casl),'MONO' 1,'slnt' 0,'wght' 500;color:var(--c-c)}
+
+/* code block inside card */
+.code-block{margin:0 1.25rem 1.1rem;background:var(--code-bg);border-radius:6px;overflow:hidden}
+.code-block .code-head{display:flex;justify-content:space-between;align-items:center;padding:.3rem .6rem;background:#2a2825;font-family:'Recursive',ui-monospace,monospace;font-variation-settings:'CASL' 0.4,'MONO' 1,'slnt' 0,'wght' 450;font-size:.68rem;color:#8a8880}
+.code-block .code-head .lang{font-weight:600}
+.card[data-font="r"] .code-block .lang{color:var(--c-r)}
+.card[data-font="c"] .code-block .lang{color:var(--c-c)}
+.code-body{padding:.6rem .75rem;overflow-x:auto;white-space:pre;font-size:8.5pt;line-height:1.7;color:var(--code-fg)}
+.card[data-font="r"] .code-body{font-family:'Monaspace Radon',monospace}
+.card[data-font="c"] .code-body{font-family:'Recursive',monospace;font-variation-settings:'CASL' var(--casl),'MONO' 1,'slnt' 0,'wght' var(--rec-wght)}
+.code-body .c{color:#6a9955}
+.code-body .k{color:#569cd6}
+.code-body .t{color:#4ec9b0}
+.code-body .s{color:#ce9178}
+.code-body .n{color:#b5cea8}
+.code-body .p{color:#9cdcfe}
+
+/* ===== glyph detail ===== */
+.detail{max-width:1100px;margin:3.5rem auto 0}
+.detail-head{display:flex;justify-content:space-between;align-items:baseline;margin-bottom:1rem;border-bottom:1px solid var(--border);padding-bottom:.75rem;flex-wrap:wrap;gap:.5rem}
+.detail-head h2{font-family:'Fraunces',serif;font-size:1.3rem;font-weight:600;letter-spacing:-.01em}
+.detail-head .legend{display:flex;gap:1rem;flex-wrap:wrap}
+.detail-head .legend span{font-family:'Recursive',ui-monospace,monospace;font-variation-settings:'CASL' 0.4,'MONO' 1,'slnt' 0,'wght' 450;font-size:.72rem;display:flex;align-items:center;gap:.3rem}
+.detail-head .legend i{display:inline-block;width:.7rem;height:.7rem;border-radius:2px;font-style:normal}
+.legend .lr i{background:var(--c-r)}
+.legend .lc i{background:var(--c-c)}
+
+.glyph-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(200px,1fr));gap:.75rem}
+.glyph{background:var(--win-bg);border:1px solid var(--win-border);border-radius:var(--radius);overflow:hidden}
+.glyph .chars{display:grid;grid-template-columns:1fr 1fr;border-bottom:1px solid var(--win-border)}
+.glyph .ch{font-size:2.6rem;line-height:1;padding:1.1rem 0;text-align:center;border-right:1px solid var(--win-border);white-space:nowrap;overflow:hidden}
+.glyph .ch:last-child{border-right:none}
+.glyph .ch.r{font-family:'Monaspace Radon',monospace;color:var(--c-r)}
+.glyph .ch.c{font-family:'Recursive',monospace;font-variation-settings:'CASL' var(--casl),'MONO' 1,'slnt' 0,'wght' 450;color:var(--c-c)}
+.glyph .meta{display:grid;grid-template-columns:1fr 1fr;font-size:8pt}
+.glyph .meta div{padding:.3rem .2rem;text-align:center;border-right:1px solid var(--win-border)}
+.glyph .meta div:last-child{border-right:none}
+.glyph .meta .lbl{font-family:'Recursive',ui-monospace,monospace;font-variation-settings:'CASL' 0.4,'MONO' 1,'slnt' 0,'wght' 450;color:var(--muted);display:block;font-size:7pt;text-transform:uppercase;letter-spacing:.06em}
+
+/* ===== notes ===== */
+.notes{max-width:1100px;margin:3rem auto 0;font-size:.88rem;color:var(--muted);line-height:1.7;border-top:1px solid var(--border);padding-top:1.5rem}
+.notes h3{font-family:'Fraunces',serif;font-size:1.05rem;font-weight:600;color:var(--fg);margin-bottom:.5rem}
+.notes ul{list-style:none;padding-left:0}
+.notes li{padding:.2rem 0;padding-left:1.1rem;position:relative}
+.notes li::before{content:'—';position:absolute;left:0;color:var(--c-c)}
+.notes strong{color:var(--fg);font-weight:600}
+.tag-r{font-family:'Monaspace Radon',monospace;font-weight:700;color:var(--c-r)}
+.tag-c{font-family:'Recursive',monospace;font-variation-settings:'CASL' var(--casl),'MONO' 1,'slnt' 0,'wght' 700;color:var(--c-c)}
+.tag-m{font-family:'Merriweather',serif;font-weight:700;color:var(--c-m)}
+
+@media(max-width:760px){
+  .pair{grid-template-columns:1fr}
+  .glyph-grid{grid-template-columns:1fr 1fr}
+  .page-head h1{font-size:1.4rem}
+  .tuner-value{font-size:1.8rem}
+}
+</style>
+</head>
+<body>
+
+<div class="page-head">
+  <div class="crumb"><a href="../../20260823/fonts-explore/font-compare.html">20260823 · fonts-explore</a> &nbsp;›&nbsp; <a href="code-font-compare.html">code-font-compare</a> &nbsp;›&nbsp; CASL 调节</div>
+  <h1>Recursive CASL 调节 · vs Radon</h1>
+  <p>你说 <span class="rad" style="font-weight:700;color:var(--c-r)">Radon</span> 气质最符合 <span class="merri" style="font-weight:700;color:var(--c-m)">Merriweather</span> 但偏手写体，<span class="rec" style="font-weight:700;color:var(--c-c)">Recursive</span> 不那么花、气质也符合。关键在于：Recursive 的 <code>CASL</code> 轴控制手写味浓度——0 是线性克制，1 是手写松弛。拖滑块找"气质在但不花"的甜点，右边和 Radon 同框对比，两列都配 Merriweather 正文。</p>
+</div>
+
+<!-- ===== CASL tuner ===== -->
+<div class="tuner">
+  <div class="tuner-top">
+    <div>
+      <div class="tuner-label">Recursive · CASL 轴</div>
+      <div class="tuner-value" id="caslValue">0.50</div>
+    </div>
+    <div class="tuner-mode" id="caslMode">Semi-Casual <span class="axis">CASL @ 0.50</span></div>
+  </div>
+  <div class="slider-wrap">
+    <div class="slider-track-labels"><span>← Linear · 克制</span><span>松弛 · Casual →</span></div>
+    <input type="range" class="casl" id="caslSlider" min="0" max="1" step="0.05" value="0.5">
+    <div class="ticks"><span>0.00</span><span>0.25</span><span>0.50</span><span>0.75</span><span>1.00</span></div>
+  </div>
+  <div class="presets" id="presets">
+    <button class="preset" data-casl="0">Linear <span class="v">0.00</span></button>
+    <button class="preset" data-casl="0.3">Semi-Linear <span class="v">0.30</span></button>
+    <button class="preset active" data-casl="0.5">推荐甜点 <span class="v">0.50</span></button>
+    <button class="preset" data-casl="0.7">Semi-Casual <span class="v">0.70</span></button>
+    <button class="preset" data-casl="1">Casual <span class="v">1.00</span></button>
+  </div>
+  <p class="tuner-hint"><strong>怎么读</strong>：滑块控制右边 Recursive 代码块和字形细节的手写味。左边 <span class="rad" style="font-weight:700;color:var(--c-r)">Radon</span> 固定不变，作为参照。拖到 <strong>0.3–0.5</strong> 区间，Recursive 的 humanist 骨架还在（气质在），但笔画变均匀、衬线脚的跳跃感消失（不花）——这通常是与厚实衬线 UI 字最和谐的区间。</p>
+</div>
+
+<!-- ===== side-by-side: Merriweather article + code ===== -->
+<div class="pair">
+
+  <!-- Radon card -->
+  <div class="card" data-font="r">
+    <div class="card-head"><span class="tag"><span class="dot"></span> <b>Monaspace Radon</b> · 固定参照</span><span class="tag">CASL —</span></div>
+    <div class="article">
+      <div class="meta">Essay · 4 min read</div>
+      <h3>代码字体的温度</h3>
+      <p>A typeface for code should sit beside the body text without friction. <span class="merri" style="font-weight:700">Merriweather</span> carries prose with a warm, sturdy hand — its strokes are even, its x-height generous. A monospace that shares that warmth disappears into the page.</p>
+      <p>代码字体的温度，应该和正文字体走在同一侧。配一个同暖的等宽字，代码块就自然嵌入页面；配一个冷峻的字，每个 <code>code block</code> 都像外来物。</p>
+    </div>
+    <div class="code-block">
+      <div class="code-head"><span>emitter.ts</span><span class="lang">Radon · TS</span></div>
+      <div class="code-body" id="codeR"></div>
+    </div>
+  </div>
+
+  <!-- Recursive card -->
+  <div class="card" data-font="c">
+    <div class="card-head"><span class="tag"><span class="dot"></span> <b>Recursive</b> · CASL 可调</span><span class="tag" id="cardCCasl">CASL 0.50</span></div>
+    <div class="article">
+      <div class="meta">Essay · 4 min read</div>
+      <h3>代码字体的温度</h3>
+      <p>A typeface for code should sit beside the body text without friction. <span class="merri" style="font-weight:700">Merriweather</span> carries prose with a warm, sturdy hand — its strokes are even, its x-height generous. A monospace that shares that warmth disappears into the page.</p>
+      <p>代码字体的温度，应该和正文字体走在同一侧。配一个同暖的等宽字，代码块就自然嵌入页面；配一个冷峻的字，每个 <code>code block</code> 都像外来物。</p>
+    </div>
+    <div class="code-block">
+      <div class="code-head"><span>emitter.ts</span><span class="lang">Recursive · TS</span></div>
+      <div class="code-body" id="codeC"></div>
+    </div>
+  </div>
+
+</div>
+
+<!-- ===== glyph detail ===== -->
+<div class="detail">
+  <div class="detail-head">
+    <h2>字形细节 · Radon vs Recursive@<span id="detailCasl">0.50</span></h2>
+    <div class="legend">
+      <span class="lr"><i></i>Monaspace Radon</span>
+      <span class="lc"><i></i>Recursive</span>
+    </div>
+  </div>
+  <div class="glyph-grid" id="glyphGrid"></div>
+</div>
+
+<!-- ===== notes ===== -->
+<div class="notes">
+  <h3>决策笔记</h3>
+  <ul>
+    <li><strong>为什么 Radon 偏手写</strong>：<span class="tag-r">Radon</span> 的双层 g 和人文脚（serif-like feet）是刻在字形里的——这是它和 <span class="tag-m">Merriweather</span> 衬线气质呼应的原因，也是"偏手写"的来源。它没法调，要么接受这个性格，要么换。</li>
+    <li><strong>Recursive 的 CASL 轴在调什么</strong>：不是调"暖度"（humanist 骨架始终在），而是调笔画的"松弛度"。CASL 0 时笔画均匀、收笔利落，接近 <span class="tag-c">Linear Mono</span>；CASL 1 时笔画带手写弯钩、收笔圆润，是 <span class="tag-c">Casual Mono</span>。你说的"不那么花"在 CASL 1 下成立，调到 0.3–0.5 会更克制。</li>
+    <li><strong>甜点推荐 0.5</strong>：Stephen Nixon（Recursive 设计师）本人推荐代码用 <code style="font-family:'Recursive',monospace;font-variation-settings:'CASL' .5,'MONO' 1,'slnt' 0,'wght' 450">CASL 0.5 + wght 450</code>。这个点 humanist 气质还在、但衬线脚的跳跃感消失，和厚实衬线 UI 字（Merriweather）同框最稳。如果你觉得 0.5 还是偏花，试 <strong>0.3</strong>。</li>
+    <li><strong>Radon vs Recursive 怎么选</strong>：要"传统衬线味、和 Merriweather 同属一脉"选 <span class="tag-r">Radon</span>（接受它的手写感）；要"humanist 气质在、但更现代克制、可微调"选 <span class="tag-c">Recursive</span>。两者都是暖 humanist，和 Merriweather 都搭——差别在"传统 vs 现代"的张力。</li>
+    <li><strong>和 annotation mono 的关系</strong>：你现在的 <span class="tag-c">annotation mono</span> 和 Recursive 同属"暖 humanist 可变字体"路线。Recursive 可以当 annotation mono 的开源替代——CASL 调到 0.3 左右、wght 450，气质非常接近，且免费可商用。</li>
+  </ul>
+</div>
+
+<script>
+/* ---- code snippet ---- */
+const code = `// type-safe event bus — 0Oo 1lI| => !== >= <= -> :: ?? ?.
+type Handler<T> = (payload: T) => void | Promise<void>;
+
+class Bus<E extends Record<string, unknown>> {
+  #handlers = new Map<keyof E, Set<Handler<unknown>>>();
+
+  on<K extends keyof E>(event: K, fn: Handler<E[K]>): () => void {
+    const set = this.#handlers.get(event) ?? new Set();
+    set.add(fn);
+    this.#handlers.set(event, set);
+    return () => set.delete(fn);
+  }
+
+  async emit<K extends keyof E>(event: K, payload: E[K]) {
+    const set = this.#handlers.get(event);
+    if (!set) return;
+    await Promise.all([...set].map(fn => fn(payload)));
+  }
+}
+
+const bus = new Bus<{ login: { id: number }; logout: void }>();
+bus.on('login', ({ id }) => console.log(\`user #\${id} in\`));
+bus.emit('login', { id: 42 });`;
+
+/* ---- tiny highlighter ---- */
+function highlight(src) {
+  let h = src.replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;');
+  const stash = [];
+  h = h.replace(/(\/\/[^\n]*|`[^`]*`|'[^']*'|"[^"]*")/g, function(m){
+    const cls = m.indexOf('//') === 0 ? 'c' : 's';
+    stash.push('<span class="'+cls+'">'+m+'</span>');
+    return '\x00' + (stash.length - 1) + '\x00';
+  });
+  h = h.replace(/\b(type|class|extends|new|const|let|void|async|await|return|if|keyof|unknown|number)\b/g, '<span class="k">$1</span>');
+  h = h.replace(/\b(Handler|Bus|Map|Set|Promise|Record)\b/g, '<span class="t">$1</span>');
+  h = h.replace(/\b(\d+)\b/g, '<span class="n">$1</span>');
+  h = h.replace(/\x00(\d+)\x00/g, function(_, n){ return stash[+n]; });
+  return h;
+}
+const highlighted = highlight(code);
+document.getElementById('codeR').innerHTML = highlighted;
+document.getElementById('codeC').innerHTML = highlighted;
+
+/* ---- glyph grid ---- */
+const glyphs = [
+  { ch:'0', note:'零' }, { ch:'O', note:'大写 O' },
+  { ch:'1', note:'一' }, { ch:'l', note:'小写 L' },
+  { ch:'I', note:'大写 i' }, { ch:'g', note:'g 单/双层' },
+  { ch:'a', note:'a 单/双层' }, { ch:'=>', note:'箭头连字' },
+  { ch:'{', note:'花括号' }, { ch:'$', note:'美元符' },
+  { ch:'@', note:'@ 螺旋' }, { ch:'::', note:'双冒号连字' }
+];
+document.getElementById('glyphGrid').innerHTML = glyphs.map(function(g){
+  return '<div class="glyph">' +
+    '<div class="chars"><div class="ch r">'+g.ch+'</div><div class="ch c">'+g.ch+'</div></div>' +
+    '<div class="meta"><div><span class="lbl">Radon</span></div><div><span class="lbl">Recursive</span></div></div>' +
+  '</div>';
+}).join('');
+
+/* ---- CASL slider ---- */
+const slider = document.getElementById('caslSlider');
+const valEl = document.getElementById('caslValue');
+const modeEl = document.getElementById('caslMode');
+const cardCCasl = document.getElementById('cardCCasl');
+const detailCasl = document.getElementById('detailCasl');
+const presets = document.querySelectorAll('.preset');
+
+function modeName(v) {
+  if (v <= 0.05) return 'Linear';
+  if (v <= 0.2) return 'Semi-Linear';
+  if (v <= 0.55) return 'Semi-Casual';
+  if (v <= 0.85) return 'Casual';
+  return 'Full Casual';
+}
+
+function update(v) {
+  document.documentElement.style.setProperty('--casl', v);
+  const s = v.toFixed(2);
+  valEl.textContent = s;
+  modeEl.innerHTML = modeName(v) + ' <span class="axis">CASL @ ' + s + '</span>';
+  cardCCasl.textContent = 'CASL ' + s;
+  detailCasl.textContent = s;
+  presets.forEach(function(p){
+    p.classList.toggle('active', Math.abs(parseFloat(p.dataset.casl) - v) < 0.001);
+  });
+}
+
+slider.addEventListener('input', function(e){ update(parseFloat(e.target.value)); });
+presets.forEach(function(p){
+  p.addEventListener('click', function(){
+    const v = parseFloat(p.dataset.casl);
+    slider.value = v;
+    update(v);
+  });
+});
+
+update(0.5);
+</script>
+</body>
+</html>
