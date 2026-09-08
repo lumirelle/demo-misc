@@ -1,0 +1,724 @@
+{
+ "bitwarden": [
+  {
+   "id": "CVE-2019-19766",
+   "published": "2019-12-12T19:15:21.030",
+   "lastModified": "2026-06-17T02:27:12.620",
+   "desc": "The Bitwarden server through 1.32.0 has a potentially unwanted KDF.",
+   "cvss": 7.5,
+   "severity": "HIGH"
+  },
+  {
+   "id": "CVE-2020-15879",
+   "published": "2020-07-21T17:15:12.263",
+   "lastModified": "2026-06-17T02:57:20.263",
+   "desc": "Bitwarden Server 1.35.1 allows SSRF because it does not consider certain IPv6 addresses (ones beginning with fc, fd, fe, or ff, and the :: address) and certain IPv4 addresses (0.0.0.0/8, 127.0.0.0/8, and 169.254.0.0/16).",
+   "cvss": 7.5,
+   "severity": "HIGH"
+  },
+  {
+   "id": "CVE-2018-25081",
+   "published": "2023-03-09T00:15:09.757",
+   "lastModified": "2026-06-17T01:54:40.510",
+   "desc": "Bitwarden through 2023.2.1 offers password auto-fill within a cross-domain IFRAME element. NOTE: the vendor's position is that there have been important legitimate cross-domain configurations (e.g., an apple.com IFRAME element on the icloud.com website) and that \"Auto-fill on page load\" is not enabl",
+   "cvss": 7.5,
+   "severity": "HIGH"
+  },
+  {
+   "id": "CVE-2023-27974",
+   "published": "2023-03-09T00:15:09.930",
+   "lastModified": "2026-06-17T05:46:17.390",
+   "desc": "Bitwarden through 2023.2.1 offers password auto-fill when the second-level domain matches, e.g., a password stored for an example.com hosting provider when customer-website.example.com is visited. NOTE: the vendor's position is that \"Auto-fill on page load\" is not enabled by default.",
+   "cvss": 7.5,
+   "severity": "HIGH"
+  },
+  {
+   "id": "CVE-2023-27706",
+   "published": "2023-06-09T19:15:09.107",
+   "lastModified": "2026-06-17T05:45:42.653",
+   "desc": "Bitwarden Windows desktop application versions prior to v2023.4.0 store biometric keys in Windows Credential Manager, accessible to other local unprivileged processes.",
+   "cvss": 7.1,
+   "severity": "HIGH"
+  },
+  {
+   "id": "CVE-2023-38840",
+   "published": "2023-08-15T17:15:10.320",
+   "lastModified": "2026-06-17T06:11:10.177",
+   "desc": "Bitwarden Desktop 2023.7.0 and below allows an attacker with local access to obtain sensitive information via the Bitwarden.exe process.",
+   "cvss": 5.5,
+   "severity": "MEDIUM"
+  },
+  {
+   "id": "CVE-2024-39924",
+   "published": "2024-09-13T18:15:03.810",
+   "lastModified": "2026-06-17T07:43:02.213",
+   "desc": "An issue was discovered in Vaultwarden (formerly Bitwarden_RS) 1.30.3. A vulnerability has been identified in the authentication and authorization process of the endpoint responsible for altering the metadata of an emergency access. It permits an attacker with granted emergency access to escalate th",
+   "cvss": 8.8,
+   "severity": "HIGH"
+  },
+  {
+   "id": "CVE-2024-39925",
+   "published": "2024-09-13T18:15:03.927",
+   "lastModified": "2026-06-17T07:43:02.370",
+   "desc": "An issue was discovered in Vaultwarden (formerly Bitwarden_RS) 1.30.3. It lacks an offboarding process for members who leave an organization. As a result, the shared organization key is not rotated when a member departs. Consequently, the departing member, whose access should be revoked, retains a c",
+   "cvss": 6.5,
+   "severity": "MEDIUM"
+  },
+  {
+   "id": "CVE-2024-39926",
+   "published": "2024-09-13T18:15:04.013",
+   "lastModified": "2026-06-17T07:43:02.523",
+   "desc": "An issue was discovered in Vaultwarden (formerly Bitwarden_RS) 1.30.3. A stored cross-site scripting (XSS) or, due to the default CSP, HTML injection vulnerability has been discovered in the admin dashboard. This potentially allows an authenticated attacker to inject malicious code into the dashboar",
+   "cvss": 5.4,
+   "severity": "MEDIUM"
+  },
+  {
+   "id": "CVE-2024-56335",
+   "published": "2024-12-20T21:15:10.277",
+   "lastModified": "2026-06-17T08:12:04.060",
+   "desc": "vaultwarden is an unofficial Bitwarden compatible server written in Rust, formerly known as bitwarden_rs. In affected versions an attacker is capable of updating or deleting groups from an organization given a few conditions: 1. The attacker has a user account in the server. 2. The attacker's accoun",
+   "cvss": 7.6,
+   "severity": "HIGH"
+  },
+  {
+   "id": "CVE-2025-24364",
+   "published": "2025-01-27T18:15:41.690",
+   "lastModified": "2026-06-17T08:58:54.463",
+   "desc": "vaultwarden is an unofficial Bitwarden compatible server written in Rust, formerly known as bitwarden_rs. Attacker with authenticated access to the vaultwarden admin panel can execute arbitrary code in the system. The attacker could then change some settings to use sendmail as mail agent but adjust ",
+   "cvss": 7.2,
+   "severity": "HIGH"
+  },
+  {
+   "id": "CVE-2025-24365",
+   "published": "2025-01-27T18:15:41.847",
+   "lastModified": "2026-06-17T08:58:54.573",
+   "desc": "vaultwarden is an unofficial Bitwarden compatible server written in Rust, formerly known as bitwarden_rs. Attacker can obtain owner rights of other organization. Hacker should know the ID of victim organization (in real case the user can be a part of the organization as an unprivileged user) and be ",
+   "cvss": 8.1,
+   "severity": "HIGH"
+  },
+  {
+   "id": "CVE-2025-5138",
+   "published": "2025-05-25T01:15:22.897",
+   "lastModified": "2026-06-17T09:47:18.390",
+   "desc": "A vulnerability was found in Bitwarden up to 2.25.1. It has been declared as problematic. Affected by this vulnerability is an unknown functionality of the component PDF File Handler. The manipulation leads to cross site scripting. The attack can be launched remotely. The exploit has been disclosed ",
+   "cvss": 3.5,
+   "severity": "LOW"
+  },
+  {
+   "id": "CVE-2026-26012",
+   "published": "2026-02-11T22:15:51.703",
+   "lastModified": "2026-06-17T10:25:35.817",
+   "desc": "vaultwarden is an unofficial Bitwarden compatible server written in Rust, formerly known as bitwarden_rs. Prior to 1.35.3, a regular organization member can retrieve all ciphers within an organization, regardless of collection permissions. The endpoint /ciphers/organization-details is accessible to ",
+   "cvss": 6.5,
+   "severity": "MEDIUM"
+  },
+  {
+   "id": "CVE-2026-27801",
+   "published": "2026-03-04T22:16:17.897",
+   "lastModified": "2026-06-17T10:27:42.427",
+   "desc": "Vaultwarden is an unofficial Bitwarden compatible server written in Rust, formerly known as bitwarden_rs. Vaultwarden versions 1.34.3 and prior are susceptible to a 2FA bypass when performing protected actions. An attacker who gains authenticated access to a user’s account can exploit this bypass to",
+   "cvss": 5.9,
+   "severity": "MEDIUM"
+  },
+  {
+   "id": "CVE-2026-27802",
+   "published": "2026-03-04T22:16:18.057",
+   "lastModified": "2026-06-17T10:27:42.543",
+   "desc": "Vaultwarden is an unofficial Bitwarden compatible server written in Rust, formerly known as bitwarden_rs. Prior to version 1.35.4, there is a privilege escalation vulnerability via bulk permission update to unauthorized collections by Manager. This issue has been patched in version 1.35.4.",
+   "cvss": 8.3,
+   "severity": "HIGH"
+  },
+  {
+   "id": "CVE-2026-27803",
+   "published": "2026-03-04T22:16:18.210",
+   "lastModified": "2026-06-17T10:27:42.650",
+   "desc": "Vaultwarden is an unofficial Bitwarden compatible server written in Rust, formerly known as bitwarden_rs. Prior to version 1.35.4, when a Manager has manage=false for a given collection, they can still perform several management operations as long as they have access to the collection. This issue ha",
+   "cvss": 8.3,
+   "severity": "HIGH"
+  },
+  {
+   "id": "CVE-2026-27898",
+   "published": "2026-03-04T22:16:18.373",
+   "lastModified": "2026-06-17T10:27:50.620",
+   "desc": "Vaultwarden is an unofficial Bitwarden compatible server written in Rust, formerly known as bitwarden_rs. Prior to version 1.35.4, an authenticated regular user can specify another user’s cipher_id and call \"PUT /api/ciphers/{id}/partial\" Even though the standard retrieval API correctly denies acces",
+   "cvss": 5.4,
+   "severity": "MEDIUM"
+  },
+  {
+   "id": "CVE-2026-42994",
+   "published": "2026-05-01T05:16:01.510",
+   "lastModified": "2026-06-17T10:48:43.673",
+   "desc": "Bitwarden CLI 2026.4.0 from 2026-04-22T21:57Z to 2026-04-22T23:30Z, when obtained from npm, had embedded malicious code. This is related to a Checkmarx supply chain incident.",
+   "cvss": 9.8,
+   "severity": "CRITICAL"
+  },
+  {
+   "id": "CVE-2026-31835",
+   "published": "2026-05-05T19:16:21.733",
+   "lastModified": "2026-07-25T11:10:00.100",
+   "desc": "Vaultwarden is a Bitwarden-compatible server written in Rust. In versions 1.35.4 and earlier, the WebAuthn authentication flow in `validate_webauthn_login()` updates persistent credential metadata (1backup_eligible1 and 1backup_state flags1) based on unverified `authenticatorData` before signature v",
+   "cvss": 5.4,
+   "severity": "MEDIUM"
+  },
+  {
+   "id": "CVE-2026-33420",
+   "published": "2026-05-05T20:16:36.483",
+   "lastModified": "2026-07-24T23:10:00.563",
+   "desc": "Vaultwarden is a Bitwarden-compatible server written in Rust. In version 1.35.4 and earlier, the get_org_collections_details endpoint (GET /api/organizations/{org_id}/collections/details) is missing the has_full_access() authorization check that exists on the sibling get_org_collections endpoint. Th",
+   "cvss": 5.3,
+   "severity": "MEDIUM"
+  },
+  {
+   "id": "CVE-2026-43638",
+   "published": "2026-05-11T18:16:36.823",
+   "lastModified": "2026-07-14T21:16:54.040",
+   "desc": "Bitwarden Server prior to v2026.4.1 contains a missing authorization vulnerability that allows any authenticated user to write ciphers into an arbitrary organization via `POST /ciphers/import-organization` by submitting an empty `collections` array, which causes the server-side permission check to b",
+   "cvss": 5.4,
+   "severity": "MEDIUM"
+  },
+  {
+   "id": "CVE-2026-43639",
+   "published": "2026-05-11T18:16:36.970",
+   "lastModified": "2026-07-14T21:16:54.180",
+   "desc": "Bitwarden Server prior to v2026.4.0 contains a missing authorization vulnerability that allows a provider service user to add an arbitrary organization to their provider via `POST /providers/{providerId}/clients/existing`, resulting in takeover of the target organization; self-hosted installations a",
+   "cvss": 8.0,
+   "severity": "HIGH"
+  },
+  {
+   "id": "CVE-2026-43640",
+   "published": "2026-05-11T18:16:37.110",
+   "lastModified": "2026-07-14T21:16:54.303",
+   "desc": "Bitwarden Server prior to v2026.4.1 does not require master-password re-authentication when retrieving or rotating an organization's SCIM API key, allowing an authenticated user with SCIM management privileges to obtain the key using only a valid session.",
+   "cvss": 8.1,
+   "severity": "HIGH"
+  },
+  {
+   "id": "CVE-2026-43911",
+   "published": "2026-05-11T23:20:21.837",
+   "lastModified": "2026-06-17T10:50:04.210",
+   "desc": "Vaultwarden is a Bitwarden-compatible server written in Rust. Prior to 1.35.5, refresh tokens are not invalidated when the user's security_stamp is rotated by some security-sensitive operations (password change, KDF change, key rotation, email change, org admin password reset, emergency access takeo",
+   "cvss": 6.8,
+   "severity": "MEDIUM"
+  },
+  {
+   "id": "CVE-2026-43912",
+   "published": "2026-05-11T23:20:21.980",
+   "lastModified": "2026-06-17T10:50:04.320",
+   "desc": "Vaultwarden is a Bitwarden-compatible server written in Rust. Prior to 1.35.5, Vaultwarden does not enforce that a groups_users.users_organizations_uuid entry belongs to the same organization as groups.groups_uuid, or a collections_groups.collections_uuid entry belongs to the same organization as co",
+   "cvss": 8.7,
+   "severity": "HIGH"
+  },
+  {
+   "id": "CVE-2026-43913",
+   "published": "2026-05-11T23:20:22.120",
+   "lastModified": "2026-06-17T10:50:04.433",
+   "desc": "Vaultwarden is a Bitwarden-compatible server written in Rust. Prior to 1.35.5, Vaultwarden allows an unconfirmed organization owner to purge the entire organization vault. The organization invite flow uses a two-step process: accepting an invite transitions membership from Invited to Accepted, and a",
+   "cvss": 8.1,
+   "severity": "HIGH"
+  },
+  {
+   "id": "CVE-2026-43914",
+   "published": "2026-05-11T23:20:22.253",
+   "lastModified": "2026-06-17T10:50:04.537",
+   "desc": "Vaultwarden is a Bitwarden-compatible server written in Rust. Prior to 1.35.4, there is a security vulnerability in Vaultwarden that allows bypassing the login brute-force protection if email 2fa is enabled. If email 2fa is enabled, the unprotected 2fa-function send_email_login (email.rs, api endpoi",
+   "cvss": 7.3,
+   "severity": "HIGH"
+  },
+  {
+   "id": "CVE-2026-57520",
+   "published": "2026-06-25T20:17:17.020",
+   "lastModified": "2026-07-14T22:17:23.557",
+   "desc": "Bitwarden Server before 2026.5.0 contains a privilege escalation vulnerability that allows authenticated Custom users with ManageUsers permission to remove Admin accounts from an organization by exploiting a missing role hierarchy check in the bulk user-remove endpoint. Attackers can supply Admin or",
+   "cvss": 7.1,
+   "severity": "HIGH"
+  },
+  {
+   "id": "CVE-2026-57521",
+   "published": "2026-06-25T20:17:17.220",
+   "lastModified": "2026-07-14T22:17:23.693",
+   "desc": "Bitwarden Server before 2026.5.0 contains a broken access control vulnerability that allows any authenticated user to access arbitrary organization billing data by supplying an arbitrary organizationId to the PreviewInvoiceController endpoints without membership or authorization checks. Attackers ca",
+   "cvss": 4.3,
+   "severity": "MEDIUM"
+  },
+  {
+   "id": "CVE-2026-57522",
+   "published": "2026-06-25T20:17:17.377",
+   "lastModified": "2026-07-14T22:17:23.830",
+   "desc": "Bitwarden Server before 2026.5.0 contains a JSON injection vulnerability in IntegrationTemplateProcessor.ReplaceTokens(), which substitutes user-controlled values into event-integration templates without JSON encoding. When an organization has configured an event integration whose template reference",
+   "cvss": 3.5,
+   "severity": "LOW"
+  },
+  {
+   "id": "CVE-2026-60104",
+   "published": "2026-07-08T20:17:00.413",
+   "lastModified": "2026-07-20T14:34:32.367",
+   "desc": "Bitwarden Server before 2026.6.0 does not verify that the email in a POST /auth-requests/admin-request body belongs to the authenticated caller, allowing a low-privileged organization member to obtain another user's vault key and a victim-scoped access token by creating a Trusted Device Encryption a",
+   "cvss": 8.7,
+   "severity": "HIGH"
+  },
+  {
+   "id": "CVE-2026-47158",
+   "published": "2026-07-15T16:16:46.200",
+   "lastModified": "2026-07-15T19:17:17.790",
+   "desc": "Vaultwarden is a Bitwarden-compatible server written in Rust. Prior to 1.36.0, Vaultwarden's SSO authorization flow did not bind the OAuth state parameter accepted by /connect/authorize to the initiating browser session, allowed attacker-controlled PKCE parameters, and left SsoAuth records intact af",
+   "cvss": 8.3,
+   "severity": "HIGH"
+  },
+  {
+   "id": "CVE-2026-47159",
+   "published": "2026-07-15T16:16:46.353",
+   "lastModified": "2026-07-15T18:15:13.373",
+   "desc": "Vaultwarden is a Bitwarden-compatible server written in Rust. Prior to 1.36.0, Vaultwarden's SSO discovery and pre-validation flow returned organization-related SSO metadata including organizationIdentifier values for arbitrary email addresses and allowed a valid pre-validation JWT to be obtained wi",
+   "cvss": null,
+   "severity": null
+  },
+  {
+   "id": "CVE-2026-47160",
+   "published": "2026-07-15T16:16:46.490",
+   "lastModified": "2026-07-15T18:15:13.373",
+   "desc": "Vaultwarden is a Bitwarden-compatible server written in Rust. Prior to 1.36.0, Vaultwarden's /icons/{domain}/icon.png endpoint used src/http_client.rs checks including should_block_address() and post_resolve() that missed decimal, hexadecimal, and octal IP representations, allowing SSRF through the ",
+   "cvss": 5.8,
+   "severity": "MEDIUM"
+  },
+  {
+   "id": "CVE-2026-47164",
+   "published": "2026-07-15T16:16:46.630",
+   "lastModified": "2026-07-15T18:15:13.373",
+   "desc": "Vaultwarden is a Bitwarden-compatible server written in Rust. Prior to 1.36.0, Vaultwarden's SSO login flow checked the IdP email_verified claim only for new-user creation and not when SSO_SIGNUPS_MATCH_EMAIL=true linked an IdP identity to an existing local account, allowing an attacker-controlled I",
+   "cvss": 7.7,
+   "severity": "HIGH"
+  },
+  {
+   "id": "CVE-2026-71959",
+   "published": "2026-08-10T14:17:26.870",
+   "lastModified": "2026-08-17T19:16:36.823",
+   "desc": "Bitwarden Server before 2026.7.2 does not verify that the caller is a member of the organization identified in a POST /collect request body, allowing any authenticated user to write forged, arbitrarily backdated entries into any organization's audit log.",
+   "cvss": 5.8,
+   "severity": "MEDIUM"
+  }
+ ],
+ "keepassxc": [
+  {
+   "id": "CVE-2023-35866",
+   "published": "2023-06-19T06:15:09.240",
+   "lastModified": "2026-06-17T06:05:22.397",
+   "desc": "In KeePassXC through 2.7.5, a local attacker can make changes to the Database security settings, including master password and second-factor authentication, within an authenticated KeePassXC Database session, without the need to authenticate these changes by entering the password and/or second-facto",
+   "cvss": 5.5,
+   "severity": "MEDIUM"
+  },
+  {
+   "id": "CVE-2024-33900",
+   "published": "2024-05-20T21:15:09.177",
+   "lastModified": "2026-06-17T07:32:32.040",
+   "desc": "KeePassXC 2.7.7 allows an attacker (who has the privileges of the victim) to recover cleartext credentials via a memory dump. NOTE: the vendor disputes this because memory-management constraints make this unavoidable in the current design and other realistic designs.",
+   "cvss": 6.5,
+   "severity": "MEDIUM"
+  },
+  {
+   "id": "CVE-2024-33901",
+   "published": "2024-05-20T21:15:09.243",
+   "lastModified": "2026-06-17T07:32:32.207",
+   "desc": "Issue in KeePassXC 2.7.7 allows an attacker (who has the privileges of the victim) to recover some passwords stored in the .kdbx database via a memory dump. NOTE: the vendor disputes this because memory-management constraints make this unavoidable in the current design and other realistic designs.",
+   "cvss": 6.5,
+   "severity": "MEDIUM"
+  },
+  {
+   "id": "CVE-2025-65203",
+   "published": "2025-12-17T18:15:48.860",
+   "lastModified": "2026-06-17T09:55:32.460",
+   "desc": "KeePassXC-Browser thru 1.9.9.2 autofills or prompts to fill stored credentials into documents rendered under a browser-enforced CSP directive and iframe attribute sandbox, allowing attacker-controlled script in the sandboxed document to access populated form fields and exfiltrate credentials.",
+   "cvss": 7.1,
+   "severity": "HIGH"
+  },
+  {
+   "id": "CVE-2026-4158",
+   "published": "2026-04-11T01:16:17.620",
+   "lastModified": "2026-06-17T10:56:04.927",
+   "desc": "KeePassXC OpenSSL Configuration Uncontrolled Search Path Element Local Privilege Escalation Vulnerability. This vulnerability allows local attackers to escalate privileges on affected installations of KeePassXC. An attacker must first obtain the ability to execute low-privileged code on the target s",
+   "cvss": 7.3,
+   "severity": "HIGH"
+  }
+ ],
+ "keepass": [
+  {
+   "id": "CVE-2010-5196",
+   "published": "2012-09-06T10:41:54.033",
+   "lastModified": "2026-06-16T23:26:18.090",
+   "desc": "Untrusted search path vulnerability in KeePass Password Safe before 2.13 allows local users to gain privileges via a Trojan horse DwmApi.dll file in the current working directory, as demonstrated by a directory that contains a .kdbx file.  NOTE: some of these details are obtained from third party in",
+   "cvss": 6.9,
+   "severity": null
+  },
+  {
+   "id": "CVE-2010-5200",
+   "published": "2012-09-06T10:41:54.567",
+   "lastModified": "2026-06-16T23:26:18.513",
+   "desc": "Untrusted search path vulnerability in KeePass Password Safe before 1.18 allows local users to gain privileges via a Trojan horse DLL in the current working directory, as demonstrated by a directory that contains a .kdb file.  NOTE: some of these details are obtained from third party information.",
+   "cvss": 6.9,
+   "severity": null
+  },
+  {
+   "id": "CVE-2016-5119",
+   "published": "2017-01-23T21:59:01.657",
+   "lastModified": "2026-06-17T00:48:47.530",
+   "desc": "The automatic update feature in KeePass 2.33 and earlier allows man-in-the-middle attackers to execute arbitrary code by spoofing the version check response and supplying a crafted update.",
+   "cvss": 7.5,
+   "severity": "HIGH"
+  },
+  {
+   "id": "CVE-2015-8378",
+   "published": "2017-04-10T14:59:00.153",
+   "lastModified": "2026-06-17T00:34:24.960",
+   "desc": "In KeePassX before 0.4.4, a cleartext copy of password data is created upon a cancel of an XML export action. This allows context-dependent attackers to obtain sensitive information by reading the .xml dotfile.",
+   "cvss": 7.5,
+   "severity": "HIGH"
+  },
+  {
+   "id": "CVE-2017-1000066",
+   "published": "2017-07-17T13:18:18.093",
+   "lastModified": "2026-06-17T00:58:40.583",
+   "desc": "The entry details view function in KeePass version 1.32 inadvertently decrypts certain database entries into memory, which may result in the disclosure of sensitive information.",
+   "cvss": 7.5,
+   "severity": "HIGH"
+  },
+  {
+   "id": "CVE-2018-1000835",
+   "published": "2018-12-20T15:29:01.610",
+   "lastModified": "2026-06-17T01:33:08.707",
+   "desc": "KeePassDX version <= 2.5.0.0beta17 contains a XML External Entity (XXE) vulnerability in kdbx file parser that can result in Disclosure of confidential data, denial of service, SSRF, port scanning.",
+   "cvss": 10.0,
+   "severity": "CRITICAL"
+  },
+  {
+   "id": "CVE-2019-20184",
+   "published": "2020-01-09T22:15:13.300",
+   "lastModified": "2026-06-17T02:30:10.877",
+   "desc": "KeePass 2.4.1 allows CSV injection in the title field of a CSV export.",
+   "cvss": 7.8,
+   "severity": "HIGH"
+  },
+  {
+   "id": "CVE-2020-16271",
+   "published": "2020-08-03T17:15:12.043",
+   "lastModified": "2026-06-17T02:57:58.560",
+   "desc": "The SRP-6a implementation in Kee Vault KeePassRPC before 1.12.0 generates insufficiently random numbers, which allows remote attackers to read and modify data in the KeePass database via a WebSocket connection.",
+   "cvss": 9.1,
+   "severity": "CRITICAL"
+  },
+  {
+   "id": "CVE-2020-16272",
+   "published": "2020-08-03T17:15:12.107",
+   "lastModified": "2026-06-17T02:57:58.670",
+   "desc": "The SRP-6a implementation in Kee Vault KeePassRPC before 1.12.0 is missing validation for a client-provided parameter, which allows remote attackers to read and modify data in the KeePass database via an A=0 WebSocket connection.",
+   "cvss": 9.1,
+   "severity": "CRITICAL"
+  },
+  {
+   "id": "CVE-2022-0725",
+   "published": "2022-03-10T17:44:56.730",
+   "lastModified": "2026-06-17T04:21:08.090",
+   "desc": "A flaw was found in keepass. The vulnerability occurs due to logging the plain text passwords in system log and leads to an Information Exposure vulnerability. This flaw allows an attacker to interact and read sensitive passwords and logs.",
+   "cvss": 7.5,
+   "severity": "HIGH"
+  },
+  {
+   "id": "CVE-2022-3781",
+   "published": "2022-11-01T19:15:11.150",
+   "lastModified": "2026-06-17T05:00:17.520",
+   "desc": "Dashlane password and Keepass Server password in My Account Settings  are not encrypted in the database in Devolutions Remote Desktop Manager 2022.2.26 and prior versions and Devolutions Server 2022.3.1 and prior versions which allows database users to read the data.\n\nThis issue affects : \nRemote De",
+   "cvss": 6.5,
+   "severity": "MEDIUM"
+  },
+  {
+   "id": "CVE-2023-24055",
+   "published": "2023-01-22T04:15:11.560",
+   "lastModified": "2026-06-17T05:38:34.157",
+   "desc": "KeePass through 2.53 (in a default installation) allows an attacker, who has write access to the XML configuration file, to obtain the cleartext passwords by adding an export trigger. NOTE: the vendor's position is that the password database is not intended to be secure against an attacker who has t",
+   "cvss": 5.5,
+   "severity": "MEDIUM"
+  },
+  {
+   "id": "CVE-2023-32784",
+   "published": "2023-05-15T06:15:10.427",
+   "lastModified": "2026-06-17T05:59:34.270",
+   "desc": "In KeePass 2.x before 2.54, it is possible to recover the cleartext master password from a memory dump, even when a workspace is locked or no longer running. The memory dump can be a KeePass process dump, swap file (pagefile.sys), hibernation file (hiberfil.sys), or RAM dump of the entire system. Th",
+   "cvss": 7.5,
+   "severity": "HIGH"
+  },
+  {
+   "id": "CVE-2023-35866",
+   "published": "2023-06-19T06:15:09.240",
+   "lastModified": "2026-06-17T06:05:22.397",
+   "desc": "In KeePassXC through 2.7.5, a local attacker can make changes to the Database security settings, including master password and second-factor authentication, within an authenticated KeePassXC Database session, without the need to authenticate these changes by entering the password and/or second-facto",
+   "cvss": 5.5,
+   "severity": "MEDIUM"
+  },
+  {
+   "id": "CVE-2024-33900",
+   "published": "2024-05-20T21:15:09.177",
+   "lastModified": "2026-06-17T07:32:32.040",
+   "desc": "KeePassXC 2.7.7 allows an attacker (who has the privileges of the victim) to recover cleartext credentials via a memory dump. NOTE: the vendor disputes this because memory-management constraints make this unavoidable in the current design and other realistic designs.",
+   "cvss": 6.5,
+   "severity": "MEDIUM"
+  },
+  {
+   "id": "CVE-2024-33901",
+   "published": "2024-05-20T21:15:09.243",
+   "lastModified": "2026-06-17T07:32:32.207",
+   "desc": "Issue in KeePassXC 2.7.7 allows an attacker (who has the privileges of the victim) to recover some passwords stored in the .kdbx database via a memory dump. NOTE: the vendor disputes this because memory-management constraints make this unavoidable in the current design and other realistic designs.",
+   "cvss": 6.5,
+   "severity": "MEDIUM"
+  },
+  {
+   "id": "CVE-2025-65203",
+   "published": "2025-12-17T18:15:48.860",
+   "lastModified": "2026-06-17T09:55:32.460",
+   "desc": "KeePassXC-Browser thru 1.9.9.2 autofills or prompts to fill stored credentials into documents rendered under a browser-enforced CSP directive and iframe attribute sandbox, allowing attacker-controlled script in the sandboxed document to access populated form fields and exfiltrate credentials.",
+   "cvss": 7.1,
+   "severity": "HIGH"
+  },
+  {
+   "id": "CVE-2020-37178",
+   "published": "2026-02-11T21:16:10.953",
+   "lastModified": "2026-06-17T03:17:11.277",
+   "desc": "KeePass Password Safe versions before 2.44 contain a denial of service vulnerability in the help system's HTML handling. Attackers can trigger the vulnerability by dragging and dropping malicious HTML files into the help area, potentially causing application instability or crash.",
+   "cvss": 7.5,
+   "severity": "HIGH"
+  },
+  {
+   "id": "CVE-2026-4158",
+   "published": "2026-04-11T01:16:17.620",
+   "lastModified": "2026-06-17T10:56:04.927",
+   "desc": "KeePassXC OpenSSL Configuration Uncontrolled Search Path Element Local Privilege Escalation Vulnerability. This vulnerability allows local attackers to escalate privileges on affected installations of KeePassXC. An attacker must first obtain the ability to execute low-privileged code on the target s",
+   "cvss": 7.3,
+   "severity": "HIGH"
+  },
+  {
+   "id": "CVE-2026-68765",
+   "published": "2026-08-17T21:16:48.113",
+   "lastModified": "2026-08-21T12:16:31.060",
+   "desc": "hashcat master branch builds after v7.1.2 contain a heap buffer overflow vulnerability in the KeePass AESKDF/KDBX v4 module (module 34301) that allows attackers to corrupt adjacent heap memory by supplying an oversized ninth hash field token. The module accepts up to 600 hex characters for the ninth",
+   "cvss": 6.1,
+   "severity": "MEDIUM"
+  }
+ ],
+ "protonpass": [],
+ "lastpass": [
+  {
+   "id": "CVE-2018-10193",
+   "published": "2018-04-18T00:29:00.253",
+   "lastModified": "2026-06-17T01:33:39.250",
+   "desc": "LogMeIn LastPass through 4.15.0 allows remote attackers to cause a denial of service (browser hang) via an HTML document because the resource consumption of onloadwff.js grows with the number of INPUT elements.",
+   "cvss": 7.5,
+   "severity": "HIGH"
+  },
+  {
+   "id": "CVE-2019-16371",
+   "published": "2019-09-16T18:15:12.237",
+   "lastModified": "2026-06-17T02:22:11.410",
+   "desc": "LogMeIn LastPass before 4.33.0 allows attackers to construct a crafted web site that captures the credentials for a victim's account on a previously visited web site, because do_popupregister can be bypassed via clickjacking.",
+   "cvss": 8.2,
+   "severity": "HIGH"
+  },
+  {
+   "id": "CVE-2013-5113",
+   "published": "2020-01-31T15:15:10.617",
+   "lastModified": "2026-06-16T23:58:21.827",
+   "desc": "LastPass prior to 2.5.1 has an insecure PIN implementation.",
+   "cvss": 6.8,
+   "severity": "MEDIUM"
+  },
+  {
+   "id": "CVE-2013-5114",
+   "published": "2020-01-31T15:15:10.697",
+   "lastModified": "2026-06-16T23:58:21.937",
+   "desc": "LastPass prior to 2.5.1 allows secure wipe bypass.",
+   "cvss": 6.1,
+   "severity": "MEDIUM"
+  },
+  {
+   "id": "CVE-2020-35207",
+   "published": "2020-12-12T19:15:11.653",
+   "lastModified": "2026-06-17T03:13:31.870",
+   "desc": "An issue was discovered in the LogMein LastPass Password Manager (aka com.lastpass.ilastpass) app 4.8.11.2403 for iOS. The PIN authentication for unlocking can be bypassed by forcing the authentication result to be true through runtime manipulation. In other words, an attacker could authenticate wit",
+   "cvss": 5.7,
+   "severity": "MEDIUM"
+  },
+  {
+   "id": "CVE-2020-35208",
+   "published": "2020-12-12T19:15:11.730",
+   "lastModified": "2026-06-17T03:13:31.993",
+   "desc": "An issue was discovered in the LogMein LastPass Password Manager (aka com.lastpass.ilastpass) app 4.8.11.2403 for iOS. The password authentication for unlocking can be bypassed by forcing the authentication result to be true through runtime manipulation. In other words, an attacker could authenticat",
+   "cvss": 5.7,
+   "severity": "MEDIUM"
+  }
+ ],
+ "1password": [
+  {
+   "id": "CVE-2012-6369",
+   "published": "2012-12-28T11:48:44.720",
+   "lastModified": "2026-06-16T23:48:03.627",
+   "desc": "Cross-site scripting (XSS) vulnerability in the Troubleshooting Reporting System feature in AgileBits 1Password 3.9.9 might allow remote attackers to inject arbitrary web script or HTML via a crafted User-Agent HTTP header that is not properly handled in a View Troubleshooting Report action.",
+   "cvss": 4.3,
+   "severity": null
+  },
+  {
+   "id": "CVE-2018-13042",
+   "published": "2018-10-05T21:29:00.997",
+   "lastModified": "2026-06-17T01:38:44.770",
+   "desc": "The 1Password application 6.8 for Android is affected by a Denial Of Service vulnerability. By starting the activity com.agilebits.onepassword.filling.openyolo.OpenYoloDeleteActivity or com.agilebits.onepassword.filling.openyolo.OpenYoloRetrieveActivity from an external application (since they are e",
+   "cvss": 5.9,
+   "severity": "MEDIUM"
+  },
+  {
+   "id": "CVE-2018-19863",
+   "published": "2018-12-22T15:29:00.230",
+   "lastModified": "2026-06-17T01:50:01.290",
+   "desc": "An issue was discovered in 1Password 7.2.3.BETA before 7.2.3.BETA-3 on macOS. A mistake in error logging resulted in instances where sensitive data passed from Safari to 1Password could be logged locally on the user's machine. This data could include usernames and passwords that a user manually ente",
+   "cvss": 5.5,
+   "severity": "MEDIUM"
+  },
+  {
+   "id": "CVE-2014-3753",
+   "published": "2020-01-09T14:15:11.420",
+   "lastModified": "2026-06-17T00:08:50.403",
+   "desc": "AgileBits 1Password through 1.0.9.340 allows security feature bypass",
+   "cvss": 5.5,
+   "severity": "MEDIUM"
+  },
+  {
+   "id": "CVE-2020-10256",
+   "published": "2020-10-27T14:15:13.453",
+   "lastModified": "2026-06-17T02:47:34.717",
+   "desc": "An issue was discovered in beta versions of the 1Password command-line tool prior to 0.5.5 and in beta versions of the 1Password SCIM bridge prior to 0.7.3. An insecure random number generator was used to generate various keys. An attacker with access to the user's encrypted data may be able to perf",
+   "cvss": 9.8,
+   "severity": "CRITICAL"
+  },
+  {
+   "id": "CVE-2021-26905",
+   "published": "2021-02-08T20:15:12.963",
+   "lastModified": "2026-06-17T03:43:58.603",
+   "desc": "1Password SCIM Bridge before 1.6.2 mishandles validation of authenticated requests for log files, leading to disclosure of a TLS private key.",
+   "cvss": 6.5,
+   "severity": "MEDIUM"
+  },
+  {
+   "id": "CVE-2021-36758",
+   "published": "2021-07-16T00:15:07.773",
+   "lastModified": "2026-06-17T03:59:07.147",
+   "desc": "1Password Connect server before 1.2 is missing validation checks, permitting users to create Secrets Automation access tokens that can be used to perform privilege escalation. Malicious users authorized to create Secrets Automation access tokens can create tokens that have access beyond what the use",
+   "cvss": 5.4,
+   "severity": "MEDIUM"
+  },
+  {
+   "id": "CVE-2020-18173",
+   "published": "2021-07-26T20:15:08.250",
+   "lastModified": "2026-06-17T02:59:12.650",
+   "desc": "A DLL injection vulnerability in 1password.dll of 1Password 7.3.712 allows attackers to execute arbitrary code.",
+   "cvss": 7.8,
+   "severity": "HIGH"
+  },
+  {
+   "id": "CVE-2021-41795",
+   "published": "2021-09-29T21:15:07.653",
+   "lastModified": "2026-06-17T04:08:55.787",
+   "desc": "The Safari app extension bundled with 1Password for Mac 7.7.0 through 7.8.x before 7.8.7 is vulnerable to authorization bypass. By targeting a vulnerable component of this extension, a malicious web page could read a subset of 1Password vault items that would normally be fillable by the user on that",
+   "cvss": 6.5,
+   "severity": "MEDIUM"
+  },
+  {
+   "id": "CVE-2022-29868",
+   "published": "2022-05-09T19:15:07.933",
+   "lastModified": "2026-06-17T04:40:51.683",
+   "desc": "1Password for Mac 7.2.4 through 7.9.x before 7.9.3 is vulnerable to a process validation bypass. Malicious software running on the same computer can exfiltrate secrets from 1Password provided that 1Password is running and is unlocked. Affected secrets include vault items and derived values used for ",
+   "cvss": 5.5,
+   "severity": "MEDIUM"
+  },
+  {
+   "id": "CVE-2022-32550",
+   "published": "2022-06-15T19:15:11.933",
+   "lastModified": "2026-06-17T04:47:31.850",
+   "desc": "An issue was discovered in AgileBits 1Password, involving the method various 1Password apps and integrations used to create connections to the 1Password service. In specific circumstances, this issue allowed a malicious server to convince a 1Password app or integration it is communicating with the 1",
+   "cvss": 4.8,
+   "severity": "MEDIUM"
+  },
+  {
+   "id": "CVE-2024-42218",
+   "published": "2024-08-06T21:16:03.460",
+   "lastModified": "2026-06-17T07:49:02.510",
+   "desc": "1Password 8 before 8.10.38 for macOS allows local attackers to exfiltrate vault items by bypassing macOS-specific security mechanisms.",
+   "cvss": 4.7,
+   "severity": "MEDIUM"
+  },
+  {
+   "id": "CVE-2024-42219",
+   "published": "2024-08-06T21:16:03.560",
+   "lastModified": "2026-06-17T07:49:02.670",
+   "desc": "1Password 8 before 8.10.36 for macOS allows local attackers to exfiltrate vault items because XPC inter-process communication validation is insufficient.",
+   "cvss": 7.8,
+   "severity": "HIGH"
+  }
+ ],
+ "keepassdx": [
+  {
+   "id": "CVE-2018-1000835",
+   "published": "2018-12-20T15:29:01.610",
+   "lastModified": "2026-06-17T01:33:08.707",
+   "desc": "KeePassDX version <= 2.5.0.0beta17 contains a XML External Entity (XXE) vulnerability in kdbx file parser that can result in Disclosure of confidential data, denial of service, SSRF, port scanning.",
+   "cvss": 10.0,
+   "severity": "CRITICAL"
+  }
+ ],
+ "strongbox": [
+  {
+   "id": "CVE-2019-9253",
+   "published": "2019-09-27T19:15:18.200",
+   "lastModified": "2026-06-17T02:43:26.357",
+   "desc": "In KeyStore, there is a possible storage of symmetric keys in the TEE instead of the strongbox due to a missing strongbox flag. This could lead to local information disclosure with System execution privileges needed. User interaction is not needed for exploitation. Product: AndroidVersions: Android-",
+   "cvss": 4.4,
+   "severity": "MEDIUM"
+  },
+  {
+   "id": "CVE-2022-28793",
+   "published": "2022-05-03T20:15:09.803",
+   "lastModified": "2026-06-17T04:39:05.313",
+   "desc": "Given the TEE is compromised and controlled by the attacker, improper state maintenance in StrongBox allows attackers to change Android ROT during device boot cycle after compromising TEE. The patch is applied in Galaxy S22 to prevent change of Android ROT after first initialization at boot time.",
+   "cvss": 4.4,
+   "severity": "MEDIUM"
+  },
+  {
+   "id": "CVE-2026-25276",
+   "published": "2026-06-01T23:16:21.690",
+   "lastModified": "2026-07-22T19:10:00.120",
+   "desc": "Memory corruption while using Strongbox due to missing bounds check.",
+   "cvss": 8.8,
+   "severity": "HIGH"
+  },
+  {
+   "id": "CVE-2026-25277",
+   "published": "2026-06-01T23:16:21.820",
+   "lastModified": "2026-07-22T19:10:00.120",
+   "desc": "Memory corruption while using Strongbox due to buffer overflow.",
+   "cvss": 8.8,
+   "severity": "HIGH"
+  }
+ ],
+ "gopass": [],
+ "enpass": [
+  {
+   "id": "CVE-2024-26362",
+   "published": "2024-04-10T21:15:06.533",
+   "lastModified": "2026-06-17T07:17:39.583",
+   "desc": "HTML injection vulnerability in Enpass Password Manager Desktop Client 6.9.2 for Windows and Linux allows attackers to run arbitrary HTML code via creation of crafted note.",
+   "cvss": 8.8,
+   "severity": "HIGH"
+  },
+  {
+   "id": "CVE-2024-9203",
+   "published": "2024-09-26T17:15:04.593",
+   "lastModified": "2026-06-17T08:24:08.030",
+   "desc": "A vulnerability, which was classified as problematic, has been found in Enpass Password Manager up to 6.9.5 on Windows. This issue affects some unknown processing. The manipulation leads to cleartext storage of sensitive information in memory. An attack has to be approached locally. The complexity o",
+   "cvss": 2.5,
+   "severity": "LOW"
+  }
+ ]
+}
