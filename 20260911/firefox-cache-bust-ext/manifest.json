@@ -1,0 +1,22 @@
+{
+  "manifest_version": 2,
+  "name": "Cache-Bust on Navigate",
+  "version": "1.0",
+  "description": "Appends a fresh ?t=<timestamp> to top-level GET navigations to bypass browser/CDN caches.",
+  "permissions": [
+    "webRequest",
+    "webRequestBlocking",
+    "<all_urls>"
+  ],
+  "background": {
+    "scripts": [
+      "background.js"
+    ]
+  },
+  "browser_specific_settings": {
+    "gecko": {
+      "id": "cache-bust-on-navigate@localhost",
+      "strict_min_version": "109.0"
+    }
+  }
+}
