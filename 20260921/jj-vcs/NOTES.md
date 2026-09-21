@@ -22,3 +22,9 @@
 - `jj undo` / `jj redo` / `jj op log` (operation log replaces reflog). `jj restore <path>`.
 - `jj edit <rev>` exists but docs now recommend `jj new` + `jj squash` for resuming work on an existing change.
 - Identity: user has since configured jj identity via `jj config set --user` (commits now authored `lumirelle@outlook.com`), so Lesson 1's setup was followed. Author is baked at commit creation; `jj describe` preserves it, `jj new` picks up current config.
+
+## Lesson 3 findings (verified on jj 0.45.1)
+- `jj rebase` flags: `-r/--revision` (no descendants), `-s/--source` (+descendants), `-b/--branch`; destination is `-o/--onto`, `-A/--insert-after`, `-B/--insert-before`. **There is no `-d/--destination` flag** — easy mistake to make.
+- Reorder idiom: `jj rebase -r <rev> -A/-B <dest>` (prints "Rebased 1 commits to destination. / Rebased N descendant commits.").
+- `jj abandon <rev>` drops a commit and rebases descendants onto its parent (prints "Abandoned 1 commits … Rebased N descendant commits …").
+- Revset gotcha: descriptions with spaces must be quoted or use a function — bare `add a.txt` is a syntax error; use `description("add a.txt")` or relative `@-`/`@--`/`@---`.

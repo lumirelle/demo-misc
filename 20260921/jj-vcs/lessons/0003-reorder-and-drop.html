@@ -1,0 +1,162 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Lesson 3 · Reorder & drop commits — jj</title>
+<link rel="stylesheet" href="../assets/styles.css">
+</head>
+<body>
+<main>
+
+<header class="doc-header">
+  <p class="doc-kicker">Jujutsu · Lesson 0003</p>
+  <h1>Reorder &amp; drop commits</h1>
+  <p class="doc-subtitle">Reordering history is one command, not an interactive-rebase staring contest — and the descendants follow automatically.</p>
+</header>
+
+<p class="lede">In Git, reordering commits means opening <code>git rebase -i</code>, editing a todo list, and hoping the whole thing doesn't collapse into conflicts. In jj, a commit's position is just metadata, and you move it with a single command addressed by <a href="https://docs.jj-vcs.dev/latest/revsets/">revset</a>.</p>
+
+<h2>The one idea</h2>
+
+<p>You already know from <a href="0002-amend-reword-undo.html">Lesson 2</a> that rewriting a commit auto-rebases its descendants. Reordering is just a special case: <strong>moving a commit to a new parent</strong>. jj rebases the moved commit, then re-stacks everything else for you.</p>
+
+<p>The command is <code>jj rebase</code>, and you pick the commit by revset, not by "the current branch" — there is no current branch. Two flags do the moving:</p>
+
+<div class="compare">
+  <div>
+    <span class="compare-label">Move a commit</span>
+<pre>jj rebase -r &lt;rev&gt; -A &lt;dest&gt;
+   place &lt;rev&gt; right after &lt;dest&gt;
+
+jj rebase -r &lt;rev&gt; -B &lt;dest&gt;
+   place &lt;rev&gt; right before &lt;dest&gt;</pre>
+  </div>
+  <div>
+    <span class="compare-label">Move a stack</span>
+<pre>jj rebase -s &lt;rev&gt; -o &lt;dest&gt;
+   move &lt;rev&gt; and all its
+   descendants onto &lt;dest&gt;</pre>
+  </div>
+</div>
+
+<p>And to delete a commit entirely, there's <code>jj abandon</code> — jj's "drop", which rebases the descendants onto the abandoned commit's parent.</p>
+
+<h2>Do it now</h2>
+
+<p>Build a three-commit stack. (Change IDs on your machine will differ.)</p>
+
+<pre>jj git init reorder-demo
+cd reorder-demo
+echo "a" &gt; a.txt; jj describe -m "add a.txt"; jj new
+echo "b" &gt; b.txt; jj describe -m "add b.txt"; jj new
+echo "c" &gt; c.txt; jj describe -m "add c.txt"; jj new</pre>
+
+<p>Top-to-bottom:</p>
+
+<pre>@  ulosmsyw  (empty) (no description set)
+○  lrvxyxnt  add c.txt
+○  wtytlksy  add b.txt
+○  tykzqmxx  add a.txt
+◆  zzzzzzzz  root()</pre>
+
+<p>The revsets <code>@-</code>, <code>@--</code>, <code>@---</code> mean "parent", "grandparent", "great-grandparent" of the working copy — so <code>@---</code> is the <code>add a.txt</code> commit.</p>
+
+<ol class="steps">
+  <li>
+    <strong>Move the bottom commit to the top.</strong>
+<pre>jj rebase -r @--- -A @-</pre>
+<pre>Rebased 1 commits to destination.
+Rebased 3 descendant commits.
+Working copy  (@) now at: soroxqux 1a4a9bb1 (empty) (no description set)
+Parent commit (@-)      : tykzqmxx 21f60b22 add a.txt</pre>
+    <p>Read that: it rebased the one commit you asked about (<code>add a.txt</code>), then <em>automatically rebased its three descendants</em>. The stack is now <code>add b.txt &rarr; add c.txt &rarr; add a.txt</code>.</p>
+<pre>@  soroxqux  (empty) (no description set)
+○  tykzqmxx  add a.txt      &larr; moved to top
+○  lrvxyxnt  add c.txt
+○  wtytlksy  add b.txt
+◆  zzzzzzzz  root()</pre>
+    <p>Same change IDs, new order. Compare that to three steps of <code>git rebase -i</code>.</p>
+  </li>
+  <li>
+    <strong>Drop a commit.</strong> Abandon the <code>add b.txt</code> commit (now <code>@--</code>).
+<pre>jj abandon @--</pre>
+<pre>Abandoned 1 commits:
+  wtytlksy 28f1abff add b.txt
+Rebased 2 descendant commits onto parents of abandoned commits.
+Added 0 files, modified 0 files, removed 1 files</pre>
+    <p><code>jj abandon</code> deletes the commit and re-stacks its descendants onto its parent. The <code>b.txt</code> file it introduced is removed along with it.</p>
+  </li>
+  <li>
+    <strong>Undo both, if you like.</strong>
+<pre>jj undo   # restore the abandoned commit
+jj undo   # back to the original order</pre>
+    <p>Same safety net as <a href="0002-amend-reword-undo.html">Lesson 2</a> — nothing you do while rearranging history is irreversible.</p>
+  </li>
+</ol>
+
+<h2>What you just did</h2>
+
+<p>You reordered a commit and dropped another — the two operations that in Git send you into <code>rebase -i</code>'s todo list and reflog recovery. In jj each was one command, addressed by revset, with the descendants handled for you and <code>jj undo</code> always available.</p>
+
+<div class="callout">
+  <span class="callout-title">The revset vocabulary so far</span>
+  <p><code>@</code> working copy · <code>@-</code> parent · <code>@--</code> grandparent · <code>@---</code> great-grandparent. These are how you point at commits; there's no "HEAD" and no branch name to remember.</p>
+</div>
+
+<h2>Self-check</h2>
+
+<script type="application/json" class="quiz-data">
+[
+  {
+    "question": "Which command moves a commit to a new position in history?",
+    "options": [
+      {"text": "jj rebase", "correct": true, "why": "jj rebase moves commits to new parents; reordering is rebase with -A or -B."},
+      {"text": "jj reorder", "correct": false, "why": "There's no reorder command; jj rebase does the job."},
+      {"text": "jj move", "correct": false, "why": "No jj move exists — commits are moved with jj rebase."},
+      {"text": "jj shift", "correct": false, "why": "No jj shift exists — jj rebase moves commits."}
+    ]
+  },
+  {
+    "question": "The -A flag on jj rebase means what?",
+    "options": [
+      {"text": "Insert after", "correct": true, "why": "-A places the commit directly after the destination; -B places it before."},
+      {"text": "Insert before", "correct": false, "why": "Insert-before is -B; -A is insert-after."},
+      {"text": "Abandon commits", "correct": false, "why": "Abandoning is a separate command, jj abandon."},
+      {"text": "All descendants", "correct": false, "why": "Moving descendants is what -s (--source) does, not -A."}
+    ]
+  },
+  {
+    "question": "Which command drops a commit and rebases descendants onto its parent?",
+    "options": [
+      {"text": "jj abandon", "correct": true, "why": "jj abandon deletes the commit and re-stacks descendants onto its parent."},
+      {"text": "jj squash", "correct": false, "why": "jj squash merges changes into a parent; jj abandon deletes outright."},
+      {"text": "jj restore", "correct": false, "why": "jj restore returns paths to another revision's content, not drop commits."},
+      {"text": "jj rebase", "correct": false, "why": "jj rebase moves commits; it doesn't delete them."}
+    ]
+  }
+]
+</script>
+
+<h2>Read this</h2>
+
+<div class="primary-source">
+  <span class="callout-title">Primary source</span>
+  <p>Run <code>jj help rebase</code> and <code>jj help abandon</code> — the command reference is authoritative and includes the <code>-r</code>/<code>-s</code>/<code>-b</code> and <code>-o</code>/<code>-A</code>/<code>-B</code> flag semantics.</p>
+  <p>For the <code>@</code>, <code>@-</code>, <code>@--</code> shorthand and selecting commits in general: the <a href="https://docs.jj-vcs.dev/latest/revsets/">revsets documentation</a> (also reachable via <code>jj help -k revsets</code>).</p>
+</div>
+
+<div class="callout">
+  <span class="callout-title">Ask me</span>
+  <p><code>-A</code> vs. <code>-B</code> vs. <code>-o</code> not landing yet? Ask — and try each on your <code>reorder-demo</code> repo with <code>jj undo</code> in your back pocket. Experimenting safely is the whole point.</p>
+</div>
+
+<footer class="doc-footer">
+  <p><a href="../reference/jj-rebase-reorder.html">Reference: rebase &amp; reorder cheat sheet</a> &middot; <a href="0002-amend-reword-undo.html">Lesson 2</a> &middot; <a href="../RESOURCES.md">All resources</a></p>
+  <p>Next: splitting one commit into many (<code>jj split</code>) and moving changes between commits (<code>jj squash --from/--into</code>) — fine-grained surgery.</p>
+</footer>
+
+</main>
+<script src="../assets/quiz.js"></script>
+</body>
+</html>

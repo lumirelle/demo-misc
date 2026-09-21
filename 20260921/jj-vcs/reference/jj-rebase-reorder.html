@@ -1,0 +1,71 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Reference · jj rebase & reorder cheat sheet</title>
+<link rel="stylesheet" href="../assets/styles.css">
+</head>
+<body>
+<main>
+
+<header class="doc-header">
+  <p class="doc-kicker">Jujutsu · Reference</p>
+  <h1>Rebase &amp; reorder cheat sheet</h1>
+  <p class="doc-subtitle">The compressed essence of Lesson 3.</p>
+</header>
+
+<h2>Git &rarr; jj</h2>
+<div class="compare">
+  <div>
+    <span class="compare-label">Git</span>
+<pre>git rebase -i (reorder)
+git rebase -i (drop)
+git cherry-pick</pre>
+  </div>
+  <div>
+    <span class="compare-label">jj</span>
+<pre>jj rebase -r &lt;rev&gt; -A|-B &lt;dest&gt;
+jj abandon &lt;rev&gt;
+jj rebase -r &lt;rev&gt; -o &lt;dest&gt;</pre>
+  </div>
+</div>
+
+<h2>jj rebase flags (0.45.x)</h2>
+<pre># which commits to move
+-r, --revision   &lt;rev&gt;         just that revision (no descendants)
+-s, --source     &lt;rev&gt;         that revision AND its descendants
+-b, --branch     &lt;rev&gt;         a whole branch, relative to dest
+
+# where to move them (pick one)
+-o, --onto       &lt;dest&gt;        rebase onto &lt;dest&gt;
+-A, --insert-after  &lt;dest&gt;     place directly after &lt;dest&gt;
+-B, --insert-before &lt;dest&gt;     place directly before &lt;dest&gt;</pre>
+<p>Note: there is <strong>no <code>-d</code>/<code>--destination</code></strong> flag in 0.45.x — the destination is <code>-o</code>, <code>-A</code>, or <code>-B</code>.</p>
+
+<h2>The moves</h2>
+<pre>jj rebase -r @--- -A @-    # move bottom commit to top (reorder)
+jj rebase -s @-- -o main   # rebase a stack onto updated main
+jj abandon @--             # drop the grandparent commit</pre>
+
+<h2>Revset shorthand</h2>
+<pre>@      working-copy commit
+@-     parent
+@--    grandparent
+@---   great-grandparent
+description("add a.txt")   # select by message (quote spaces)</pre>
+
+<h2>Always true</h2>
+<ul>
+  <li>Rewriting or moving a commit <strong>auto-rebases its descendants</strong>.</li>
+  <li>Change IDs survive the move; commit IDs change.</li>
+  <li><code>jj undo</code> reverses any of this — experiment freely.</li>
+</ul>
+
+<footer class="doc-footer">
+  <p><a href="../lessons/0003-reorder-and-drop.html">Back to Lesson 3</a> &middot; <a href="jj-rewriting.html">Rewriting</a> &middot; <a href="../RESOURCES.md">All resources</a></p>
+</footer>
+
+</main>
+</body>
+</html>
