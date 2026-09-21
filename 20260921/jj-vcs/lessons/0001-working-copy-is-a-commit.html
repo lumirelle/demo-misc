@@ -1,0 +1,175 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Lesson 1 · The working copy is a commit — jj</title>
+<link rel="stylesheet" href="../assets/styles.css">
+</head>
+<body>
+<main>
+
+<header class="doc-header">
+  <p class="doc-kicker">Jujutsu · Lesson 0001</p>
+  <h1>The working copy is a commit</h1>
+  <p class="doc-subtitle">The one idea that makes jj feel completely different from Git — and your first commits in it.</p>
+</header>
+
+<p class="lede">You're here to <a href="../MISSION.md">replace Git as your daily driver</a>. Every mental model you have from Git — the index, the branch, the dirty working tree — is about to be challenged by a single fact: in jj, <strong>your working copy <em>is</em> a commit</strong>.</p>
+
+<h2>The one idea</h2>
+
+<p>In Git, your edits live in three places that you shuttle between by hand: the <em>working tree</em>, the <em>index</em> (staging area), and <em>commits</em>. You edit, then <code>git add</code>, then <code>git commit</code>. Until you commit, your changes are only half-saved, and Git will happily warn you that your working tree is dirty.</p>
+
+<p>jj collapses this. There is <a href="https://docs.jj-vcs.dev/latest/git-comparison/#the-index">no explicit index or staging area</a>. Every time you run a jj command, it <a href="https://docs.jj-vcs.dev/latest/working-copy/">snapshots your working copy into a real commit automatically</a>. The working copy is simply the commit marked <code>@</code> — the one currently checked out. Nothing is ever "unstaged" or "dirty"; it's just a commit you haven't named yet.</p>
+
+<div class="compare">
+  <div>
+    <span class="compare-label">Git — you drive the index</span>
+    <p>Changes sit in limbo until you stage and commit them by hand.</p>
+<pre>vim notes.txt
+git add notes.txt      &larr; stage it
+git commit -m "msg"    &larr; now saved
+git status             &larr; am I clean?</pre>
+  </div>
+  <div>
+    <span class="compare-label">jj — saved instantly</span>
+    <p>Your edit is already a commit. You only give it a message.</p>
+<pre>vim notes.txt
+jj st                  &larr; already recorded
+jj describe -m "msg"   &larr; just name it
+jj log                 &larr; history, with @</pre>
+  </div>
+</div>
+
+<div class="callout">
+  <span class="callout-title">Why this matters for the mission</span>
+  <p>This one change removes the source of Git's most common daily friction: "your local changes would be overwritten", forgotten <code>git add</code>s, and the reflex to <code>git stash</code>. jj <a href="https://docs.jj-vcs.dev/latest/working-copy/">subsumes both the index and stashes</a> into a single, simpler object.</p>
+</div>
+
+<h2>Do it now</h2>
+
+<p>First, one-time setup. jj keeps its <em>own</em> identity config — it does not read your Git <code>user.name</code>/<code>user.email</code>. Without it your commits get an empty identity and can't be pushed. Set it once:</p>
+
+<pre>jj config set --user user.name  "Your Name"
+jj config set --user user.email "you@example.com"</pre>
+
+<p>Now open a terminal and follow along. (Change IDs and hashes in the output below will differ on your machine — that's expected.)</p>
+
+<ol class="steps">
+  <li>
+    <strong>Create a repo.</strong>
+<pre>jj git init my-first-jj
+cd my-first-jj</pre>
+    <p><code>jj git init</code> creates a Git-backed repo, colocated with a <code>.git</code> dir by default, so plain <code>git</code> still works here too. You'll see <code>Initialized repo in "my-first-jj"</code>.</p>
+  </li>
+  <li>
+    <strong>Look at the status.</strong>
+<pre>jj st</pre>
+<pre>The working copy has no changes.
+Working copy  (@) : zuryntwn 4fa33b2b (empty) (no description set)
+Parent commit (@-): zzzzzzzz 00000000 (empty) (no description set)</pre>
+    <p>There's already a working-copy commit (<code>@</code>) sitting on top of a parent. It's <code>(empty)</code> — a commit with no changes yet. Notice there's no <code>git init</code> style "branch" to create; you're already <em>on</em> a commit.</p>
+  </li>
+  <li>
+    <strong>Edit a file — and do nothing else.</strong>
+<pre>echo "hello" &gt; notes.txt
+jj st</pre>
+<pre>Working copy changes:
+A notes.txt
+Working copy  (@) : wssrxtwy 1aae205b (no description set)
+Parent commit (@-): zzzzzzzz 00000000 (empty) (no description set)</pre>
+    <p>No <code>add</code>, no staging. The change is already in the working-copy commit. Watch what <code>jj diff</code> says:</p>
+<pre>jj diff</pre>
+<pre>Added regular file notes.txt:
+        1: hello</pre>
+  </li>
+  <li>
+    <strong>Name the commit.</strong>
+<pre>jj describe -m "add notes.txt"</pre>
+<pre>Working copy  (@) now at: wssrxtwy f2a3b8cb add notes.txt
+Parent commit (@-)      : zzzzzzzz 00000000 (empty) (no description set)</pre>
+    <p><code>jj describe</code> is how you write a commit message — think of it as <code>git commit -m</code>, except the changes were already committed. Notice something subtle: the change ID stayed <code>wssrxtwy</code> but the commit ID changed (<code>1aae205b</code> &rarr; <code>f2a3b8cb</code>). We'll return to this.</p>
+  </li>
+  <li>
+    <strong>Start the next commit and read the log.</strong>
+<pre>jj new
+jj log</pre>
+<pre>@  ollrkkox (no email set) 2026-09-21 13:56:45 9b0185e2
+│  (empty) (no description set)
+○  wssrxtwy (no email set) 2026-09-21 13:56:45 f2a3b8cb
+│  add notes.txt
+◆  zzzzzzzz root() 00000000</pre>
+    <p><code>jj new</code> starts a fresh, empty commit for your next change — the jj answer to "make a new commit on top." The log reads top-to-bottom like a timeline: <code>@</code> is your working copy, <code>○</code> is an ordinary commit, <code>◆</code> is the immutable root.</p>
+  </li>
+</ol>
+
+<h2>What you just did</h2>
+
+<p>You created a repo, made a change that was <em>automatically</em> committed, gave it a message, and started the next commit — all without a single <code>git add</code>, <code>git commit</code>, or <code>git status</code>. The workflow is: <strong>edit &rarr; describe &rarr; new &rarr; repeat</strong>.</p>
+
+<p>That <code>wssrxtwy</code>/<code>f2a3b8cb</code> split you noticed is jj's two identifiers:</p>
+
+<ul>
+  <li><strong>Change ID</strong> (<code>wssrxtwy</code>): stable identity for a logical change. It survives rewriting.</li>
+  <li><strong>Commit ID</strong> (<code>f2a3b8cb</code>): content hash, like a Git SHA. It changes whenever the commit is rewritten.</li>
+</ul>
+
+<p>In Git, a commit <em>is</em> its hash — rewrite it and it's a brand-new thing. In jj, a change keeps its identity while its content evolves. That's the foundation for the easy history-rewriting you came here for; we'll build on it next lesson.</p>
+
+<h2>Self-check</h2>
+
+<script type="application/json" class="quiz-data">
+[
+  {
+    "question": "In jj, what is the working copy?",
+    "options": [
+      {"text": "A commit", "correct": true, "why": "The working copy is a real commit (marked @) that jj snapshots and amends automatically."},
+      {"text": "An index", "correct": false, "why": "jj has no index or staging area at all — that's a Git concept."},
+      {"text": "A branch", "correct": false, "why": "jj has bookmarks (its word for branches), but the working copy is not one."},
+      {"text": "A stash", "correct": false, "why": "jj needs no stashes — the working copy already holds uncommitted changes safely."}
+    ]
+  },
+  {
+    "question": "Which command gives a commit its message?",
+    "options": [
+      {"text": "jj describe", "correct": true, "why": "jj describe sets the description (message); changes are already committed."},
+      {"text": "jj commit", "correct": false, "why": "There is no jj commit — the changes are committed automatically, so only naming remains."},
+      {"text": "jj message", "correct": false, "why": "No such command; the message is the commit's description, set via jj describe."},
+      {"text": "jj amend", "correct": false, "why": "Amending is implicit in jj; describing is the explicit step."}
+    ]
+  },
+  {
+    "question": "jj records file edits automatically, replacing which Git concept?",
+    "options": [
+      {"text": "The staging area", "correct": true, "why": "Auto-snapshotting removes the need for git add / the index."},
+      {"text": "The working tree", "correct": false, "why": "jj still has a working tree on disk; what's gone is the in-between index."},
+      {"text": "The remote refs", "correct": false, "why": "Remotes still exist in jj; auto-snapshotting is about local edits."},
+      {"text": "The branch names", "correct": false, "why": "jj calls branches 'bookmarks' — unrelated to auto-snapshotting."}
+    ]
+  }
+]
+</script>
+
+<h2>Read this</h2>
+
+<div class="primary-source">
+  <span class="callout-title">Primary source</span>
+  <p>Read the opening of <a href="https://steveklabnik.github.io/jujutsu-tutorial/">Steve Klabnik's Jujutsu Tutorial</a> — the Introduction and "Getting started" chapters. It's the clearest written account of the model you just touched, by the person the official docs point to for a fuller tutorial.</p>
+  <p>For the index specifically: <a href="https://docs.jj-vcs.dev/latest/git-comparison/#the-index">"The index" in the official Git comparison</a>.</p>
+</div>
+
+<div class="callout">
+  <span class="callout-title">Ask me</span>
+  <p>Anything fuzzy — the two IDs, <code>jj new</code>, why <code>describe</code> and not <code>commit</code> — ask me as a follow-up. I'm your teacher here, and revisiting a half-understood idea is exactly how it becomes durable.</p>
+</div>
+
+<footer class="doc-footer">
+  <p><a href="../reference/jj-core-model.html">Reference: the jj core model &amp; command map</a> &middot; <a href="../RESOURCES.md">All resources</a></p>
+  <p>Next: rewriting history the easy way — what those stable change IDs unlock.</p>
+</footer>
+
+</main>
+<script src="../assets/quiz.js"></script>
+</body>
+</html>

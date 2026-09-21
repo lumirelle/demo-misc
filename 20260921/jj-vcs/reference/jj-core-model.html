@@ -1,0 +1,78 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Reference · jj core model &amp; command map</title>
+<link rel="stylesheet" href="../assets/styles.css">
+</head>
+<body>
+<main>
+
+<header class="doc-header">
+  <p class="doc-kicker">Jujutsu · Reference</p>
+  <h1>The jj core model &amp; command map</h1>
+  <p class="doc-subtitle">The compressed essence of Lesson 1 — keep this within reach.</p>
+</header>
+
+<h2>The model in one line</h2>
+<p>The working copy is itself a commit (marked <code>@</code>), and every command snapshots your edits into it automatically. There is no index, no staging area, and no "dirty tree".</p>
+
+<h2>Log symbols</h2>
+<div class="compare">
+  <div>
+    <span class="compare-label">Symbol</span>
+<pre>@   working-copy commit
+○   ordinary (mutable) commit
+◆   immutable commit (the root)</pre>
+  </div>
+  <div>
+    <span class="compare-label">Two identifiers</span>
+<pre>change ID  stable (zuryntwn)
+commit ID  content hash (4fa33b2b)</pre>
+  </div>
+</div>
+<p>A change ID survives rewriting; a commit ID changes whenever its content changes. Rewriting re-uses the change ID with a new commit ID.</p>
+
+<h2>Command map (Git &rarr; jj)</h2>
+<div class="compare">
+  <div>
+    <span class="compare-label">Git</span>
+<pre>git init
+git status
+git add .
+git commit -m "msg"
+git log
+git checkout -b foo</pre>
+  </div>
+  <div>
+    <span class="compare-label">jj</span>
+<pre>jj git init
+jj st
+(automatic)
+jj describe -m "msg"
+jj log
+jj new   (bookmarks come later)</pre>
+  </div>
+</div>
+
+<h2>The daily loop</h2>
+<pre>jj new                       # start a fresh commit on top
+# ... edit files ...
+jj st                        # changes are already recorded
+jj diff                      # see them
+jj describe -m "message"     # name the commit
+jj log                       # read history, top = newest</pre>
+
+<h2>One-time identity setup</h2>
+<pre>jj config set --user user.name  "Your Name"
+jj config set --user user.email "you@example.com"</pre>
+<p>jj uses its own <code>[user]</code> config, not Git's <code>user.name</code>/<code>user.email</code>. Skip this and commits get an empty identity that can't be pushed.</p>
+
+<footer class="doc-footer">
+  <p><a href="../lessons/0001-working-copy-is-a-commit.html">Back to Lesson 1</a> &middot; <a href="../RESOURCES.md">All resources</a></p>
+</footer>
+
+</main>
+</body>
+</html>
