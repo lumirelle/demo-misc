@@ -14,3 +14,11 @@
 ## Teaching decisions
 - Lesson 0001 scoped to the core model ("the working copy is a commit") + first commits. Rewriting/rebasing saved for later lessons.
 - Glossary (GLOSSARY.md) deliberately not created yet — add terms only after the user demonstrates understanding.
+
+## Lesson 2 findings (verified on jj 0.45.1)
+- There is **no `jj amend`** — jj hints "you probably want `jj squash`".
+- `jj squash` (no args) folds @ into its parent = `git commit --amend`. `jj squash <path>` / `jj squash -i` for partial.
+- `jj describe -r <rev>` rewrites any commit's message and **auto-rebases descendants** (prints "Rebased N descendant commits.").
+- `jj undo` / `jj redo` / `jj op log` (operation log replaces reflog). `jj restore <path>`.
+- `jj edit <rev>` exists but docs now recommend `jj new` + `jj squash` for resuming work on an existing change.
+- Identity: user has since configured jj identity via `jj config set --user` (commits now authored `lumirelle@outlook.com`), so Lesson 1's setup was followed. Author is baked at commit creation; `jj describe` preserves it, `jj new` picks up current config.

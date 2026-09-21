@@ -1,0 +1,64 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Reference · jj rewriting cheat sheet</title>
+<link rel="stylesheet" href="../assets/styles.css">
+</head>
+<body>
+<main>
+
+<header class="doc-header">
+  <p class="doc-kicker">Jujutsu · Reference</p>
+  <h1>Rewriting cheat sheet</h1>
+  <p class="doc-subtitle">The compressed essence of Lesson 2.</p>
+</header>
+
+<h2>Git &rarr; jj (rewriting)</h2>
+<div class="compare">
+  <div>
+    <span class="compare-label">Git</span>
+<pre>git commit --amend
+git rebase -i (reword)
+git reflog + reset
+git reset --hard</pre>
+  </div>
+  <div>
+    <span class="compare-label">jj</span>
+<pre>jj squash
+jj describe -r &lt;rev&gt;
+jj undo / jj redo
+jj restore</pre>
+  </div>
+</div>
+
+<h2>The verbs</h2>
+<pre>jj squash                 # fold @ into parent (the "amend")
+jj squash &lt;path&gt;           # move one file's changes into parent
+jj squash -i               # choose hunks to move (git add -p)
+jj describe -r &lt;rev&gt; -m …  # reword any commit
+jj undo                    # rewind last operation
+jj redo                    # move forward again
+jj op log                  # browse the operation log</pre>
+
+<h2>The model to remember</h2>
+<ul>
+  <li><strong>Change ID</strong> survives rewriting; <strong>commit ID</strong> changes. Amend = same change, new content.</li>
+  <li>Rewriting any commit <strong>auto-rebases its descendants</strong> ("Rebased N descendant commits.").</li>
+  <li>There is <strong>no <code>jj amend</code></strong> — jj suggests <code>jj squash</code> instead.</li>
+  <li>The operation log (not a reflog) powers undo — it's first-class and navigable.</li>
+</ul>
+
+<h2>Revset shorthand used so far</h2>
+<pre>@     working-copy commit
+@-    parent of @
+@--   grandparent of @</pre>
+
+<footer class="doc-footer">
+  <p><a href="../lessons/0002-amend-reword-undo.html">Back to Lesson 2</a> &middot; <a href="jj-core-model.html">Core model</a> &middot; <a href="../RESOURCES.md">All resources</a></p>
+</footer>
+
+</main>
+</body>
+</html>

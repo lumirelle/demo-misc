@@ -1,0 +1,149 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Lesson 2 · Amend, reword, undo — jj</title>
+<link rel="stylesheet" href="../assets/styles.css">
+</head>
+<body>
+<main>
+
+<header class="doc-header">
+  <p class="doc-kicker">Jujutsu · Lesson 0002</p>
+  <h1>Amend, reword, undo</h1>
+  <p class="doc-subtitle">Fixing mistakes is a single command each — because in jj, every commit is just as editable as the latest one.</p>
+</header>
+
+<p class="lede">In Git, "oops, fix that" is a ceremony: <code>git commit --amend</code> only reaches the last commit, and touching anything older means <code>git rebase -i</code> and hoping nothing breaks. jj was built so that <a href="https://docs.jj-vcs.dev/latest/git-comparison/">rewriting is a normal, first-class act</a> — on any commit, not just the tip.</p>
+
+<h2>The one idea</h2>
+
+<p>Every commit in jj is <em>mutable</em> (except the root and remote bookmarks). When you rewrite a commit, jj does something Git never does for you: it <a href="https://docs.jj-vcs.dev/latest/git-comparison/">automatically rebases all of that commit's descendants onto the new version</a>. You change one commit in the middle of history; jj re-stacks everything on top for you.</p>
+
+<p>That's why the two identifiers from <a href="0001-working-copy-is-a-commit.html">Lesson 1</a> matter: a <strong>change ID</strong> survives rewriting, while its <strong>commit ID</strong> changes. "Amending" here really means "same change, new content."</p>
+
+<div class="callout">
+  <span class="callout-title">The three verbs you're about to learn</span>
+  <p><strong>Amend</strong> &rarr; <code>jj squash</code> &nbsp;·&nbsp; <strong>Reword</strong> &rarr; <code>jj describe -r</code> &nbsp;·&nbsp; <strong>Undo</strong> &rarr; <code>jj undo</code>. Note there is <em>no</em> <code>jj amend</code> command — jj's answer to <code>git commit --amend</code> is <code>jj squash</code>.</p>
+</div>
+
+<h2>Do it now</h2>
+
+<p>Build a tiny three-commit history first. (Change IDs and hashes on your machine will differ.)</p>
+
+<pre>jj git init fix-demo
+cd fix-demo
+echo "a" &gt; a.txt
+jj describe -m "add a.txt"
+jj new
+echo "b" &gt; b.txt
+jj describe -m "add b.txt"
+jj new</pre>
+
+<p>Your graph should look like this — top is newest:</p>
+
+<pre>@  nzzqmttw  (empty) (no description set)
+○  lowxwzku  add b.txt
+○  puwrzzkk  add a.txt
+◆  zzzzzzzz  root()</pre>
+
+<ol class="steps">
+  <li>
+    <strong>Reword the oldest commit.</strong> The <code>@--</code> means "grandparent of the working copy" — the <code>add a.txt</code> commit.
+<pre>jj describe -r @-- -m "add a.txt (fixed typo)"</pre>
+<pre>Rebased 2 descendant commits.
+Working copy  (@) now at: nzzqmttw a20bbd78 (empty) (no description set)
+Parent commit (@-)      : lowxwzku f69b8243 add b.txt</pre>
+    <p>Watch the first line: <strong>"Rebased 2 descendant commits."</strong> You rewrote the bottom commit, and jj automatically re-stacked the other two on top. In Git you'd be deep in an interactive rebase right now.</p>
+  </li>
+  <li>
+    <strong>Amend: add more work into the previous commit.</strong> You're sitting on an empty <code>@</code> above <code>add b.txt</code>. Change <code>b.txt</code> and fold the change back into its commit.
+<pre>echo "extra line" &gt;&gt; b.txt
+jj st</pre>
+<pre>Working copy changes:
+M b.txt
+Working copy  (@) : nzzqmttw 6b68b702 (no description set)
+Parent commit (@-): lowxwzku b8c4e2b5 add b.txt</pre>
+    <p>Now the amend itself — one word:</p>
+<pre>jj squash</pre>
+<pre>Working copy  (@) now at: mwqlvlkw e4976c08 (empty) (no description set)
+Parent commit (@-)      : lowxwzku 93494c04 add b.txt</pre>
+    <p><code>jj squash</code> with no arguments folds the working-copy commit into its parent — exactly <code>git commit --amend</code>. Notice the parent's change ID stayed <code>lowxwzku</code> while its commit ID changed (<code>b8c4e2b5</code> &rarr; <code>93494c04</code>). Same change, new content.</p>
+  </li>
+  <li>
+    <strong>Undo it.</strong>
+<pre>jj undo</pre>
+<pre>Undid operation: 3cbe57ec70fd (…) squash commits into f69b8243b78c…
+Restored to operation: 178f2445b926 (…) snapshot working copy
+Working copy  (@) now at: nzzqmttw 9793c863 (no description set)
+Parent commit (@-)      : lowxwzku f69b8243 add b.txt</pre>
+    <p><code>jj undo</code> rewinds the last operation. It's powered by the <a href="https://docs.jj-vcs.dev/latest/git-comparison/">operation log, which replaces Git's reflog</a> — but unlike the reflog, it's a first-class, navigable thing you can <code>jj op log</code> through and <code>jj redo</code> forward.</p>
+  </li>
+</ol>
+
+<h2>What you just did</h2>
+
+<p>You rewrote a commit in the <em>middle</em> of history, had its descendants re-stacked automatically, folded new work into an existing commit, and undid it all — three things that in Git require <code>rebase -i</code>, <code>--amend</code>, and squinting at the reflog. In jj each is one short command, and none of them can leave you stranded, because <code>jj undo</code> is always one keystroke away.</p>
+
+<div class="callout">
+  <span class="callout-title">When to use which</span>
+  <p>Editing the commit you're <em>on</em>: just edit files and <code>jj describe</code>. Folding your current work into the <em>previous</em> commit: <code>jj squash</code>. Changing an older commit's <em>message</em>: <code>jj describe -r &lt;rev&gt;</code>. (Editing an older commit's <em>content</em> is next lesson.)</p>
+</div>
+
+<h2>Self-check</h2>
+
+<script type="application/json" class="quiz-data">
+[
+  {
+    "question": "Which command folds working-copy changes into the parent commit?",
+    "options": [
+      {"text": "jj squash", "correct": true, "why": "jj squash with no arguments is jj's version of git commit --amend."},
+      {"text": "jj amend", "correct": false, "why": "There is no jj amend — jj even suggests you probably want jj squash."},
+      {"text": "jj redo", "correct": false, "why": "jj redo moves forward after an undo; it doesn't move changes between commits."},
+      {"text": "jj rebase", "correct": false, "why": "jj rebase moves a whole commit elsewhere; jj squash merges its changes into a parent."}
+    ]
+  },
+  {
+    "question": "How do you reword an older commit's message?",
+    "options": [
+      {"text": "jj describe -r", "correct": true, "why": "jj describe -r <rev> rewrites any commit's description, then rebases its descendants."},
+      {"text": "jj reword", "correct": false, "why": "There's no reword command; reword is just describe on an older revision."},
+      {"text": "jj log -m", "correct": false, "why": "jj log only displays history; it can't edit a message."},
+      {"text": "jj squash -m", "correct": false, "why": "jj squash moves changes between commits; describing sets the message."}
+    ]
+  },
+  {
+    "question": "Rewriting a commit makes jj automatically do what to its descendants?",
+    "options": [
+      {"text": "Rebase them", "correct": true, "why": "Descendants are re-stacked onto the rewritten commit — jj's signature move."},
+      {"text": "Delete them", "correct": false, "why": "Nothing is lost; descendants are preserved and re-parented."},
+      {"text": "Freeze them", "correct": false, "why": "No freezing — they're rewritten onto the new version."},
+      {"text": "Stash them", "correct": false, "why": "jj has no stashes; descendants stay in the graph, rebased."}
+    ]
+  }
+]
+</script>
+
+<h2>Read this</h2>
+
+<div class="primary-source">
+  <span class="callout-title">Primary source</span>
+  <p>Read the <a href="https://docs.jj-vcs.dev/latest/git-comparison/">official Git comparison</a> — especially the bullets on "descendant commits are automatically rebased" and "the operation log replaces reflogs", and its note that <code>git commit --amend</code> maps to <code>jj squash</code>.</p>
+  <p>For the commands themselves, the authoritative docs are one keystroke away: run <code>jj help squash</code> and <code>jj help undo</code>.</p>
+</div>
+
+<div class="callout">
+  <span class="callout-title">Ask me</span>
+  <p>Fuzzy on <code>squash</code> vs. <code>rebase</code>, or why <code>describe -r @--</code> targets the grandparent? Ask — these little revset idioms (<code>@</code>, <code>@-</code>, <code>@--</code>) are the vocabulary every later lesson builds on.</p>
+</div>
+
+<footer class="doc-footer">
+  <p><a href="../reference/jj-rewriting.html">Reference: rewriting cheat sheet</a> &middot; <a href="0001-working-copy-is-a-commit.html">Lesson 1</a> &middot; <a href="../RESOURCES.md">All resources</a></p>
+  <p>Next: editing an older commit's <em>content</em> — <code>jj edit</code>, <code>jj new</code> + <code>jj squash</code>, and reordering with <code>jj rebase</code>.</p>
+</footer>
+
+</main>
+<script src="../assets/quiz.js"></script>
+</body>
+</html>
