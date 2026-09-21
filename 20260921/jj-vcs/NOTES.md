@@ -28,3 +28,9 @@
 - Reorder idiom: `jj rebase -r <rev> -A/-B <dest>` (prints "Rebased 1 commits to destination. / Rebased N descendant commits.").
 - `jj abandon <rev>` drops a commit and rebases descendants onto its parent (prints "Abandoned 1 commits … Rebased N descendant commits …").
 - Revset gotcha: descriptions with spaces must be quoted or use a function — bare `add a.txt` is a syntax error; use `description("add a.txt")` or relative `@-`/`@--`/`@---`.
+
+## Lesson 4 findings (verified on jj 0.45.1)
+- `jj squash --from <src> --into <dst>` moves changes between commits. With a `<path>`, only that file's changes move (source keeps the rest, no prompt). Without a path, everything moves; emptied source is **abandoned** and jj prompts to combine the two descriptions.
+- Off-by-one trap: stack `@ → B → A → root` means `@-`=B, `@--`=A, `@---`=root (immutable). Easy to aim at root by accident.
+- `jj split <path>`: the selected path STAYS in the current commit, the remaining changes go to a **new child commit** (working copy becomes the "remaining" commit). Always opens the editor to describe; `-i` = interactive (git add -p equivalent); no `-m` flag exists for split.
+- Editor for split/squash prompts: `$JJ_EDITOR` > `ui.editor` > `$VISUAL` > `$EDITOR`. Sandbox has no `nano`; used `JJ_EDITOR=true` to script tests.

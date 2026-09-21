@@ -1,0 +1,148 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Lesson 4 · Move changes between commits — jj</title>
+<link rel="stylesheet" href="../assets/styles.css">
+</head>
+<body>
+<main>
+
+<header class="doc-header">
+  <p class="doc-kicker">Jujutsu · Lesson 0004</p>
+  <h1>Move changes between commits</h1>
+  <p class="doc-subtitle">"This change belongs in an earlier commit" — fix it in one command, no cherry-pick, no rebase -i.</p>
+</header>
+
+<p class="lede">You make a commit, then realize one of its files actually belongs in the commit <em>below</em> it. In Git that's <code>git rebase -i</code> with fixup markers or a manual <code>cherry-pick</code> dance. In jj, changes are first-class movable objects, and <code>jj squash</code> moves them anywhere.</p>
+
+<h2>The one idea</h2>
+
+<p><a href="0002-amend-reword-undo.html">Lesson 2</a> taught <code>jj squash</code> with no arguments — fold the working copy into its parent. The same command, given <code>--from</code> and <code>--into</code>, moves changes between <em>any</em> two commits:</p>
+
+<pre>jj squash --from &lt;source&gt; --into &lt;destination&gt;          # move everything
+jj squash --from &lt;source&gt; --into &lt;destination&gt; &lt;path&gt;   # move one file's changes</pre>
+
+<p>Add a path and only that file's changes move; the source keeps the rest. Omit the path and everything moves — and if that empties the source commit, jj <em>abandons</em> it and asks you to combine the two commit messages.</p>
+
+<div class="callout">
+  <span class="callout-title">Mind the off-by-one</span>
+  <p>In a stack <code>@ &rarr; B &rarr; A &rarr; root</code>, the levels are <code>@-</code> = B, <code>@--</code> = A, and <code>@---</code> = the root. It's easy to aim one level too deep and hit the immutable root — count your dashes.</p>
+</div>
+
+<h2>Do it now</h2>
+
+<p>Build a stack where the second commit accidentally contains two files, and one of them belongs in the first commit. (Change IDs on your machine will differ.)</p>
+
+<pre>jj git init surgery-demo
+cd surgery-demo
+echo "a" &gt; a.txt
+jj describe -m "add a.txt"
+jj new
+echo "b" &gt; b.txt
+echo "note" &gt; notes.txt
+jj describe -m "add b.txt and notes"
+jj new</pre>
+
+<p>Top-to-bottom:</p>
+
+<pre>@  ulosmsyw  (empty) (no description set)
+○  wtytlksy  add b.txt and notes
+○  tykzqmxx  add a.txt
+◆  zzzzzzzz  root()</pre>
+
+<p>Oops — <code>b.txt</code> really belongs with <code>a.txt</code>. Move it down.</p>
+
+<ol class="steps">
+  <li>
+    <strong>Move one file's change into the earlier commit.</strong> <code>@-</code> is the <code>b.txt and notes</code> commit (source); <code>@--</code> is <code>add a.txt</code> (destination).
+<pre>jj squash --from @- --into @-- b.txt</pre>
+<pre>Rebased 2 descendant commits.
+Working copy  (@) now at: vsosyoll 75af21fc (empty) (no description set)
+Parent commit (@-)      : xuonrmwm 8412859d add b.txt and notes</pre>
+    <p>Confirm it worked:</p>
+<pre>jj diff -r @--</pre>
+<pre>Added regular file a.txt:
+        1: a
+Added regular file b.txt:     &larr; now part of "add a.txt"
+        1: b</pre>
+    <p>And the source commit keeps the rest — <code>notes.txt</code> stayed behind:</p>
+<pre>jj diff -r @-</pre>
+<pre>Added regular file notes.txt:
+        1: note</pre>
+    <p>One command, no editor, no conflict. That's the whole lesson.</p>
+  </li>
+  <li>
+    <strong>Or move everything (and let the source disappear).</strong> Undo, then try it without the path:
+<pre>jj undo
+jj squash --from @- --into @--</pre>
+    <p>This moves <em>all</em> of <code>@-</code>'s changes into <code>@--</code>. The source is now empty, so jj abandons it and opens your editor to combine the two commit messages — the only time an editor appears in this flow.</p>
+  </li>
+</ol>
+
+<h2>What you just did</h2>
+
+<p>You relocated a file's changes from one commit into an earlier one — the classic "I committed this in the wrong place" fix. By path, it's surgical and silent; wholesale, it folds the commit and merges the messages. Both are one command each, where Git needs an interactive rebase or a cherry-pick with a reset to follow.</p>
+
+<div class="callout">
+  <span class="callout-title">The reverse direction</span>
+  <p>What about "this commit does too much — separate it"? That's <code>jj split</code> (<code>jj split -i</code> is the <code>git add -p</code> equivalent). Next lesson.</p>
+</div>
+
+<h2>Self-check</h2>
+
+<script type="application/json" class="quiz-data">
+[
+  {
+    "question": "Which command folds one commit's changes into another commit?",
+    "options": [
+      {"text": "jj squash", "correct": true, "why": "jj squash --from <src> --into <dst> moves changes between commits."},
+      {"text": "jj split", "correct": false, "why": "jj split separates one commit into two — the reverse direction."},
+      {"text": "jj rebase", "correct": false, "why": "jj rebase moves whole commits to new parents, not changes between them."},
+      {"text": "jj abandon", "correct": false, "why": "jj abandon deletes a commit; it doesn't move its changes into another."}
+    ]
+  },
+  {
+    "question": "In jj squash, what do --from and --into select?",
+    "options": [
+      {"text": "Source and destination", "correct": true, "why": "--from is the commit losing changes; --into is the commit gaining them."},
+      {"text": "Parent and child", "correct": false, "why": "They name arbitrary commits by revset, not a fixed parent/child pair."},
+      {"text": "Head and tail", "correct": false, "why": "No head/tail concept — they're two revsets, source and destination."},
+      {"text": "Before and after", "correct": false, "why": "--from/--into are source/destination, not positions in a timeline."}
+    ]
+  },
+  {
+    "question": "jj squash --from B --into A notes.txt moves what?",
+    "options": [
+      {"text": "Only notes.txt changes", "correct": true, "why": "Adding a path restricts the move to that file's changes; B keeps the rest."},
+      {"text": "Everything from B", "correct": false, "why": "Everything moves only when you omit the path argument."},
+      {"text": "Only a.txt changes", "correct": false, "why": "The path names what to move — notes.txt, not a.txt."},
+      {"text": "Nothing at all", "correct": false, "why": "It moves notes.txt's changes from B into A."}
+    ]
+  }
+]
+</script>
+
+<h2>Read this</h2>
+
+<div class="primary-source">
+  <span class="callout-title">Primary source</span>
+  <p>Run <code>jj help squash</code> — the authoritative reference for <code>--from</code>/<code>--into</code>, the path argument, and the abandon-and-combine-description behavior.</p>
+  <p>For why jj has no <code>git add -p</code> ceremony: the <a href="https://docs.jj-vcs.dev/latest/git-comparison/#the-index">"The index" section of the Git comparison</a>, which points to <code>jj squash -i</code> and <code>jj split</code> as the replacements.</p>
+</div>
+
+<div class="callout">
+  <span class="callout-title">Ask me</span>
+  <p>Confused about <code>@-</code> vs. <code>@--</code>, or what "abandon" does to the working copy? Ask — and try both variants on <code>surgery-demo</code> with <code>jj undo</code> ready. That's how the revset vocabulary becomes reflex.</p>
+</div>
+
+<footer class="doc-footer">
+  <p><a href="../reference/jj-surgery.html">Reference: fine-grained surgery cheat sheet</a> &middot; <a href="0003-reorder-and-drop.html">Lesson 3</a> &middot; <a href="../RESOURCES.md">All resources</a></p>
+  <p>Next: separating one commit into many with <code>jj split</code> — the <code>git add -p</code> replacement.</p>
+</footer>
+
+</main>
+<script src="../assets/quiz.js"></script>
+</body>
+</html>

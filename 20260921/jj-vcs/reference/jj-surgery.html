@@ -1,0 +1,59 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Reference · jj fine-grained surgery cheat sheet</title>
+<link rel="stylesheet" href="../assets/styles.css">
+</head>
+<body>
+<main>
+
+<header class="doc-header">
+  <p class="doc-kicker">Jujutsu · Reference</p>
+  <h1>Fine-grained surgery cheat sheet</h1>
+  <p class="doc-subtitle">The compressed essence of Lesson 4 — moving changes between commits.</p>
+</header>
+
+<h2>Git &rarr; jj</h2>
+<div class="compare">
+  <div>
+    <span class="compare-label">Git</span>
+<pre>git rebase -i (fixup)
+git cherry-pick
+git add -p</pre>
+  </div>
+  <div>
+    <span class="compare-label">jj</span>
+<pre>jj squash --from X --into Y
+jj squash --from X --into Y &lt;path&gt;
+jj split -i</pre>
+  </div>
+</div>
+
+<h2>The command</h2>
+<pre>jj squash --from &lt;src&gt; --into &lt;dst&gt;           # move ALL of src into dst
+jj squash --from &lt;src&gt; --into &lt;dst&gt; &lt;path&gt;   # move one file's changes</pre>
+<ul>
+  <li><strong>With a path</strong>: only that file moves; the source keeps the rest. No prompt.</li>
+  <li><strong>Without a path</strong>: everything moves; if the source is emptied, it's <strong>abandoned</strong> and jj asks you to combine the two commit messages.</li>
+</ul>
+
+<h2>Revset levels in a stack</h2>
+<pre>@      working copy
+@-     = B   (one up from root's child)
+@--    = A   (the earlier commit)
+@---   = root  (immutable — don't squash into it)</pre>
+
+<h2>Reverse direction (coming in Lesson 5)</h2>
+<pre>jj split            # separate @ into two, interactively
+jj split -i         # choose hunks (git add -p)
+jj split &lt;path&gt;     # keep &lt;path&gt; here, move the rest up</pre>
+
+<footer class="doc-footer">
+  <p><a href="../lessons/0004-move-changes-between-commits.html">Back to Lesson 4</a> &middot; <a href="jj-rebase-reorder.html">Rebase &amp; reorder</a> &middot; <a href="../RESOURCES.md">All resources</a></p>
+</footer>
+
+</main>
+</body>
+</html>
