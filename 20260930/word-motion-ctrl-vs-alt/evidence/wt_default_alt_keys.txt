@@ -1,0 +1,25 @@
+total default keybindings: 68
+alt+f4                   Terminal.CloseWindow
+alt+enter                Terminal.ToggleFullscreen
+ctrl+alt+,               Terminal.OpenDefaultSettingsFile
+alt+space                Terminal.OpenSystemMenu
+ctrl+alt+1               Terminal.SwitchToTab0
+ctrl+alt+2               Terminal.SwitchToTab1
+ctrl+alt+3               Terminal.SwitchToTab2
+ctrl+alt+4               Terminal.SwitchToTab3
+ctrl+alt+5               Terminal.SwitchToTab4
+ctrl+alt+6               Terminal.SwitchToTab5
+ctrl+alt+7               Terminal.SwitchToTab6
+ctrl+alt+8               Terminal.SwitchToTab7
+ctrl+alt+9               Terminal.SwitchToLastTab
+alt+shift+-              Terminal.DuplicatePaneDown
+alt+shift+plus           Terminal.DuplicatePaneRight
+alt+shift+down           Terminal.ResizePaneDown
+alt+shift+left           Terminal.ResizePaneLeft
+alt+shift+right          Terminal.ResizePaneRight
+alt+shift+up             Terminal.ResizePaneUp
+alt+down                 Terminal.MoveFocusDown
+alt+left                 Terminal.MoveFocusLeft
+alt+right                Terminal.MoveFocusRight
+alt+up                   Terminal.MoveFocusUp
+ctrl+alt+left            Terminal.MoveFocusPrevious
