@@ -1,0 +1,433 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Aporetic Serif 的中文搭档 · 仿宋 vs 宋体 实测</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Noto+Serif+SC:wght@300;400;500&display=swap" rel="stylesheet">
+<style>
+@font-face{
+  font-family:'AporeticSerif';
+  src:url('fonts/AporeticSerif-Regular-subset.woff2') format('woff2');
+  font-weight:400; font-display:swap;
+}
+@font-face{
+  font-family:'ZhuqueFangsong';
+  src:url('fonts/ZhuqueFangsong-Regular.ttf') format('truetype');
+  font-weight:400; font-display:swap;
+}
+:root{
+  --bg:#efebe3;
+  --paper:#faf8f3;
+  --fg:#1a1815;
+  --muted:#6f6a61;
+  --border:#d3ccc0;
+  --hair:#e2dbcf;
+  --zhu:#b8452d;      /* 朱雀朱红 */
+  --qing:#2f6b63;     /* 青 */
+  --ink:#1b1a17;
+  --c-zhuque:#b8452d;
+  --c-noto:#2f6b63;
+  --c-sim:#7a6a55;
+  --c-apo:#8a5a9e;
+  --zh-scale:0.85;    /* 中文倍率 */
+  --mix-size:17px;    /* 混排字号 */
+  --radius:10px;
+  --mono:'AporeticSerif',ui-monospace,monospace;
+}
+*{margin:0;padding:0;box-sizing:border-box}
+body{
+  background:var(--bg);color:var(--fg);line-height:1.6;
+  -webkit-font-smoothing:antialiased;
+  font-family:'AporeticSerif','ZhuqueFangsong',Georgia,serif;
+  padding:2.5rem 1.5rem 5rem;
+}
+.wrap{max-width:1160px;margin:0 auto}
+
+/* ---------- head ---------- */
+.crumb{font-family:var(--mono);font-size:.7rem;letter-spacing:.14em;text-transform:uppercase;color:var(--muted);margin-bottom:.9rem}
+.crumb a{color:var(--zhu);text-decoration:none;border-bottom:1px solid rgba(184,69,45,.3)}
+h1{font-size:2.35rem;font-weight:400;letter-spacing:-.01em;line-height:1.15;margin-bottom:.6rem}
+h1 .zh{font-family:'ZhuqueFangsong',serif;color:var(--zhu)}
+.lede{font-size:.98rem;color:var(--muted);max-width:820px;line-height:1.75}
+.lede b{color:var(--fg);font-weight:400}
+.lede code,.mono{font-family:var(--mono);font-size:.88em;background:rgba(0,0,0,.055);padding:.1em .34em;border-radius:3px;color:var(--ink)}
+
+/* ---------- verdict ---------- */
+.verdict{display:grid;grid-template-columns:1.35fr 1fr;gap:1rem;margin:2.2rem 0 0}
+.vcard{background:var(--paper);border:1px solid var(--border);border-radius:var(--radius);padding:1.4rem 1.6rem;box-shadow:0 3px 14px rgba(60,45,30,.05)}
+.vcard.pick{border-color:var(--zhu);box-shadow:0 6px 24px rgba(184,69,45,.12)}
+.vtag{font-family:var(--mono);font-size:.66rem;letter-spacing:.14em;text-transform:uppercase;color:var(--muted);margin-bottom:.5rem;display:flex;align-items:center;gap:.45rem}
+.vtag i{width:.55rem;height:.55rem;border-radius:2px;background:var(--muted);display:inline-block}
+.pick .vtag{color:var(--zhu)} .pick .vtag i{background:var(--zhu)}
+.vcard h2{font-size:1.42rem;font-weight:400;margin-bottom:.2rem}
+.vcard h2 .zh{font-family:'ZhuqueFangsong',serif}
+.vcard .sub{font-family:var(--mono);font-size:.76rem;color:var(--muted);margin-bottom:.7rem}
+.vcard p{font-size:.88rem;line-height:1.72;color:#3a3630}
+.vcard p+p{margin-top:.5rem}
+.vcard em{font-style:normal;background:linear-gradient(transparent 62%,rgba(184,69,45,.22) 0)}
+.alt{display:flex;flex-direction:column;gap:1rem}
+.alt .vcard{padding:1.1rem 1.25rem;flex:1}
+.alt .vcard h2{font-size:1.1rem}
+.alt .vcard p{font-size:.82rem}
+
+/* ---------- section ---------- */
+section{margin-top:3.4rem}
+.shead{display:flex;align-items:baseline;justify-content:space-between;gap:1rem;border-bottom:1px solid var(--border);padding-bottom:.6rem;margin-bottom:1.3rem;flex-wrap:wrap}
+.shead h3{font-size:1.28rem;font-weight:400;letter-spacing:-.01em;font-family:'AporeticSerif','ZhuqueFangsong',serif}
+.shead h3 span{font-family:var(--mono);font-size:.72rem;letter-spacing:.14em;text-transform:uppercase;color:var(--muted);margin-left:.8rem}
+.shead .note{font-size:.78rem;color:var(--muted);max-width:520px;text-align:right;line-height:1.5}
+
+/* ---------- anatomy ---------- */
+.anatomy{display:grid;grid-template-columns:repeat(4,1fr);gap:.8rem}
+.anat{background:var(--paper);border:1px solid var(--border);border-radius:var(--radius);padding:1rem 1.1rem}
+.anat .n{font-family:var(--mono);font-size:.66rem;color:var(--zhu);letter-spacing:.1em;margin-bottom:.35rem}
+.anat .big{font-family:var(--mono);font-size:2.6rem;line-height:1.1;margin-bottom:.375rem;color:var(--ink)}
+.anat .big .ko{color:var(--zhu)}
+.anat h4{font-size:.92rem;font-weight:400;margin-bottom:.3rem}
+.anat p{font-size:.78rem;color:var(--muted);line-height:1.65}
+
+/* ---------- columns compare ---------- */
+.toolbar{display:flex;gap:1.6rem;align-items:center;flex-wrap:wrap;margin:-.2rem 0 1.2rem}
+.ctl{display:flex;align-items:center;gap:.6rem}
+.ctl label{font-family:var(--mono);font-size:.7rem;letter-spacing:.1em;text-transform:uppercase;color:var(--muted)}
+.ctl output{font-family:var(--mono);font-size:.78rem;color:var(--ink);min-width:3.4rem;text-align:right}
+input[type=range]{-webkit-appearance:none;appearance:none;width:150px;height:4px;border-radius:2px;background:var(--border);outline:none;cursor:pointer}
+input[type=range]::-webkit-slider-thumb{-webkit-appearance:none;width:15px;height:15px;border-radius:50%;background:var(--paper);border:2.5px solid var(--zhu);cursor:grab}
+input[type=range]::-moz-range-thumb{width:14px;height:14px;border-radius:50%;background:var(--paper);border:2.5px solid var(--zhu)}
+
+.grid4{display:grid;grid-template-columns:repeat(4,1fr);gap:.9rem}
+.col{background:var(--paper);border:1px solid var(--border);border-radius:var(--radius);overflow:hidden;display:flex;flex-direction:column;box-shadow:0 3px 14px rgba(60,45,30,.04)}
+.col-head{display:flex;align-items:baseline;justify-content:space-between;gap:.4rem;padding:.55rem .8rem;background:#f3eee4;border-bottom:1px solid var(--hair)}
+.col-head .name{font-family:'AporeticSerif','ZhuqueFangsong',serif;font-size:.86rem}
+.col-head .role{font-family:var(--mono);font-size:.6rem;letter-spacing:.08em;text-transform:uppercase;color:var(--muted)}
+.col[data-f="apo"] .col-head{border-bottom-color:var(--c-apo)}
+.col[data-f="zhuque"] .col-head{border-bottom-color:var(--c-zhuque)}
+.col[data-f="noto"] .col-head{border-bottom-color:var(--c-noto)}
+.col[data-f="sim"] .col-head{border-bottom-color:var(--c-sim)}
+.col[data-f="apo"] .col-head .name{color:var(--c-apo)}
+.col[data-f="zhuque"] .col-head .name{color:var(--c-zhuque)}
+.col[data-f="noto"] .col-head .name{color:var(--c-noto)}
+.col[data-f="sim"] .col-head .name{color:var(--c-sim)}
+
+.big-zh{font-size:2.5rem;line-height:1.16;padding:.85rem .8rem .3rem;letter-spacing:-.01em}
+.body-zh{font-size:calc(1rem * var(--zh-scale) + .26rem);line-height:1.75;padding:.2rem .8rem .9rem;color:#2c2822}
+.col[data-f="apo"] .big-zh,.col[data-f="apo"] .body-zh{font-family:'AporeticSerif';font-size:1.02rem;line-height:1.55}
+.col[data-f="apo"] .big-zh{font-size:1.55rem;padding-bottom:.6rem;line-height:1.3}
+.col[data-f="zhuque"] .big-zh,.col[data-f="zhuque"] .body-zh{font-family:'ZhuqueFangsong'}
+.col[data-f="noto"] .big-zh,.col[data-f="noto"] .body-zh{font-family:'Noto Serif SC';font-weight:300}
+.col[data-f="sim"] .big-zh,.col[data-f="sim"] .body-zh{font-family:'SimSun','宋体',serif}
+.col[data-f="apo"] .body-zh code{background:rgba(138,90,158,.1);color:#6d4780;padding:0 .2em;border-radius:3px}
+.zoomline{font-size:1.7rem;line-height:1.3;padding:0 .8rem .6rem;letter-spacing:.02em;margin-top:auto}
+.col[data-f="zhuque"] .zoomline{font-family:'ZhuqueFangsong'}
+.col[data-f="noto"] .zoomline{font-family:'Noto Serif SC';font-weight:300}
+.col[data-f="sim"] .zoomline{font-family:'SimSun','宋体',serif}
+.col[data-f="apo"] .zoomline{font-family:'AporeticSerif'}
+
+/* ---------- code mix ---------- */
+.codewrap{display:grid;grid-template-columns:1fr 1fr;gap:.9rem}
+.codebox{background:var(--ink);border-radius:var(--radius);overflow:hidden;box-shadow:0 8px 26px rgba(20,15,10,.22)}
+.codebar{display:flex;justify-content:space-between;align-items:center;padding:.42rem .8rem;background:#26241f;font-family:var(--mono);font-size:.66rem;letter-spacing:.1em;text-transform:uppercase;color:#8d8779}
+.codebar b{font-weight:400;color:#c9c2b4}
+.codebar .sw{width:.5rem;height:.5rem;border-radius:2px;display:inline-block;margin-right:.4rem;vertical-align:middle}
+.codebox[data-f="zhuque"] .codebar .sw{background:var(--c-zhuque)}
+.codebox[data-f="noto"] .codebar .sw{background:var(--c-noto)}
+.codebox pre{padding:.85rem 1rem 1rem;font-family:'AporeticSerif',monospace;font-size:var(--mix-size);line-height:1.72;color:#ddd8cd;overflow-x:auto;white-space:pre;tab-size:4}
+.codebox .c{color:#7e9070}      /* comment */
+.codebox .k{color:#c2a2c9}      /* keyword */
+.codebox .t{color:#8fbcb4}      /* type */
+.codebox .s{color:#cf9a86}      /* string */
+.codebox .n{color:#c9bfa0}      /* number */
+.codebox .zh{font-size:var(--zh-scale-abs,calc(var(--mix-size) * var(--zh-scale)))}
+.codebox[data-f="zhuque"] .zh{font-family:'ZhuqueFangsong'}
+.codebox[data-f="noto"] .zh{font-family:'Noto Serif SC';font-weight:300}
+.zhscaled{font-size:calc(var(--mix-size) * var(--zh-scale))}
+
+/* ---------- metrics table ---------- */
+table{width:100%;border-collapse:collapse;background:var(--paper);border:1px solid var(--border);border-radius:var(--radius);overflow:hidden;font-size:.82rem}
+th,td{text-align:left;padding:.62rem .8rem;border-bottom:1px solid var(--hair);vertical-align:top}
+th{font-family:var(--mono);font-size:.66rem;letter-spacing:.1em;text-transform:uppercase;color:var(--muted);font-weight:400;background:#f5f1e8}
+tr:last-child td{border-bottom:none}
+td.num{font-family:var(--mono);font-variant-numeric:tabular-nums;color:#3a3630}
+td .fam{font-size:.9rem}
+td .fam.z{font-family:'ZhuqueFangsong'}
+td .fam.n{font-family:'Noto Serif SC';font-weight:300}
+td .fam.s{font-family:'SimSun','宋体',serif}
+td .fam.a{font-family:'AporeticSerif'}
+td small{color:var(--muted)}
+.pill{display:inline-block;font-family:var(--mono);font-size:.62rem;letter-spacing:.06em;padding:.1rem .4rem;border-radius:999px;border:1px solid currentColor;line-height:1.5}
+.pill.good{color:#3f6b46}.pill.mid{color:#9a6a20}.pill.bad{color:#a8402f}
+
+/* ---------- notes ---------- */
+.notes{display:grid;grid-template-columns:1fr 1fr;gap:1.6rem 2.4rem}
+.note h4{font-size:.95rem;font-weight:400;margin-bottom:.3rem;display:flex;align-items:center;gap:.5rem}
+.note h4 i{font-family:var(--mono);font-style:normal;font-size:.66rem;color:var(--zhu);letter-spacing:.1em}
+.note p{font-size:.82rem;color:var(--muted);line-height:1.75}
+.note p b{color:var(--fg);font-weight:400}
+
+footer{margin-top:3.4rem;border-top:1px solid var(--border);padding-top:1.2rem;font-size:.76rem;color:var(--muted);line-height:1.9}
+footer code{font-family:var(--mono);font-size:.9em;background:rgba(0,0,0,.05);padding:.08em .32em;border-radius:3px}
+footer a{color:var(--zhu);text-decoration:none}
+
+@media(max-width:1080px){
+  .verdict{grid-template-columns:1fr}
+  .anatomy,.grid4{grid-template-columns:1fr 1fr}
+  .codewrap,.notes{grid-template-columns:1fr}
+}
+@media(max-width:680px){
+  body{padding:1.6rem 1rem 3rem}
+  h1{font-size:1.7rem}
+  .anatomy,.grid4{grid-template-columns:1fr}
+  .shead .note{text-align:left}
+}
+</style>
+</head>
+<body>
+<div class="wrap">
+
+<div class="crumb">20261019 · font pairing · <a href="https://github.com/protesilaos/aporetic">aporetic</a> × CJK</div>
+<h1><span class="zh">Aporetic Serif</span> 的中文搭档</h1>
+<p class="lede">
+  <b>Aporetic Serif</b> 是 Protesilaos 基于 Iosevka 的定制版：<code>serifs = "slab"</code>、<code>spacing = "quasi-proportional"</code>、宽度 525/1000、
+  x-height 520/1000、竖画 78/1000 的近单线笔画，只有 400/700 两档字重。它不属于「书籍衬线」，也不属于黑体，
+  而是 <b>板状衬线＋近单线＋窄字身＋克制圆角</b> 的工程感字体。
+  下面用真实字体文件实测：哪种中文字体与它同频。
+</p>
+
+<!-- ================= verdict ================= -->
+<div class="verdict">
+  <div class="vcard pick">
+    <div class="vtag"><i></i>主力推荐 · 仿宋派</div>
+    <h2><span class="zh">朱雀仿宋</span> <span class="mono">Zhuque Fangsong</span></h2>
+    <div class="sub">SIL OFL 1.1 · 单字重 · 11k 汉字（GB 18030 常用区已覆盖）</div>
+    <p>Aporetic Serif 的骨相其实是「<em>等线＋方形收笔</em>」，中文里对位的不是宋体而是<em>仿宋</em>：笔画粗细均匀、起收为斜切方笔、结构紧窄，同样带着稿纸／制图的工程气。</p>
+    <p>朱雀改刻自民国仿宋活字「南宋」，是这份「民国工程感」目前唯一的开源实现，竖画约 55/1000，比思源宋体 400 更轻，正好压住 Aporetic 那 78/1000 的细笔画，不会一混排就「中文一团黑」。</p>
+  </div>
+  <div class="alt">
+    <div class="vcard">
+      <div class="vtag"><i></i>稳妥备选 · 宋体派</div>
+      <h2><span class="zh">思源宋体 Light</span></h2>
+      <div class="sub">Noto Serif SC 300 · SIL OFL 1.1 · 7 字重 · 全覆盖</div>
+      <p>要「正经宋体」就选它，但<em>必须用 300</em>：400 的竖画 68/1000＋90/1000 的西文，配 Aporetic 会明显偏重；300 的竖画 55/1000 才同频。缺点是喇叭口三角衬线，比 Aporetic 的板状衬线「传统」得多。</p>
+    </div>
+    <div class="vcard">
+      <div class="vtag"><i></i>不适合</div>
+      <h2>更纱黑体 / 系统宋体</h2>
+      <p><b>更纱（Sarasa）</b>是 Iosevka ＋思源黑体的合并，但那是 <span class="mono">Aporetic Sans</span> 的搭档；配 Serif 会变成「衬线西文＋黑体汉字」的错位。<b>SimSun</b> 横细竖粗、字面偏小，是屏幕正文时代前的产物。</p>
+    </div>
+  </div>
+</div>
+
+<!-- ================= anatomy ================= -->
+<section>
+  <div class="shead">
+    <h3>先看清要匹配什么<span>anatomy</span></h3>
+    <div class="note">四个决定性特征，决定了中文该往「仿宋」而不是「宋体／黑体」找。</div>
+  </div>
+  <div class="anatomy">
+    <div class="anat">
+      <div class="n">01</div>
+      <div class="big">H<span class="ko">l</span></div>
+      <h4>单侧板状衬线</h4>
+      <p>Serif 只长在一侧（多为左上），是矩形板块而非三角。中文里最接近的是仿宋的<strong>斜切方笔</strong>，而非宋体的喇叭口。</p>
+    </div>
+    <div class="anat">
+      <div class="n">02</div>
+      <div class="big">78<span class="ko">/1000</span></div>
+      <h4>近单线笔画</h4>
+      <p>粗细几乎无差（横竖对比 1.0）。搭配的中文竖画落在 50–60/1000、横竖对比 1.2–1.3 才同频；宋体类 1.8–2.6 的对比会突然“传统”起来。</p>
+    </div>
+    <div class="anat">
+      <div class="n">03</div>
+      <div class="big">525<span class="ko">em</span></div>
+      <h4>窄字身</h4>
+      <p>西文只有 0.525 em 宽。汉字固定 1 em，因此中文要挑<strong>字面偏窄、布白紧</strong>的（朱雀「国」775/1000，思源 838/1000）。</p>
+    </div>
+    <div class="anat">
+      <div class="n">04</div>
+      <div class="big">x<span class="ko">520</span></div>
+      <h4>高 x-height</h4>
+      <p>x-height 520、cap 735，汉字字面约 900，所以同字号下中文会大 ~22%。混排时把中文压到 <strong>0.82–0.88 em</strong> 才齐。</p>
+    </div>
+  </div>
+</section>
+
+<!-- ================= big specimen ================= -->
+<section>
+  <div class="shead">
+    <h3>同一段文字，四种骨架<span>specimen</span></h3>
+    <div class="note">左起：目标字体、仿宋、宋体、系统宋体。倍率与字号只作用于下方混排示例。</div>
+  </div>
+
+  <div class="toolbar">
+    <div class="ctl">
+      <label for="zhs">中文倍率</label>
+      <input id="zhs" type="range" min="0.70" max="1.00" step="0.01" value="0.85">
+      <output id="zhs-out">0.85 em</output>
+    </div>
+    <div class="ctl">
+      <label for="mxs">混排字号</label>
+      <input id="mxs" type="range" min="12" max="24" step="1" value="17">
+      <output id="mxs-out">17 px</output>
+    </div>
+  </div>
+
+  <div class="grid4">
+    <div class="col" data-f="apo">
+      <div class="col-head"><span class="name">Aporetic Serif</span><span class="role">target</span></div>
+      <div class="big-zh">Handgloves</div>
+      <div class="body-zh">const radius = 0.525em;<br>serifs: slab<br>quasi-proportional</div>
+      <div class="zoomline">l H x g</div>
+    </div>
+    <div class="col" data-f="zhuque">
+      <div class="col-head"><span class="name">朱雀仿宋</span><span class="role">仿宋</span></div>
+      <div class="big-zh">永国字一体</div>
+      <div class="body-zh">中文混排测试，标点：「你好」。<br>一二三四五六七八九十</div>
+      <div class="zoomline">永国字</div>
+    </div>
+    <div class="col" data-f="noto">
+      <div class="col-head"><span class="name">思源宋体 Light</span><span class="role">宋体 300</span></div>
+      <div class="big-zh">永国字一体</div>
+      <div class="body-zh">中文混排测试，标点：「你好」。<br>一二三四五六七八九十</div>
+      <div class="zoomline">永国字</div>
+    </div>
+    <div class="col" data-f="sim">
+      <div class="col-head"><span class="name">SimSun 宋体</span><span class="role">系统</span></div>
+      <div class="big-zh">永国字一体</div>
+      <div class="body-zh">中文混排测试，标点：「你好」。<br>一二三四五六七八九十</div>
+      <div class="zoomline">永国字</div>
+    </div>
+  </div>
+</section>
+
+<!-- ================= mixed code ================= -->
+<section>
+  <div class="shead">
+    <h3>混排实测<span>in code</span></h3>
+    <div class="note">西文一律 Aporetic Serif；只换中文，倍率 0.85。看的是中文有没有「过重」和「过宽」。</div>
+  </div>
+  <div class="codewrap">
+    <div class="codebox" data-f="zhuque">
+      <div class="codebar"><span><span class="sw"></span><b>朱雀仿宋</b> · 0.85 em</span><span>go</span></div>
+      <pre><span class="c">// <span class="zh">按 x-height 推算圆角半径，保持与代码同频</span></span>
+<span class="k">func</span> <span class="t">radius</span>(w <span class="t">float64</span>) <span class="t">float64</span> {
+    <span class="k">return</span> w * <span class="n">0.525</span> <span class="c">// <span class="zh">Iosevka 的常规宽度</span></span>
+}
+<span class="c">// <span class="zh">仿宋的方笔收尾，与板状衬线同源</span></span></pre>
+    </div>
+    <div class="codebox" data-f="noto">
+      <div class="codebar"><span><span class="sw"></span><b>思源宋体 Light</b> · 0.85 em</span><span>go</span></div>
+      <pre><span class="c">// <span class="zh">按 x-height 推算圆角半径，保持与代码同频</span></span>
+<span class="k">func</span> <span class="t">radius</span>(w <span class="t">float64</span>) <span class="t">float64</span> {
+    <span class="k">return</span> w * <span class="n">0.525</span> <span class="c">// <span class="zh">Iosevka 的常规宽度</span></span>
+}
+<span class="c">// <span class="zh">宋体的喇叭口在注释里略显传统</span></span></pre>
+    </div>
+  </div>
+</section>
+
+<!-- ================= metrics table ================= -->
+<section>
+  <div class="shead">
+    <h3>实测数据<span>metrics</span></h3>
+    <div class="note">用 fontTools 从字体文件里量出来的，单位均为 1/1000 em。竖画取「十」在 y=300 处的宽度。</div>
+  </div>
+  <table>
+    <thead>
+      <tr><th>字体</th><th>竖画</th><th>横竖对比</th><th>汉字字面高</th><th>字面宽「国」</th><th>西文 x-height</th><th>字重</th><th>授权 / 覆盖</th></tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td class="fam a">Aporetic Serif</td>
+        <td class="num">78</td><td class="num">1.0</td><td class="num">—</td><td class="num">—</td><td class="num">520</td>
+        <td>400 / 700</td><td><span class="pill good">OFL</span> <small>拉丁 + 符号</small></td>
+      </tr>
+      <tr>
+        <td class="fam z">朱雀仿宋</td>
+        <td class="num">54</td><td class="num">1.2</td><td class="num">877–929</td><td class="num">775</td><td class="num">462</td>
+        <td>400</td><td><span class="pill good">OFL 1.1</span> <small>11,009 汉字 + 283 扩展</small></td>
+      </tr>
+      <tr>
+        <td class="fam n">思源宋体 Light</td>
+        <td class="num">55</td><td class="num">1.8</td><td class="num">891–913</td><td class="num">838</td><td class="num">512</td>
+        <td>200–900</td><td><span class="pill good">OFL 1.1</span> <small>全覆盖</small></td>
+      </tr>
+      <tr>
+        <td class="fam n">思源宋体 Regular</td>
+        <td class="num">68</td><td class="num">2.3</td><td class="num">899–917</td><td class="num">845</td><td class="num">516</td>
+        <td>400</td><td><span class="pill mid">偏重</span> <small>混排会压过西文</small></td>
+      </tr>
+      <tr>
+        <td class="fam s">SimSun 宋体</td>
+        <td class="num">59</td><td class="num">2.6</td><td class="num">906</td><td class="num">762</td><td class="num">437</td>
+        <td>400</td><td><span class="pill bad">高对比</span> <small>屏幕长文吃力</small></td>
+      </tr>
+    </tbody>
+  </table>
+</section>
+
+<!-- ================= notes ================= -->
+<section>
+  <div class="shead">
+    <h3>落地建议<span>practice</span></h3>
+    <div class="note">配置写法与踩坑点。</div>
+  </div>
+  <div class="notes">
+    <div class="note">
+      <h4><i>01</i>字号配比</h4>
+      <p>同 pt 下汉字字面 900 对 Aporetic 的 cap 735，会大 22%。<b>中文统一压到 0.82–0.88 em</b>，正文 0.85 em 最稳。多数字体栈没法单独缩放中文，只能分字族混排（CSS 里给中文 <code>span</code> 单独定 <code>font-size</code>），或干脆选一款<strong>字面本身偏小</strong>的中文。</p>
+    </div>
+    <div class="note">
+      <h4><i>02</i>字重配比</h4>
+      <p>Aporetic 竖画 78/1000。中文字重选<b>竖画 50–60</b> 这一档：朱雀仿宋、思源宋体 300。选到 400 的宋体，整行会往中文那边沉。</p>
+    </div>
+    <div class="note">
+      <h4><i>03</i>朱雀的现状</h4>
+      <p>v0.212 仍是<b>技术预览版</b>：单字重、11,009 个基本区汉字（另有 283 个扩展区），GB 2312 全表没问题，超出部分会回退。正式排版、印刷建议先上思源宋体 300；个人界面与代码注释直接用朱雀没问题。</p>
+    </div>
+    <div class="note">
+      <h4><i>04</i>备选还有谁</h4>
+      <p><b>聚珍新仿</b>（民国仿宋，商用需确认授权）气质最接近，社区里拿它配 Source Code Pro 的做法很常见；<b>华文仿宋</b>随 Office 分发，可作临时替代；<b>Fandol 仿宋</b>属 TeX 生态（GPL），字形偏旧。<b>源流明体</b>、<b>装甲明朝</b> 更锐利但偏向日文字形，简体覆盖不足。</p>
+    </div>
+    <div class="note">
+      <h4><i>05</i>如果换成 Aporetic Sans</h4>
+      <p>那就别找仿宋了：同源的<b>更纱黑体 Mono SC</b>（Iosevka ＋ 思源黑体，2:1 对齐）才是设计上真正的配套，中英宽度天然吻合。</p>
+    </div>
+    <div class="note">
+      <h4><i>06</i>等宽对齐的数学</h4>
+      <p>Aporetic 单字 0.525 em，汉字 1 em，比例 1.905:1，不是整数 2:1。终端里若强制 2 格中文，左右会各多出 0.05 em 的缝——这是 Aporetic 略宽于 500 的代价，介意可选 Aporetic Serif Mono 或换宽度 500 的 Iosevka 构建。</p>
+    </div>
+  </div>
+</section>
+
+<footer>
+  字体文件：<code>fonts/AporeticSerif-Regular-subset.woff2</code>（拉丁子集，原文件见
+  <a href="https://github.com/protesilaos/aporetic">protesilaos/aporetic</a>）、
+  <code>fonts/ZhuqueFangsong-Regular.ttf</code>（v0.212，见
+  <a href="https://github.com/TrionesType/zhuque">TrionesType/zhuque</a>）。思源宋体走 Google Fonts CDN，SimSun 走系统字体。<br>
+  测量脚本用 fontTools 直接读 glyf/CFF 轮廓与 <code>pointInsidePen</code> 扫描线，数值可复现。生成于 2026-10-19。
+</footer>
+
+</div>
+
+<script>
+const zhs = document.getElementById('zhs');
+const zhsOut = document.getElementById('zhs-out');
+const mxs = document.getElementById('mxs');
+const mxsOut = document.getElementById('mxs-out');
+const root = document.documentElement;
+
+function apply(){
+  root.style.setProperty('--zh-scale', zhs.value);
+  root.style.setProperty('--mix-size', mxs.value + 'px');
+  zhsOut.textContent = Number(zhs.value).toFixed(2) + ' em';
+  mxsOut.textContent = mxs.value + ' px';
+}
+zhs.addEventListener('input', apply);
+mxs.addEventListener('input', apply);
+apply();
+</script>
+</body>
+</html>

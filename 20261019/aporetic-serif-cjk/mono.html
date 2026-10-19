@@ -1,0 +1,299 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Aporetic Serif Mono 的中文 · 先解决宽度，再谈气质</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Noto+Serif+SC:wght@300;400&display=swap" rel="stylesheet">
+<style>
+@font-face{font-family:'AporeticSerif';src:url('fonts/AporeticSerif-Regular-subset.woff2') format('woff2');font-weight:400;font-display:swap}
+@font-face{font-family:'ZhuqueFangsong';src:url('fonts/ZhuqueFangsong-Regular.ttf') format('truetype');font-weight:400;font-display:swap}
+@font-face{font-family:'Zhuque1050';src:url('fonts/ZhuqueFangsong-Aporetic1050.ttf') format('truetype');font-weight:400;font-display:swap}
+:root{
+  --bg:#efebe3;--paper:#faf8f3;--fg:#1a1815;--muted:#6f6a61;--border:#d3ccc0;--hair:#e2dbcf;
+  --zhu:#b8452d;--qing:#2f6b63;--ink:#1b1a17;--radius:10px;--mono:'AporeticSerif',ui-monospace,monospace;
+}
+*{margin:0;padding:0;box-sizing:border-box}
+body{background:var(--bg);color:var(--fg);line-height:1.6;-webkit-font-smoothing:antialiased;
+  font-family:'AporeticSerif','ZhuqueFangsong',Georgia,serif;padding:2.5rem 1.5rem 5rem}
+.wrap{max-width:1080px;margin:0 auto}
+.crumb{font-family:var(--mono);font-size:.7rem;letter-spacing:.14em;text-transform:uppercase;color:var(--muted);margin-bottom:.9rem}
+.crumb a{color:var(--zhu);text-decoration:none;border-bottom:1px solid rgba(184,69,45,.3)}
+h1{font-size:2.1rem;font-weight:400;line-height:1.2;margin-bottom:.55rem;letter-spacing:-.01em}
+h1 .zh{font-family:'ZhuqueFangsong',serif;color:var(--zhu)}
+.lede{font-size:.95rem;color:var(--muted);max-width:760px;line-height:1.75}
+.lede b{color:var(--fg);font-weight:400}
+code.n,.mono{font-family:var(--mono);font-size:.9em;background:rgba(0,0,0,.055);padding:.1em .34em;border-radius:3px;color:var(--ink)}
+
+/* numbers */
+.nums{display:grid;grid-template-columns:repeat(4,1fr);gap:.8rem;margin:2rem 0 0}
+.num{background:var(--paper);border:1px solid var(--border);border-radius:var(--radius);padding:1rem 1.1rem}
+.num .v{font-family:var(--mono);font-size:1.9rem;line-height:1.15;color:var(--ink)}
+.num .v i{color:var(--zhu);font-style:normal}
+.num .k{font-size:.76rem;color:var(--muted);margin-top:.25rem;line-height:1.6}
+
+section{margin-top:3.2rem}
+.shead{display:flex;align-items:baseline;justify-content:space-between;gap:1rem;border-bottom:1px solid var(--border);padding-bottom:.6rem;margin-bottom:1.3rem;flex-wrap:wrap}
+.shead h2{font-size:1.24rem;font-weight:400;font-family:'AporeticSerif','ZhuqueFangsong',serif}
+.shead h2 span{font-family:var(--mono);font-size:.7rem;letter-spacing:.14em;text-transform:uppercase;color:var(--muted);margin-left:.7rem}
+.shead .note{font-size:.78rem;color:var(--muted);max-width:460px;text-align:right;line-height:1.55}
+
+/* drift demo */
+.driftcard{background:var(--paper);border:1px solid var(--border);border-radius:var(--radius);padding:1.1rem 1.2rem 1.3rem;margin-bottom:.9rem}
+.driftcard h3{font-size:.92rem;font-weight:400;margin-bottom:.15rem;display:flex;align-items:center;gap:.5rem;flex-wrap:wrap}
+.driftcard h3 .tagline{font-family:var(--mono);font-size:.62rem;letter-spacing:.1em;text-transform:uppercase;color:var(--muted)}
+.driftcard .sub{font-size:.78rem;color:var(--muted);margin-bottom:.9rem;line-height:1.65}
+.box{max-width:100%;font-family:'AporeticSerif',monospace;font-size:1.15rem;line-height:1.6;
+  border-right:2px dashed;padding-right:0;margin:.2rem 0 .1rem}
+.box.b525{width:21em;border-color:var(--zhu)}
+.box.b500{width:20em;border-color:var(--qing)}
+.box.b1050{width:21em;border-color:var(--qing)}
+.box .zh1050{font-family:'Zhuque1050'}
+.box .row{white-space:nowrap}
+.box .row+ .row{margin-top:.15rem}
+.box .zh{font-family:'ZhuqueFangsong'}
+.box .lat500{letter-spacing:-.025em}
+.row.gap{display:flex;align-items:center}
+.row.gap .zh{flex:0 0 auto}
+.rem{flex:1 1 auto;align-self:stretch;background:rgba(184,69,45,.14);border-left:1px solid var(--zhu)}
+.verdictline{font-size:.8rem;color:#3a3630;margin-top:.8rem;line-height:1.65}
+.verdictline b{font-weight:400;color:var(--zhu)}
+.verdictline.q b{color:var(--qing)}
+
+/* terminal test */
+.term{background:var(--ink);border-radius:var(--radius);box-shadow:0 8px 26px rgba(20,15,10,.22);overflow:hidden}
+.termbar{display:flex;justify-content:space-between;padding:.42rem .85rem;background:#26241f;font-family:var(--mono);font-size:.66rem;letter-spacing:.1em;text-transform:uppercase;color:#8d8779}
+.term pre{padding:.9rem 1rem 1.1rem;color:#ddd8cd;font-family:'AporeticSerif',monospace;font-size:13px;line-height:1.75;overflow-x:auto;white-space:pre}
+.term .zh-z{font-family:'ZhuqueFangsong'}
+.term .zh-n{font-family:'Noto Serif SC';font-weight:300}
+.term .zh-s{font-family:'SimSun','宋体',serif}
+.term .c{color:#7e9070}.term .k{color:#c2a2c9}.term .t{color:#8fbcb4}.term .s{color:#cf9a86}.term .n{color:#c9bfa0}
+.sizes{display:grid;grid-template-columns:repeat(3,1fr);gap:.9rem}
+.sizes .col{background:var(--paper);border:1px solid var(--border);border-radius:var(--radius);overflow:hidden}
+.sizes .col-head{padding:.5rem .8rem;background:#f3eee4;border-bottom:1px solid var(--hair);font-size:.82rem;display:flex;justify-content:space-between;align-items:baseline}
+.sizes .col-head span{font-family:var(--mono);font-size:.6rem;letter-spacing:.08em;text-transform:uppercase;color:var(--muted)}
+.sizes pre{margin:0;padding:.8rem .85rem 1rem;background:var(--ink);color:#ddd8cd;font-family:'AporeticSerif',monospace;overflow-x:auto;white-space:pre;line-height:1.7}
+.s12 pre{font-size:12px}.s13 pre{font-size:13px}.s14 pre{font-size:14px}
+.sizes .zh{font-size:.95em}
+.col-z .zh{font-family:'ZhuqueFangsong'}
+.col-n .zh{font-family:'Noto Serif SC';font-weight:300}
+.col-s .zh{font-family:'SimSun','宋体',serif}
+.sizes .cc{color:#7e9070}.sizes .kk{color:#c2a2c9}.sizes .nn{color:#c9bfa0}
+
+/* options table */
+table{width:100%;border-collapse:collapse;background:var(--paper);border:1px solid var(--border);border-radius:var(--radius);overflow:hidden;font-size:.83rem}
+th,td{text-align:left;padding:.65rem .85rem;border-bottom:1px solid var(--hair);vertical-align:top}
+th{font-family:var(--mono);font-size:.64rem;letter-spacing:.1em;text-transform:uppercase;color:var(--muted);font-weight:400;background:#f5f1e8}
+tr:last-child td{border-bottom:none}
+td .t{font-size:.92rem}
+td .t.z{font-family:'ZhuqueFangsong'}
+.pill{display:inline-block;font-family:var(--mono);font-size:.62rem;letter-spacing:.06em;padding:.1rem .42rem;border-radius:999px;border:1px solid currentColor;line-height:1.5}
+.pill.good{color:#3f6b46}.pill.mid{color:#9a6a20}.pill.bad{color:#a8402f}
+td small{display:block;color:var(--muted);font-size:.76rem;margin-top:.2rem;line-height:1.6}
+
+.notes{display:grid;grid-template-columns:1fr 1fr;gap:1.5rem 2.4rem;margin-top:2.4rem}
+.note h3{font-size:.95rem;font-weight:400;margin-bottom:.3rem;display:flex;gap:.5rem;align-items:center}
+.note h3 i{font-family:var(--mono);font-style:normal;font-size:.64rem;color:var(--zhu);letter-spacing:.1em}
+.note p{font-size:.82rem;color:var(--muted);line-height:1.75}
+.note p b{color:var(--fg);font-weight:400}
+
+footer{margin-top:3rem;border-top:1px solid var(--border);padding-top:1.1rem;font-size:.76rem;color:var(--muted);line-height:1.9}
+footer a{color:var(--zhu);text-decoration:none}
+footer code{font-family:var(--mono);font-size:.9em;background:rgba(0,0,0,.05);padding:.08em .32em;border-radius:3px}
+@media(max-width:900px){
+  .nums{grid-template-columns:1fr 1fr}
+  .sizes,.notes{grid-template-columns:1fr}
+  .shead .note{text-align:left}
+}
+@media(max-width:620px){h1{font-size:1.55rem}body{padding:1.6rem 1rem 3rem}.nums{grid-template-columns:1fr}}
+</style>
+</head>
+<body>
+<div class="wrap">
+
+<div class="crumb">20261019 · font pairing · <a href="compare.html">← 比例版结论</a> · aporetic serif mono × CJK</div>
+<h1><span class="zh">Mono</span> 版的中文：先解决宽度，再谈气质</h1>
+<p class="lede">
+  <b>Aporetic Serif Mono</b> 与比例版只差一个参数：<code class="n">spacing = "fixed"</code>，字形与字重完全一致。
+  但一旦要求“等宽”，中文的 1 em 全角就和它的 0.525 em 单字宽对不齐了——气质问题退居第二，
+  先要回答一个算术问题。而且<b>市面上没有为 525 做对齐的中文字体</b>：汉字只有 1 em 这一种宽度，
+  这 5% 只能自己改字体（本页最后就产出了一个）。
+</p>
+
+<div class="nums">
+  <div class="num"><div class="v">525<i>/1000</i></div><div class="k">单个西文字宽（em）<br>所有 Mono 家族的公共宽度</div></div>
+  <div class="num"><div class="v">1000<i>/1000</i></div><div class="k">汉字全角宽<br>朱雀仿宋实测 adv = 1000</div></div>
+  <div class="num"><div class="v">1.905<i>:1</i></div><div class="k">而不是 2:1<br>两格 = 1.05 em，比汉字多 5%</div></div>
+  <div class="num"><div class="v">20<i>字</i></div><div class="k">累计漂移<br>每 20 个汉字漂出约 1 个字宽</div></div>
+</div>
+
+<!-- ================= drift ================= -->
+<section>
+  <div class="shead">
+    <h2>对不齐是怎么发生的<span>arithmetic</span></h2>
+    <div class="note">竖线是终端/编辑器的“2 格”格子；中文每格少 0.05 em，误差会累积。</div>
+  </div>
+
+  <div class="driftcard">
+    <h3>现状：525 宽 <span class="tagline">40 个西文格 = 1.05 × 20 = 21 em</span></h3>
+    <p class="sub">40 格本该装 20 个汉字，实际能装 <b>21 个</b>。右侧虚线是“40 格”的边界，红块是 20 字之后剩下的 1 em。</p>
+    <div class="box b525">
+      <div class="row">0123456789012345678901234567890123456789</div>
+      <div class="row zh">中文字宽对齐测试中文字宽对齐测试中文字宽对</div>
+      <div class="row gap"><span class="zh">中文字宽对齐测试中文字宽对齐测试中文字宽</span><span class="rem"></span></div>
+    </div>
+    <div class="verdictline"><b>结果：</b>20 个汉字只到 38.1 格，第 21 个才碰到边界。放进表格、框线、列对齐里，就是每行都差一点点、越排越歪。</div>
+  </div>
+
+  <div class="driftcard">
+    <h3>改成 500 宽 <span class="tagline">40 个西文格 = 1.00 × 20 = 20 em</span></h3>
+    <p class="sub">把西文宽度降到 500（下方用 <code class="n">letter-spacing:-0.025em</code> 模拟），20 个汉字正好填满 40 格，两行右端齐平。</p>
+    <div class="box b500">
+      <div class="row"><span class="lat500">0123456789012345678901234567890123456789</span></div>
+      <div class="row zh">中文字宽对齐测试中文字宽对齐测试中文字宽</div>
+    </div>
+    <div class="verdictline q"><b>结果：</b>严格 2:1。这才是 CJK 等宽字体（更纱、Sarasa Term、PragmataPro＋中文方案）都在做的事。</div>
+  </div>
+
+  <div class="driftcard">
+    <h3>自建 1050 宽中文 <span class="tagline">每 2 格 = 1.05 em = 1 汉字</span></h3>
+    <p class="sub">不动拉丁，改中文：把朱雀仿宋里全部 <b>11,584 个全角字形</b>的 advance 从 1000 改成 1050、轮廓右移 25 单位保持居中，拉丁与西文标点一字未动。下图就是新字体本身：<code class="n">fonts/ZhuqueFangsong-Aporetic1050.ttf</code>。</p>
+    <div class="box b1050">
+      <div class="row">0123456789012345678901234567890123456789</div>
+      <div class="row zh1050">中文字宽对齐测试中文字宽对齐测试中文字宽</div>
+    </div>
+    <div class="verdictline q"><b>结果：</b>两行右端齐平，20 个汉字正好吃完 40 格。代价是中文的“字号”变成了 1.05 em，只适用于 525 宽度的拉丁；换成 500 宽的字就会反向错位。</div>
+  </div>
+</section>
+
+<!-- ================= terminal small sizes ================= -->
+<section>
+  <div class="shead">
+    <h2>12 / 13 / 14 px：终端里谁还活着<span>small sizes</span></h2>
+    <div class="note">等宽场景几乎都在小字号深色底。同一段代码，只换中文。</div>
+  </div>
+
+  <div class="sizes">
+    <div class="col s12 col-z">
+      <div class="col-head"><b>朱雀仿宋</b><span>12 px</span></div>
+      <pre><span class="cc">// <span class="zh">宽度对齐测试：</span></span>
+<span class="kk">func</span> <span class="cc">半径</span>(w <span class="nn">float64</span>) {
+    <span class="kk">return</span> w * <span class="nn">0.525</span> <span class="cc">// <span class="zh">常规宽</span></span>
+}</pre>
+    </div>
+    <div class="col s13 col-z">
+      <div class="col-head"><b>朱雀仿宋</b><span>13 px</span></div>
+      <pre><span class="cc">// <span class="zh">宽度对齐测试：</span></span>
+<span class="kk">func</span> <span class="cc">半径</span>(w <span class="nn">float64</span>) {
+    <span class="kk">return</span> w * <span class="nn">0.525</span> <span class="cc">// <span class="zh">常规宽</span></span>
+}</pre>
+    </div>
+    <div class="col s14 col-z">
+      <div class="col-head"><b>朱雀仿宋</b><span>14 px</span></div>
+      <pre><span class="cc">// <span class="zh">宽度对齐测试：</span></span>
+<span class="kk">func</span> <span class="cc">半径</span>(w <span class="nn">float64</span>) {
+    <span class="kk">return</span> w * <span class="nn">0.525</span> <span class="cc">// <span class="zh">常规宽</span></span>
+}</pre>
+    </div>
+  </div>
+
+  <div class="sizes" style="margin-top:.9rem">
+    <div class="col s12 col-n">
+      <div class="col-head"><b>思源宋体 Light</b><span>12 px</span></div>
+      <pre><span class="cc">// <span class="zh">宽度对齐测试：</span></span>
+<span class="kk">func</span> <span class="cc">半径</span>(w <span class="nn">float64</span>) {
+    <span class="kk">return</span> w * <span class="nn">0.525</span> <span class="cc">// <span class="zh">常规宽</span></span>
+}</pre>
+    </div>
+    <div class="col s13 col-n">
+      <div class="col-head"><b>思源宋体 Light</b><span>13 px</span></div>
+      <pre><span class="cc">// <span class="zh">宽度对齐测试：</span></span>
+<span class="kk">func</span> <span class="cc">半径</span>(w <span class="nn">float64</span>) {
+    <span class="kk">return</span> w * <span class="nn">0.525</span> <span class="cc">// <span class="zh">常规宽</span></span>
+}</pre>
+    </div>
+    <div class="col s14 col-s">
+      <div class="col-head"><b>SimSun</b><span>14 px</span></div>
+      <pre><span class="cc">// <span class="zh">宽度对齐测试：</span></span>
+<span class="kk">func</span> <span class="cc">半径</span>(w <span class="nn">float64</span>) {
+    <span class="kk">return</span> w * <span class="nn">0.525</span> <span class="cc">// <span class="zh">常规宽</span></span>
+}</pre>
+    </div>
+  </div>
+
+  <p class="lede" style="margin-top:1rem;font-size:.85rem">
+    小字号下：<b>朱雀</b>与<b>思源宋体 300</b>的竖画都只有 54–55/1000，12 px 时约 0.65 px，靠抗锯齿勉强连成线；
+    <b>SimSun</b> 横画更细（23/1000），在深色底上直接断成虚线，是这三者里最先崩的。
+    要长时间盯终端，<b>黑体（更纱 Mono SC）仍然是更安全的选择</b>；想要衬线味，就把字号拉到 14 px 以上。
+  </p>
+</section>
+
+<!-- ================= options ================= -->
+<section>
+  <div class="shead">
+    <h2>三条路线<span>options</span></h2>
+    <div class="note">气质、对齐、成本三者只能取两个。</div>
+  </div>
+  <table>
+    <thead>
+      <tr><th>方案</th><th>2:1 对齐</th><th>气质</th><th>代价</th></tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td><span class="t z">朱雀仿宋</span><small>保持 Aporetic Serif Mono 不动</small></td>
+        <td><span class="pill bad">否</span><small>1.905:1，每 20 字漂 1 字</small></td>
+        <td><span class="pill good">最接近</span><small>板状衬线 ↔ 方笔仿宋</small></td>
+        <td>只在“中文不参与对齐”的场景可接受：注释、正文、散文式文档；<b>不要</b>用在表格、列对齐、终端框线里。</td>
+      </tr>
+      <tr>
+        <td><span class="t">自建 500 宽 Iosevka</span><small>private-build-plans 里改宽度</small></td>
+        <td><span class="pill good">是</span><small>2 格 = 1.000 em</small></td>
+        <td><span class="pill good">保留 slab</span><small>仍是 Aporetic 的形状</small></td>
+        <td>要自己跑 Iosevka 构建：<code>widths.normal.shape = 500</code>，字宽变窄 5%，code 会略微增加；需要 Node/CoffeeScript 工具链。</td>
+      </tr>
+      <tr>
+        <td><span class="t z">自建 1050 宽朱雀仿宋</span><small>本页已生成：fonts/ZhuqueFangsong-Aporetic1050.ttf</small></td>
+        <td><span class="pill good">是</span><small>2 格 = 1.05 em = 1 汉字</small></td>
+        <td><span class="pill good">最接近</span><small>仿宋 + 板状衬线</small></td>
+        <td>11,584 个全角字形 advance 1000 → 1050、轮廓右移 25，fontTools 9 秒跑完；<b>但只跟 525 宽的拉丁绑定</b>，且部分终端会按 wcwidth 重新压回 1 em，只在按字体 advance 排版的编辑器里生效。</td>
+      </tr>
+      <tr>
+        <td><span class="t">更纱黑体 Mono SC</span><small>Sarasa = Iosevka + 思源黑体</small></td>
+        <td><span class="pill good">是</span><small>原生 2:1</small></td>
+        <td><span class="pill mid">黑体</span><small>丢掉衬线，属 Sans 一脉</small></td>
+        <td>开箱可用、字重齐全、小字号稳；但它配的是 <b>Aporetic Sans Mono</b>，不是 Serif。</td>
+      </tr>
+    </tbody>
+  </table>
+</section>
+
+<div class="notes">
+  <div class="note">
+    <h3><i>01</i>为什么不是 2:1</h3>
+    <p>Iosevka 默认宽度 500，Aporetic 定到 525（更宽、更松，配合它的 slab 衬线）。中文这一侧没有“半个字”可用，只能整 1 em。差 5% 就是全部问题的来源。</p>
+  </div>
+  <div class="note">
+    <h3><i>02</i>编辑器实际会怎么表现</h3>
+    <p>多数终端把中文强行按 2 格绘制并拉伸/压扁字形——这时不会“歪”，但汉字会被横向压掉约 5%，笔画显得偏瘦。<b>IDE 里</b>则按字体 advance 排，光标会逐行偏移。</p>
+  </div>
+  <div class="note">
+    <h3><i>03</i>比例版反而不需要纠结</h3>
+    <p>Aporetic Serif（quasi-proportional）里西文字宽 350–790 不等，本来就没有格子，中文 1 em 不会产生系统性漂移——<b>如果在意对齐，反而是比例版更省心</b>，只有等你真的需要列对齐时才切 Mono。</p>
+  </div>
+  <div class="note">
+    <h3><i>04</i>结论</h3>
+    <p>要“气质像”，<b>朱雀仿宋 + 14 px 以上</b>；要“格子齐”，<b>自建 1050 宽朱雀仿宋</b>是唯一同时保住 slab 与仿宋气质的路线（本页已生成）；要“开箱即用”，<b>更纱 Mono SC</b> 但接受黑体。</p>
+  </div>
+</div>
+
+<footer>
+  字体：<code>fonts/ZhuqueFangsong-Regular.ttf</code>（v0.212，OFL 1.1）、<code>fonts/ZhuqueFangsong-Aporetic1050.ttf</code>（本页用 fontTools 生成的 1050 宽版）、<code>fonts/AporeticSerif-Regular-subset.woff2</code>（拉丁子集，原作
+  <a href="https://github.com/protesilaos/aporetic">protesilaos/aporetic</a>）；思源宋体走 Google Fonts CDN，SimSun 走系统字体。
+  500 宽一行用 <code>letter-spacing:-0.025em</code> 模拟，仅用于演示；1050 宽是真实改过的字体文件。生成于 2026-10-19。
+</footer>
+
+</div>
+</body>
+</html>
