@@ -1,0 +1,13 @@
+#:schema https://mise.jdx.dev/schema/mise.json
+
+[tools]
+node = { version = "latest", postinstall = "npm install -g degit" }
+nub = "latest"
+
+[env]
+'_'.path = ['{{config_root}}/node_modules/.bin']
+
+[tasks.benchmark]
+env.'_'.path = ['{{config_root}}/node_modules/.bin']
+run="hyperfine --warmup 5 --runs 10 \"tsc.cmd --noEmit\" \"tsrs.cmd --noEmit --fast\" --export-markdown benchmark.md"
+
