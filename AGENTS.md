@@ -15,9 +15,6 @@
 ## 示例结构
 
 ```
-20260823/
-  fonts-explore/
-  hk-discussions-1220/
-20260824/
-  code-fonts-explore/
+20261119/
+  tsrs/
 ```
