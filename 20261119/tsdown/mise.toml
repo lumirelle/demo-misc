@@ -1,0 +1,11 @@
+[tools]
+node = "latest"
+nub = "latest"
+
+[env]
+'_'.path = ['{{config_root}}/node_modules/.bin']
+
+[tasks.benchmark]
+env.'_'.path = ['{{config_root}}/node_modules/.bin']
+run="hyperfine --warmup 5 --runs 10 \"tsdown.cmd\" \"unbuild.cmd\" --export-markdown benchmark.md"
+

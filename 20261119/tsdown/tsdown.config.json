@@ -1,0 +1,4 @@
+{
+  "$schema": "https://raw.githubusercontent.com/rolldown/tsdown/main/schema.json",
+  "outDir": "dist/tsdown"
+}
